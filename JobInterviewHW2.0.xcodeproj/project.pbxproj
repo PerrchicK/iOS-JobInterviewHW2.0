@@ -11,6 +11,8 @@
 		7538B9061FD1F25A00C9159B /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9051FD1F25A00C9159B /* PermissionsView.swift */; };
 		7538B9081FD1F27C00C9159B /* PermissionsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7538B9071FD1F27C00C9159B /* PermissionsView.xib */; };
 		7538B90E1FD20B9600C9159B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7538B9101FD20B9600C9159B /* Localizable.strings */; };
+		7538B9131FD2104800C9159B /* PredictionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9121FD2104700C9159B /* PredictionsView.swift */; };
+		7538B9161FD218A500C9159B /* Prediction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9151FD218A500C9159B /* Prediction.swift */; };
 		75A032EC1FD13CDD00DD52F6 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032EB1FD13CDD00DD52F6 /* AboutViewController.swift */; };
 		75A032EE1FD13E5500DD52F6 /* IHUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032ED1FD13E5500DD52F6 /* IHUViewController.swift */; };
 		75A032F01FD142BA00DD52F6 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032EF1FD142BA00DD52F6 /* Communicator.swift */; };
@@ -49,6 +51,8 @@
 		7538B9071FD1F27C00C9159B /* PermissionsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PermissionsView.xib; sourceTree = "<group>"; };
 		7538B90F1FD20B9600C9159B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7538B9111FD20BBA00C9159B /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
+		7538B9121FD2104700C9159B /* PredictionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsView.swift; sourceTree = "<group>"; };
+		7538B9151FD218A500C9159B /* Prediction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prediction.swift; sourceTree = "<group>"; };
 		75A032EB1FD13CDD00DD52F6 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		75A032ED1FD13E5500DD52F6 /* IHUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IHUViewController.swift; sourceTree = "<group>"; };
 		75A032EF1FD142BA00DD52F6 /* Communicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
@@ -101,6 +105,14 @@
 				BBA29F40F333FE4A45CC8155 /* Pods-JobInterviewHW2.0.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		7538B9141FD2189500C9159B /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				7538B9151FD218A500C9159B /* Prediction.swift */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 		75A032F41FD148A900DD52F6 /* Resources */ = {
@@ -167,6 +179,7 @@
 		75BB455F1FD090D300D3ADFC /* JobInterviewHW2.0 */ = {
 			isa = PBXGroup;
 			children = (
+				7538B9141FD2189500C9159B /* Data */,
 				75A032F41FD148A900DD52F6 /* Resources */,
 				75FECC541FD0BCDE00F0C7B9 /* UI */,
 				75A45E101FD0B39E00616EC1 /* Utilities */,
@@ -182,6 +195,7 @@
 		75FECC541FD0BCDE00F0C7B9 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				7538B9121FD2104700C9159B /* PredictionsView.swift */,
 				75FECC551FD0BCDE00F0C7B9 /* NibView.swift */,
 				75FECC561FD0BCDE00F0C7B9 /* ToastMessage.swift */,
 				75FECC571FD0BCDE00F0C7B9 /* ToastMessage.xib */,
@@ -367,11 +381,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				75A032FB1FD180B600DD52F6 /* PermissionRequestViewController.swift in Sources */,
+				7538B9131FD2104800C9159B /* PredictionsView.swift in Sources */,
 				75BB45611FD090D300D3ADFC /* AppDelegate.swift in Sources */,
 				75A45E0E1FD0B0E600616EC1 /* DrawerContainerViewController.swift in Sources */,
 				75A032F31FD1478200DD52F6 /* FirebaseHelper.swift in Sources */,
 				75A45E0F1FD0B0E600616EC1 /* SplashScreenViewController.swift in Sources */,
 				75A45E161FD0B39E00616EC1 /* ClosureTimer.swift in Sources */,
+				7538B9161FD218A500C9159B /* Prediction.swift in Sources */,
 				750BA86D1FD19D2B00B2AD50 /* Throttler.swift in Sources */,
 				75FECC581FD0BCDE00F0C7B9 /* NibView.swift in Sources */,
 				75A032F71FD17B6E00DD52F6 /* LocationHelper.swift in Sources */,

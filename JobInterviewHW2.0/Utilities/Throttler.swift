@@ -14,6 +14,7 @@ class Throttler { // TODO: Test it, because this haven't been tested yet, memory
     private var closureTimer: ClosureTimer?
 
     func throttle(timeout: TimeInterval, operation: @escaping () -> ()) {
+        operationToThrottle = operation
         closureTimer?.invalidate()
         closureTimer = ClosureTimer.runBlockAfterDelay(afterDelay: timeout, block: { [weak self] _ in
             self?.closureTimer?.invalidate()

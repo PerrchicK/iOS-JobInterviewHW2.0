@@ -21,17 +21,17 @@ class Configurations {
         }
     }
 
-    let GoogleMapsUrlApiKey: String
+    let GoogleMapsWebApiKey: String
     let GoogleMapsMobileSdkApiKey: String
     
     init() {
         guard let secretConstantsPlistFilePath: String = Bundle.main.path(forResource: "SecretConstants", ofType: "plist"),
         let config: [String: String] = NSDictionary(contentsOfFile: secretConstantsPlistFilePath) as? [String : String],
-        let googleMapsUrlApiKey = config["GoogleMapsUrlApiKey"],
+        let googleMapsWebApiKey = config["GoogleMapsWebApiKey"],
         let googleMapsMobileSdkApiKey = config["GoogleMapsMobileSdkApiKey"]
         else { fatalError("No way! The app must have this plist file with the mandatory keys") }
 
-        GoogleMapsUrlApiKey = googleMapsUrlApiKey
+        GoogleMapsWebApiKey = googleMapsWebApiKey
         GoogleMapsMobileSdkApiKey = googleMapsMobileSdkApiKey
     }
 }

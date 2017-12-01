@@ -12,9 +12,14 @@ import Alamofire
 class Communicator {
     
     struct API {
-        static let GeocodeFormat: String = "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%@"
-        static let NearByPlacesFormat: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&radius=%@&key=%@"
-        static let AutocompletePlacesFormat: String = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=address&language=iw&key=%@"
+        struct Request {
+            static let GeocodeFormat: String = "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%@"
+            static let NearByPlacesFormat: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&radius=%@&key=%@"
+            static let AutocompletePlacesFormat: String = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=address&language=iw&key=%@"
+        }
+        struct Response {
+            static let GoogleMapsPredictions: String = "predictions"
+        }
     }
     
     // Perry: "Ron, I felt it was fimiliar to me, now I remember where did I see it: https://medium.com/@jbergen/you-ve-been-using-enums-in-swift-all-wrong-b8156df64087"

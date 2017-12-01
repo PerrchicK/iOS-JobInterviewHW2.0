@@ -20,11 +20,13 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     private var currentZoom: Float?
     var middleHeight: CGFloat = 0
 
+    private var predictions: [Prediction]?
     @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var fetchPlacesButton: UIButton!
     @IBOutlet weak var radiusMagnifierHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var radiusMagnifierImageView: UIImageView!
+    lazy var throttler = Throttler()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,11 +43,13 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         }
         panGestureRecognizer?.delegate = self
 
+        searchBar.delegate = self
         configureUi()
     }
     
     func configureUi() {
         self.searchBar.placeholder = "Search address...".localized()
+        searchBar.searchBarStyle = .minimal
         searchBar.barStyle = .blackTranslucent
         let found: [UIView] = searchBar.findSubviewsInTree(predicateClosure: { $0 is UITextField } )
         (found.first as? UITextField)?.textColor = .white
@@ -141,7 +145,8 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         mapView.animate(toLocation: coordinate)
     }
 
-    func presentAdressesPredictions(predictions: [String]) {
+    func presentAdressesPredictions(predictions: [Prediction]) {
+        self.predictions = predictions
     }
 
     //MARK: - UIGestureRecognizerDelegate
@@ -152,9 +157,15 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
     //MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchText) { [weak self] (predictions) in
-            guard let strongSelf = self, let predictions = predictions else { return }
-            strongSelf.presentAdressesPredictions(predictions: predictions)
+        if searchText.count == 0 { return }
+        throttler.throttle(timeout: 0.3) {
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchText) { [weak self] (resultTupple) in
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == searchBar.text else { return }
+
+                strongSelf.presentAdressesPredictions(predictions: resultTupple.predictions)
+            }
         }
     }
 }

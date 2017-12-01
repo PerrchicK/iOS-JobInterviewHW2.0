@@ -14,6 +14,7 @@ protocol LocationHelperDelegate: class {
 }
 
 class LocationHelper: NSObject, CLLocationManagerDelegate {
+    typealias RawJsonFormat = [AnyHashable:Any]
     static let shared: LocationHelper = LocationHelper()
 
     weak var delegate: LocationHelperDelegate?
@@ -52,10 +53,10 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
     }
 
     func findAddressByCoordinates(latitude lat: Double, longitude lng: Double, completion: @escaping CompletionClosure<String>) {
-        let urlString = String(format: Communicator.API.GeocodeFormat,
+        let urlString = String(format: Communicator.API.Request.GeocodeFormat,
                                lat,
                                lng,
-                               Configurations.shared.GoogleMapsUrlApiKey)
+                               Configurations.shared.GoogleMapsWebApiKey)
 
         Communicator.request(urlString: urlString, completion: { response in
             var result: String?
@@ -76,16 +77,27 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         })
     }
 
-    static func fetchAutocompleteSuggestions(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<[String]>) {
-        let urlString = String(format: Communicator.API.AutocompletePlacesFormat,
+    static func fetchAutocompleteSuggestions(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<(keyword: String, predictions: [Prediction])>) {
+        let urlString = String(format: Communicator.API.Request.AutocompletePlacesFormat,
                                keyword,
-                               Configurations.shared.GoogleMapsUrlApiKey)
+                               Configurations.shared.GoogleMapsWebApiKey)
 
         Communicator.request(urlString: urlString) { (response) in
-            var predictionsResult: [String]?
-            guard let response = response else { predictionsResultCallback(predictionsResult); return }
+            var predictionsResult: [Prediction] = [Prediction]()
+            guard let response = response else { predictionsResultCallback((keyword: keyword, predictions: predictionsResult)); return }
+            
             switch response {
             case .succeeded(let json):
+                if let jsonDictionary = (json as? RawJsonFormat),
+                    let jsonArray = jsonDictionary[Communicator.API.Response.GoogleMapsPredictions] as? [RawJsonFormat] {
+                    for predictionJsonDictionary in jsonArray {
+                        guard let description = predictionJsonDictionary[Prediction.InterpretationKeys.Description] as? String,
+                            let placeId = predictionJsonDictionary[Prediction.InterpretationKeys.PlaceId] as? String
+                            else { continue }
+                        let prediction = Prediction(placeId: placeId, predictionDescription: description)
+                        predictionsResult.append(prediction)
+                    }
+
 //                if (jsonAsDictionary.count && [jsonAsDictionary[kGoogleMapsPredictionsKey] count]) {
 //                    NSArray *predictionsArrayFromJson = jsonAsDictionary[kGoogleMapsPredictionsKey];
 //                    for (NSDictionary *predictionAsDictionary in predictionsArrayFromJson) {
@@ -100,11 +112,14 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
 //                        }
 //                    }
 //                }
-                predictionsResult = []//LocationHelper.parseGeocodeResponse(json)
+                    
+                    // So glad we're developing in Swift ツ 👆
+
+                }
             case .failed(let message):
                 📕("request failed, message: \(message)")
             }
-            predictionsResultCallback(predictionsResult)
+            predictionsResultCallback((keyword: keyword, predictions: predictionsResult))
         }
     }
 
