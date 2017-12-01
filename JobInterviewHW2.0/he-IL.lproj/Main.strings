@@ -1,0 +1,21 @@
+
+/* Class = "UILabel"; text = "Options"; ObjectID = "CK4-iI-otw"; */
+"CK4-iI-otw.text" = "Options";
+
+/* Class = "UILabel"; text = "iHereU"; ObjectID = "GP3-Ti-cTc"; */
+"GP3-Ti-cTc.text" = "iHereU";
+
+/* Class = "UITextView"; text = "Visit this project's repository at: https://github.com/PerrchicK/swift-app"; ObjectID = "L1E-d9-xrJ"; */
+"L1E-d9-xrJ.text" = "Visit this project's repository at: https://github.com/PerrchicK/swift-app";
+
+/* Class = "UIButton"; normalTitle = "⦿"; ObjectID = "NUp-8i-RDO"; */
+"NUp-8i-RDO.normalTitle" = "⦿";
+
+/* Class = "UILabel"; text = "What this app does?"; ObjectID = "Nf4-FY-mA9"; */
+"Nf4-FY-mA9.text" = "What this app does?";
+
+/* Class = "UILabel"; text = "😃"; ObjectID = "Nfj-Fn-pC0"; */
+"Nfj-Fn-pC0.text" = "😃";
+
+/* Class = "UILabel"; text = "Menu option title"; ObjectID = "fwg-n9-Nj9"; */
+"fwg-n9-Nj9.text" = "Menu option title";

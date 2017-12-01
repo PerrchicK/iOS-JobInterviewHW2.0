@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -13,39 +14,52 @@
             <connections>
                 <outlet property="customViewContainer" destination="mQ6-dD-cVL" id="Rn6-xm-NvX"/>
                 <outlet property="grantButton" destination="KhA-ZX-qFJ" id="W8E-1d-p5D"/>
+                <outlet property="permissionTitle" destination="2ln-fZ-FfL" id="wTk-QL-uWr"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="401" height="270"/>
+            <rect key="frame" x="0.0" y="0.0" width="401" height="396"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KhA-ZX-qFJ">
-                    <rect key="frame" x="20" y="150" width="361" height="100"/>
+                    <rect key="frame" x="20" y="317" width="361" height="50"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="100" id="rfe-c8-OM0"/>
+                        <constraint firstAttribute="height" constant="50" id="rfe-c8-OM0"/>
                     </constraints>
                     <state key="normal" title="@GrantPermissions"/>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mQ6-dD-cVL">
-                    <rect key="frame" x="20" y="20" width="361" height="110"/>
+                    <rect key="frame" x="20" y="99" width="361" height="198"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@LocationPermissionTitle" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ln-fZ-FfL">
+                    <rect key="frame" x="20" y="-21" width="361" height="100"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="100" id="hk6-MS-oNF"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="mQ6-dD-cVL" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="CwT-8p-saz"/>
+                <constraint firstItem="mQ6-dD-cVL" firstAttribute="top" secondItem="2ln-fZ-FfL" secondAttribute="bottom" constant="20" id="HEW-NK-dof"/>
                 <constraint firstItem="KhA-ZX-qFJ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="IA0-zh-q7F"/>
                 <constraint firstAttribute="trailing" secondItem="mQ6-dD-cVL" secondAttribute="trailing" constant="20" id="InK-31-3O7"/>
                 <constraint firstAttribute="trailing" secondItem="KhA-ZX-qFJ" secondAttribute="trailing" constant="20" id="RDq-9D-yTE"/>
                 <constraint firstItem="mQ6-dD-cVL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="S8o-3f-KJD"/>
-                <constraint firstAttribute="bottom" secondItem="KhA-ZX-qFJ" secondAttribute="bottom" constant="20" id="knR-jh-8fH"/>
-                <constraint firstItem="mQ6-dD-cVL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="mFk-gm-xsF"/>
+                <constraint firstAttribute="trailing" secondItem="2ln-fZ-FfL" secondAttribute="trailing" constant="20" id="hp8-Kn-V71"/>
+                <constraint firstItem="mQ6-dD-cVL" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" multiplier="0.5" id="ila-AT-hK6"/>
+                <constraint firstItem="2ln-fZ-FfL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" id="l8f-a0-Tia"/>
                 <constraint firstItem="KhA-ZX-qFJ" firstAttribute="top" secondItem="mQ6-dD-cVL" secondAttribute="bottom" constant="20" id="sX6-Yw-raf"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="-47" y="165"/>
+            <point key="canvasLocation" x="-47.5" y="102"/>
         </view>
     </objects>
 </document>

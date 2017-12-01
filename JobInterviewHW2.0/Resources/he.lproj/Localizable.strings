@@ -1,0 +1,10 @@
+/* 
+  Localized.strings
+  JobInterviewHW2.0
+
+  Created by Perry on 02/12/2017.
+  Copyright © 2017 perrchick. All rights reserved.
+*/
+
+"LocationPermissionTitle" = "אל תתביישו, אתם משתמשים באפליקציית מיקום. בנוסף, המיקום שלכם עוזר לאחרים למצוא חניה.\nsharing is caring 😉";
+"GrantPermissions" = "אוקיי";

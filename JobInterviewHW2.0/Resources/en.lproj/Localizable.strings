@@ -1,0 +1,10 @@
+/* 
+  Localized.strings
+  JobInterviewHW2.0
+
+  Created by Perry on 02/12/2017.
+  Copyright © 2017 perrchick. All rights reserved.
+*/
+
+"LocationPermissionTitle" = "don't be shy, your location is needed in this app, because you're also vewing a map. Besides, sharing is caring 😉";
+"GrantPermissions" = "Grant permissions";

@@ -46,10 +46,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     
     func configureUi() {
         self.searchBar.placeholder = "Search address...".localized()
-        searchBar.barStyle = .black
+        searchBar.barStyle = .blackTranslucent
         let found: [UIView] = searchBar.findSubviewsInTree(predicateClosure: { $0 is UITextField } )
         (found.first as? UITextField)?.textColor = .white
-//        [self _setTextColor:[UIColor whiteColor] inSubviewsOfView:self.searchBar];
 //
 //        self.lblPulse.hidden = YES;
 //

@@ -399,6 +399,14 @@ extension UIViewController {
     }
 }
 
+// Inspired from: https://medium.com/flawless-app-stories/dry-string-localization-with-interface-builder-665496eb0270
+extension UILabel: Localizable {
+    public func localize() {
+        localize(text) { text = $0 }
+    }
+}
+
+// And thanks again (same inspiration like above, different ref) to Lisa Dziuba: https://www.linkedin.com/groups/121874/121874-6305477606137483268
 extension UIButton: Localizable {
     public func localize() {
         localize(title(for:), setTitle(_:for:))
@@ -406,9 +414,20 @@ extension UIButton: Localizable {
 }
 
 extension UIView {
+    func getRoundedCornered(_ radius: CGFloat = 5) {
+        self.layer.cornerRadius = radius
+        self.layer.masksToBounds = true
+    }
+
+    func beOval() {
+        getRoundedCornered(frame.width / 2)
+        clipsToBounds = true
+        contentMode = .scaleAspectFill
+    }
+
     func findSubviewsInTree(predicateClosure: PredicateClosure<UIView>) -> [UIView] {
+        if predicateClosure(self) { return [self] }
         var foundSubviews = [UIView]()
-        if predicateClosure(self) {return foundSubviews }
         for view in subviews {
             foundSubviews.append(contentsOf: (view.findSubviewsInTree(predicateClosure: predicateClosure)))
         }
