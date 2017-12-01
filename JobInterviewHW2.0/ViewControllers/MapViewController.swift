@@ -10,24 +10,59 @@ import Foundation
 import UIKit
 import GoogleMaps
 
-class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDelegate {
-    //, PlaceInfoViewControllerDelegate, UIActionSheetDelegate {
+class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate {
+    //, PlaceInfoViewControllerDelegate {
     
     override var shouldForceLocationPermissions: Bool {
         return true
     }
+    private var panGestureRecognizer: UIGestureRecognizer?
     private var currentZoom: Float?
+    var middleHeight: CGFloat = 0
+
     @IBOutlet weak var mapView: GMSMapView!
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var fetchPlacesButton: UIButton!
+    @IBOutlet weak var radiusMagnifierHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var radiusMagnifierImageView: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         mapView.delegate = self;
+        
+        panGestureRecognizer = radiusMagnifierImageView.onPan { [unowned self] (panGestureRecognizer) in
+            let location = panGestureRecognizer.location(in: self.view)
+            let draggingLocationYAxis = self.view.frame.height - location.y
+            /// Percentage from screeen height
+            let maxHeight: CGFloat = self.view.frame.height
+            let magnifierValue: CGFloat = PerrFuncs.percentOfValue(ofValue: draggingLocationYAxis, fromValue: maxHeight)
+            self.radiusMagnifierHeightConstraint.constant = PerrFuncs.valueOfPercent(percentage: magnifierValue, fromValue: maxHeight)
+        }
+        panGestureRecognizer?.delegate = self
+
+        configureUi()
+    }
+    
+    func configureUi() {
+        self.searchBar.placeholder = "Search address...".localized()
+        searchBar.barStyle = .black
+        let found: [UIView] = searchBar.findSubviewsInTree(predicateClosure: { $0 is UITextField } )
+        (found.first as? UITextField)?.textColor = .white
+//        [self _setTextColor:[UIColor whiteColor] inSubviewsOfView:self.searchBar];
+//
+//        self.lblPulse.hidden = YES;
+//
+//        [self.btnCurrentCoordinate setTitle:@"" forState:UIControlStateNormal];
+//        self.lblAddress.text = @"";
+//        self.searchToolHeightConstraint.constant *= 2;
+        middleHeight = radiusMagnifierHeightConstraint.constant
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        // Never used it in this prject, but it will never harm
         if let lastCrashCallStack: [String] = UserDefaults.load(key: Configurations.Keys.Persistency.PermissionRequestCounter) as [String]? {
             UIAlertController.makeAlert(title: Configurations.Keys.Persistency.PermissionRequestCounter, message: "\(lastCrashCallStack)")
                 .withAction(UIAlertAction(title: "fine", style: .cancel, handler: nil))
@@ -36,6 +71,8 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                 }))
                 .show()
         }
+
+        LocationHelper.shared.startUpdate()
 
         testGeocode()
     }
@@ -49,9 +86,11 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             ToastMessage.show(messageText: address.or("Parsing failed"))
         }
     }
-    
+
+    //MARK: - GMSMapViewDelegate
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         currentZoom = position.zoom
+        LocationHelper.shared.stopUpdate()
 //    [self.locationManager stopUpdatingLocation];
 //    [self.searchBar resignFirstResponder];
 //    [self _setLocationText:position.target];
@@ -67,7 +106,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 //    }
 //    });
     }
-    
+
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
     // Zoom out
 //    [mapView animateToZoom:mapView.camera.zoom - 1.0];
@@ -88,6 +127,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     override func onLocationUpdated(updatedLocation: CLLocation) {
         📗("verticalAccuracy: \(updatedLocation.verticalAccuracy), horizontalAccuracy: \(updatedLocation.horizontalAccuracy)")
         moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 15)
+        if updatedLocation.speed > 2 { // if updatedLocation.speed > 5 {
+            ToastMessage.show(messageText: "is running?")
+        }
     }
 
     func moveCameraToLocation(coordinate: CLLocationCoordinate2D, andZoom zoomValue: Float? = nil) {
@@ -100,4 +142,20 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         mapView.animate(toLocation: coordinate)
     }
 
+    func presentAdressesPredictions(predictions: [String]) {
+    }
+
+    //MARK: - UIGestureRecognizerDelegate
+    //TODO: Sharpen this
+//    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return radiusMagnifierImageView.pixelColor(atPoint: gestureRecognizer.location(in: radiusMagnifierImageView)) != .clear
+//    }
+
+    //MARK: - UISearchBarDelegate
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchText) { [weak self] (predictions) in
+            guard let strongSelf = self, let predictions = predictions else { return }
+            strongSelf.presentAdressesPredictions(predictions: predictions)
+        }
+    }
 }

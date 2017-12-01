@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		750BA86D1FD19D2B00B2AD50 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750BA86C1FD19D2B00B2AD50 /* Throttler.swift */; };
+		7538B9061FD1F25A00C9159B /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9051FD1F25A00C9159B /* PermissionsView.swift */; };
+		7538B9081FD1F27C00C9159B /* PermissionsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7538B9071FD1F27C00C9159B /* PermissionsView.xib */; };
 		75A032EC1FD13CDD00DD52F6 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032EB1FD13CDD00DD52F6 /* AboutViewController.swift */; };
 		75A032EE1FD13E5500DD52F6 /* IHUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032ED1FD13E5500DD52F6 /* IHUViewController.swift */; };
 		75A032F01FD142BA00DD52F6 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032EF1FD142BA00DD52F6 /* Communicator.swift */; };
@@ -42,6 +44,8 @@
 		1B02570E6FE127D56B9E645E /* Pods_JobInterviewHW2_0.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JobInterviewHW2_0.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A43F92711CFC4F27726C92B /* Pods-JobInterviewHW2.0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JobInterviewHW2.0.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JobInterviewHW2.0/Pods-JobInterviewHW2.0.debug.xcconfig"; sourceTree = "<group>"; };
 		750BA86C1FD19D2B00B2AD50 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
+		7538B9051FD1F25A00C9159B /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
+		7538B9071FD1F27C00C9159B /* PermissionsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PermissionsView.xib; sourceTree = "<group>"; };
 		75A032EB1FD13CDD00DD52F6 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		75A032ED1FD13E5500DD52F6 /* IHUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IHUViewController.swift; sourceTree = "<group>"; };
 		75A032EF1FD142BA00DD52F6 /* Communicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
@@ -177,6 +181,8 @@
 				75FECC551FD0BCDE00F0C7B9 /* NibView.swift */,
 				75FECC561FD0BCDE00F0C7B9 /* ToastMessage.swift */,
 				75FECC571FD0BCDE00F0C7B9 /* ToastMessage.xib */,
+				7538B9051FD1F25A00C9159B /* PermissionsView.swift */,
+				7538B9071FD1F27C00C9159B /* PermissionsView.xib */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -266,6 +272,7 @@
 				75A033021FD187F900DD52F6 /* GoogleService-Info-dev.plist in Resources */,
 				75A033031FD187F900DD52F6 /* SecretConstants.plist in Resources */,
 				75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */,
+				7538B9081FD1F27C00C9159B /* PermissionsView.xib in Resources */,
 				75A033011FD187F900DD52F6 /* Info.plist in Resources */,
 				75A033001FD187F900DD52F6 /* GoogleService-Info.plist in Resources */,
 				75BB45661FD090D300D3ADFC /* Main.storyboard in Resources */,
@@ -372,6 +379,7 @@
 				75A032EC1FD13CDD00DD52F6 /* AboutViewController.swift in Sources */,
 				75FECC5D1FD0C12800F0C7B9 /* MapViewController.swift in Sources */,
 				75FECC601FD0C35B00F0C7B9 /* Configurations.swift in Sources */,
+				7538B9061FD1F25A00C9159B /* PermissionsView.swift in Sources */,
 				75FECC631FD0C3A000F0C7B9 /* Reachability.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

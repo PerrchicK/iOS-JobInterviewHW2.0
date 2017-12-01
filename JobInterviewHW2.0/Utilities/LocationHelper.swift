@@ -29,9 +29,17 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
 
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.startUpdatingLocation()
     }
     
+    func stopUpdate() {
+        locationManager.stopUpdatingLocation()
+    }
+
+    func startUpdate() {
+        guard isPermissionGranted else { return }
+        locationManager.startUpdatingLocation()
+    }
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             currentLocation = location
@@ -44,11 +52,18 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
     }
 
     func findAddressByCoordinates(latitude lat: Double, longitude lng: Double, completion: @escaping CompletionClosure<String>) {
-        // Make request
-        let urlString = String(format: "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%@", lat, lng ,Configurations.shared.GoogleMapsUrlApiKey)
+        let urlString = String(format: Communicator.API.GeocodeFormat,
+                               lat,
+                               lng,
+                               Configurations.shared.GoogleMapsUrlApiKey)
+
         Communicator.request(urlString: urlString, completion: { response in
             var result: String?
-            guard let response = response else { return }
+            guard let response = response else {
+                completion(result)
+                return
+            }
+
             switch response {
             case .succeeded(let json):
                 // Request succeeded! ... parse response
@@ -59,6 +74,38 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
 
             completion(result)
         })
+    }
+
+    static func fetchAutocompleteSuggestions(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<[String]>) {
+        let urlString = String(format: Communicator.API.AutocompletePlacesFormat,
+                               keyword,
+                               Configurations.shared.GoogleMapsUrlApiKey)
+
+        Communicator.request(urlString: urlString) { (response) in
+            var predictionsResult: [String]?
+            guard let response = response else { predictionsResultCallback(predictionsResult); return }
+            switch response {
+            case .succeeded(let json):
+//                if (jsonAsDictionary.count && [jsonAsDictionary[kGoogleMapsPredictionsKey] count]) {
+//                    NSArray *predictionsArrayFromJson = jsonAsDictionary[kGoogleMapsPredictionsKey];
+//                    for (NSDictionary *predictionAsDictionary in predictionsArrayFromJson) {
+//                        // Validate before parsing
+//                        if (predictionAsDictionary.count &&
+//                            predictionAsDictionary[kGoogleMapsPredictionDescriptionKey] &&
+//                            predictionAsDictionary[kGoogleMapsPlaceIdKey]) {
+//                            Prediction *prediction = [Prediction new];
+//                            prediction.predictionDescription = predictionAsDictionary[kGoogleMapsPredictionDescriptionKey];
+//                            prediction.placeId = predictionAsDictionary[kGoogleMapsPlaceIdKey];
+//                            [predictions addObject:prediction];
+//                        }
+//                    }
+//                }
+                predictionsResult = []//LocationHelper.parseGeocodeResponse(json)
+            case .failed(let message):
+                📕("request failed, message: \(message)")
+            }
+            predictionsResultCallback(predictionsResult)
+        }
     }
 
     func requestPermissionsIfNeeded() {
@@ -78,8 +125,9 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         } else {
             // First time for this life time
             locationManager.requestWhenInUseAuthorization()
-            UserDefaults.save(value: permissionRequestCounter + 1, forKey: Configurations.Keys.Persistency.PermissionRequestCounter).synchronize()
         }
+
+        UserDefaults.save(value: permissionRequestCounter + 1, forKey: Configurations.Keys.Persistency.PermissionRequestCounter).synchronize()
     }
 
     private static func parseGeocodeResponse(_ responseObject: Any) -> String? {
@@ -88,7 +136,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         guard let responseDictionary = responseObject as? [AnyHashable:Any],
             let status = responseDictionary["status"] as? String, status == "OK" else { return result }
         
-        📗("Parsing JSON dictionary:\n\(responseDictionary)")
+        //📗("Parsing JSON dictionary:\n\(responseDictionary)")
         if let results = responseDictionary["results"] as? [AnyObject],
             let firstPlace = results[0] as? [String:AnyObject],
             let firstPlaceName = firstPlace["formatted_address"] as? String {

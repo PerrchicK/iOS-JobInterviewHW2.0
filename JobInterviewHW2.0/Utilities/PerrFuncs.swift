@@ -12,7 +12,7 @@ import ObjectiveC
 // MARK: - "macros" (... like)
 
 public typealias CompletionClosure<T> = ((T?) -> Void)
-public typealias PredicateClosure = ((AnyObject?) -> Bool)
+public typealias PredicateClosure<T> = ((T) -> Bool)
 
 func WIDTH(_ frame: CGRect?) -> CGFloat { return frame == nil ? 0 : (frame?.size.width)! }
 func HEIGHT(_ frame: CGRect?) -> CGFloat { return frame == nil ? 0 : (frame?.size.height)! }
@@ -102,7 +102,24 @@ open class PerrFuncs {
         let randdomNumber: UInt32 = arc4random() % UInt32(_to - _from)
         return Int(randdomNumber) + _from
     }
-    
+
+    public static func percentOfValue(ofValue value: CGFloat, fromValue: CGFloat) -> CGFloat {
+        return value / fromValue * 100 // Example: 50 / 2000 * 100 == 2.5%
+    }
+
+    public static func percentOfValue(ofValue value: Float, fromValue: Float) -> Float {
+        return value / fromValue * 100 // Example: 50 / 2000 * 100 == 2.5%
+    }
+
+    public static func valueOfPercent(percentage: CGFloat, fromValue: CGFloat) -> CGFloat {
+        return fromValue * percentage / 100; // Example: 2000 * 2.5% / 100 == 50
+    }
+
+    public static func valueOfPercent(percentage: Float, fromValue: Float) -> Float {
+        return fromValue * percentage / 100; // Example: 2000 * 2.5% / 100 == 50
+    }
+
+    // Perry: delete?
     @discardableResult
     static func postRequest(urlString: String, jsonDictionary: [String: Any], httpHeaders: [String:String]? = nil, completion: @escaping ([String: Any]?) -> ()) -> URLSessionDataTask? {
 
@@ -126,7 +143,6 @@ open class PerrFuncs {
             // insert json data to the request
             request.httpBody = jsonData
             request.timeoutInterval = 30
-
 
             let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
                 if let error = error {
@@ -163,6 +179,35 @@ extension String {
 
     func toUrl() -> URL? {
         return URL(string: self)
+    }
+}
+
+public protocol Localizable {
+    func localize()
+}
+
+public extension Localizable {
+    
+    public func localize(_ string: String?) -> String? {
+        guard let term = string, term.hasPrefix("@") else {
+            return string
+        }
+        let substring = term.substring(from: term.index(after: term.startIndex));
+        guard !term.hasPrefix("@@") else {
+            return substring
+        }
+        return substring.localized()
+    }
+    
+    public func localize(_ string: String?, _ setter: (String?) -> Void) {
+        setter(localize(string))
+    }
+    
+    public func localize(_ getter: (UIControlState) -> String?, _ setter: (String?, UIControlState) -> Void) {
+        setter(localize(getter(.normal)), .normal)
+        setter(localize(getter(.selected)), .selected)
+        setter(localize(getter(.highlighted)), .highlighted)
+        setter(localize(getter(.disabled)), .disabled)
     }
 }
 
@@ -354,7 +399,40 @@ extension UIViewController {
     }
 }
 
-extension UIView: CAAnimationDelegate {
+extension UIButton: Localizable {
+    public func localize() {
+        localize(title(for:), setTitle(_:for:))
+    }
+}
+
+extension UIView {
+    func findSubviewsInTree(predicateClosure: PredicateClosure<UIView>) -> [UIView] {
+        var foundSubviews = [UIView]()
+        if predicateClosure(self) {return foundSubviews }
+        for view in subviews {
+            foundSubviews.append(contentsOf: (view.findSubviewsInTree(predicateClosure: predicateClosure)))
+        }
+        
+        return foundSubviews
+    }
+    
+    /// From: https://stackoverflow.com/questions/12770181/how-to-get-the-pixel-color-on-touch
+    func pixelColor(atPoint point: CGPoint) -> UIColor {
+        let pixel = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: 4)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        let context = CGContext(data: pixel, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo.rawValue)
+        
+        context!.translateBy(x: -point.x, y: -point.y)
+        layer.render(in: context!)
+        let color:UIColor = UIColor(red: CGFloat(pixel[0])/255.0,
+                                    green: CGFloat(pixel[1])/255.0,
+                                    blue: CGFloat(pixel[2])/255.0,
+                                    alpha: CGFloat(pixel[3])/255.0)
+        
+        pixel.deallocate(capacity: 4)
+        return color
+    }
 
     // MARK: - Property setters-like methods
     var isPresented: Bool {
@@ -389,17 +467,16 @@ extension UIView: CAAnimationDelegate {
         }
     }
 
-    public func animateNo() {
+    public func animateNo(duration: TimeInterval = 0.4) {
         let noAnimation = CAKeyframeAnimation()
         noAnimation.keyPath = "position.x"
         
         noAnimation.values = [0, 10, -10, 10, 0]
         let keyTimes: [NSNumber] = [0, NSNumber(value: Float(1.0 / 6.0)), NSNumber(value: Float(3.0 / 6.0)), NSNumber(value: Float(5.0 / 6.0)), 1]
         noAnimation.keyTimes = keyTimes
-        noAnimation.duration = 0.4
+        noAnimation.duration = duration
         
         noAnimation.isAdditive = true
-        noAnimation.delegate = self
         noAnimation.isRemovedOnCompletion = false
 
         self.layer.add(noAnimation, forKey: Configurations.Keys.NoNoAnimation) // shake animation
@@ -545,7 +622,7 @@ extension UIView: CAAnimationDelegate {
     }
 
     @discardableResult
-    func onDrag(predicateClosure: PredicateClosure? = nil, onDragClosure: @escaping CompletionClosure<CGPoint>) -> OnPanListener {
+    func onDrag(predicateClosure: PredicateClosure<UIView>? = nil, onDragClosure: @escaping CompletionClosure<CGPoint>) -> OnPanListener {
         return onPan { panGestureRecognizer in
             guard let draggedView = panGestureRecognizer.view, let superview = draggedView.superview, (predicateClosure?(self)).or(true), let onPanListener = panGestureRecognizer as? OnPanListener else { return }
             let locationOfTouch = panGestureRecognizer.location(in: superview)

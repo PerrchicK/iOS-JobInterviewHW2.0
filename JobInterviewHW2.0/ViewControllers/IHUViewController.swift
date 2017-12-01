@@ -29,7 +29,6 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityDidChange), name: Notification.Name.ReachabilityDidChange, object: nil)
 
-
         presentPermissionsScreenIfNeeded()
 
         LocationHelper.shared.delegate = self
@@ -54,6 +53,9 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
     func presentPermissionsScreenIfNeeded() {
         if shouldForceLocationPermissions && !LocationHelper.shared.isPermissionGranted {
             present(PermissionRequestViewController(), animated: true, completion: nil)
+//            let locationPermissionsView = PermissionsView()
+//            view.addSubview(locationPermissionsView)
+//            locationPermissionsView.stretchToSuperViewEdges()
         }
     }
 

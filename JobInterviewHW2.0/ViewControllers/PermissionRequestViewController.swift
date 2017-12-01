@@ -13,21 +13,14 @@ class PermissionRequestViewController: IHUViewController {
         return false
     }
 
-    lazy var requestButton: UIButton = {
-        let requestButton: UIButton = UIButton()
-        requestButton.setTitle("grant location permissions".localized(), for: UIControlState.normal)
-        self.view.addSubview(requestButton)
-        requestButton.stretchToSuperViewEdges()
-        return requestButton
-    }()
-    
+    lazy var requestButton: PermissionsView = PermissionsView()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.addSubview(requestButton)
+        requestButton.stretchToSuperViewEdges()
         view.backgroundColor = UIColor.white
-        requestButton.onClick({ _ in // Ron, following our discussion in the interview,
-            LocationHelper.shared.requestPermissionsIfNeeded()
-        })
     }
     
     override func applicationDidBecomeActive(notification: Notification) {

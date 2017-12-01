@@ -21,7 +21,7 @@
         <!--Splash Screen View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="SplashScreenViewController" customModule="JobInterviewHW2_0" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SplashScreenViewController" customModule="iHereU" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -81,7 +81,7 @@
         <!--Left Menu View Controller-->
         <scene sceneID="hzO-qt-YOf">
             <objects>
-                <viewController storyboardIdentifier="LeftMenuViewController" id="BM2-QG-rGv" customClass="LeftMenuViewController" customModule="JobInterviewHW2_0" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LeftMenuViewController" id="BM2-QG-rGv" customClass="LeftMenuViewController" customModule="iHereU" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ras-7X-a1X"/>
                         <viewControllerLayoutGuide type="bottom" id="0yh-qg-qM0"/>
@@ -114,7 +114,7 @@
                                 <rect key="frame" x="0.0" y="123" width="375" height="544"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="LeftMenuCell" id="n90-a9-oRB" customClass="LeftMenuCell" customModule="JobInterviewHW2_0" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="LeftMenuCell" id="n90-a9-oRB" customClass="LeftMenuCell" customModule="iHereU" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="n90-a9-oRB" id="ahc-4O-ptj">
@@ -204,7 +204,7 @@
         <!--Map View Controller-->
         <scene sceneID="TnG-yD-BS5">
             <objects>
-                <viewController storyboardIdentifier="MapViewController" id="ADO-Qf-Pvb" customClass="MapViewController" customModule="JobInterviewHW2_0" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MapViewController" id="ADO-Qf-Pvb" customClass="MapViewController" customModule="iHereU" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="sgS-A8-yoc"/>
                         <viewControllerLayoutGuide type="bottom" id="74w-3c-C7v"/>
@@ -215,32 +215,63 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vAx-Ak-7zd" customClass="GMSMapView">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hhl-7C-fk0">
-                                        <rect key="frame" x="0.0" y="0.0" width="10" height="647"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="10" id="gXg-jN-NJp"/>
-                                        </constraints>
-                                    </view>
-                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hhl-7C-fk0">
+                                <rect key="frame" x="0.0" y="20" width="10" height="647"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="10" id="gXg-jN-NJp"/>
+                                </constraints>
+                            </view>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="MUy-t6-Dc6" userLabel="searchBar">
+                                <rect key="frame" x="0.0" y="20" width="375" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search_tool" translatesAutoresizingMaskIntoConstraints="NO" id="ysl-kq-bOw" userLabel="radiusMagnifierImageView">
+                                <rect key="frame" x="67" y="243.5" width="240" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="ysl-kq-bOw" secondAttribute="height" multiplier="6:5" id="9MT-fS-jQn"/>
+                                    <constraint firstAttribute="height" constant="200" id="spx-Iu-Ja7"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NUp-8i-RDO" userLabel="fetchPlacesButton">
+                                <rect key="frame" x="172" y="328.5" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="EMs-HO-rST"/>
+                                    <constraint firstAttribute="width" constant="30" id="a4m-FW-bur"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="⦿">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="hhl-7C-fk0" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="0me-yJ-2jE"/>
                             <constraint firstItem="74w-3c-C7v" firstAttribute="top" secondItem="vAx-Ak-7zd" secondAttribute="bottom" id="2PT-sG-hE6"/>
-                            <constraint firstItem="hhl-7C-fk0" firstAttribute="height" secondItem="Ll5-NS-YCC" secondAttribute="height" id="8oS-MR-8M4"/>
+                            <constraint firstItem="Ll5-NS-YCC" firstAttribute="top" secondItem="MUy-t6-Dc6" secondAttribute="top" id="71a-xl-lAD"/>
+                            <constraint firstItem="hhl-7C-fk0" firstAttribute="leading" secondItem="Ll5-NS-YCC" secondAttribute="leading" id="A34-MI-CbB"/>
+                            <constraint firstItem="ysl-kq-bOw" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="LFW-6m-tQF"/>
+                            <constraint firstItem="hhl-7C-fk0" firstAttribute="height" secondItem="Ll5-NS-YCC" secondAttribute="height" id="McP-bL-BEs"/>
                             <constraint firstItem="vAx-Ak-7zd" firstAttribute="leading" secondItem="Ll5-NS-YCC" secondAttribute="leading" id="MtC-ux-ySC"/>
-                            <constraint firstItem="Ll5-NS-YCC" firstAttribute="leading" secondItem="hhl-7C-fk0" secondAttribute="leading" id="XBC-GM-aN0"/>
+                            <constraint firstItem="MUy-t6-Dc6" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="SER-nn-RsN"/>
+                            <constraint firstItem="NUp-8i-RDO" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="Uxa-tK-U6b"/>
+                            <constraint firstItem="hhl-7C-fk0" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="dQD-zf-kgZ"/>
+                            <constraint firstItem="NUp-8i-RDO" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="ext-ko-NlK"/>
                             <constraint firstItem="vAx-Ak-7zd" firstAttribute="top" secondItem="sgS-A8-yoc" secondAttribute="bottom" id="jl4-jQ-QWN"/>
+                            <constraint firstItem="MUy-t6-Dc6" firstAttribute="width" secondItem="Ll5-NS-YCC" secondAttribute="width" id="lkB-Iy-SEF"/>
                             <constraint firstItem="Ll5-NS-YCC" firstAttribute="trailing" secondItem="vAx-Ak-7zd" secondAttribute="trailing" id="sRt-rc-Q1e"/>
+                            <constraint firstItem="ysl-kq-bOw" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="t17-rq-NfL"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ll5-NS-YCC"/>
                     </view>
                     <connections>
+                        <outlet property="fetchPlacesButton" destination="NUp-8i-RDO" id="0IV-4n-MOz"/>
                         <outlet property="mapView" destination="vAx-Ak-7zd" id="hYi-Qs-Rub"/>
+                        <outlet property="radiusMagnifierHeightConstraint" destination="spx-Iu-Ja7" id="WDW-Tu-12f"/>
+                        <outlet property="radiusMagnifierImageView" destination="ysl-kq-bOw" id="G6b-pO-D7e"/>
+                        <outlet property="searchBar" destination="MUy-t6-Dc6" id="Ab4-5b-arc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gQ7-wf-DTL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -250,7 +281,7 @@
         <!--About View Controller-->
         <scene sceneID="Uy0-fa-mxa">
             <objects>
-                <viewController storyboardIdentifier="AboutViewController" id="bEj-JX-dsg" customClass="AboutViewController" customModule="JobInterviewHW2_0" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AboutViewController" id="bEj-JX-dsg" customClass="AboutViewController" customModule="iHereU" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dU4-Pc-v4f"/>
                         <viewControllerLayoutGuide type="bottom" id="I49-b1-npP"/>

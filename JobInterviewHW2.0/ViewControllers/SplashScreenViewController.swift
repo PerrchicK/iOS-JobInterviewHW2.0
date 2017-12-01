@@ -31,7 +31,7 @@ class SplashScreenViewController: UIViewController {
         appTitleLabel.onClick({ [unowned self] _ in // Ron, following our discussion in the interview,
             // I almost never use 'unowned', but here is a good example for allowing myself to use it.
             // As I learned from our interview it keeps better performance, thanks :)
-            self.appTitleLabel.animateNo()
+            self.appTitleLabel.animateNo(duration: 0.2)
         })
 
         appLogoImageView.onClick({ [unowned self] _ in // Ron, following our discussion in the interview,
