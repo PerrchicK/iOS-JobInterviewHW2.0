@@ -37,7 +37,7 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NotificationCenter.default.post(name: Notification.Name(rawValue: Configurations.Keys.CloseDrawerNotification), object: nil)
+        NotificationCenter.default.post(name: Notification.Name.CloseDrawer, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

@@ -14,6 +14,7 @@ class Communicator {
     struct API {
         struct Request {
             static let GeocodeFormat: String = "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%@"
+            static let PlaceSearchFormat: String = "https://maps.googleapis.com/maps/api/place/details/json?placeid=%@&key=%@"
             static let NearByPlacesFormat: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&radius=%@&key=%@"
             static let AutocompletePlacesFormat: String = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=address&language=iw&key=%@"
         }
@@ -29,7 +30,6 @@ class Communicator {
     }
 
     static func request(urlString: String, completion: @escaping CompletionClosure<Response>) {
-
         // Make HTTP request and fetch...
         📗("Calling: \(urlString)")
         Alamofire.request(urlString).responseJSON { (response) in

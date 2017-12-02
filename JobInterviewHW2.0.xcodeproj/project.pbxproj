@@ -33,6 +33,7 @@
 		75BB45661FD090D300D3ADFC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45641FD090D300D3ADFC /* Main.storyboard */; };
 		75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45671FD090D300D3ADFC /* Assets.xcassets */; };
 		75BB456B1FD090D300D3ADFC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45691FD090D300D3ADFC /* LaunchScreen.storyboard */; };
+		75D9964F1FD23E9B00353206 /* Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D9964E1FD23E9B00353206 /* Place.swift */; };
 		75FECC581FD0BCDE00F0C7B9 /* NibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC551FD0BCDE00F0C7B9 /* NibView.swift */; };
 		75FECC591FD0BCDE00F0C7B9 /* ToastMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC561FD0BCDE00F0C7B9 /* ToastMessage.swift */; };
 		75FECC5A1FD0BCDE00F0C7B9 /* ToastMessage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 75FECC571FD0BCDE00F0C7B9 /* ToastMessage.xib */; };
@@ -76,6 +77,7 @@
 		75BB45651FD090D300D3ADFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		75BB45671FD090D300D3ADFC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		75BB456A1FD090D300D3ADFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		75D9964E1FD23E9B00353206 /* Place.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 		75FECC551FD0BCDE00F0C7B9 /* NibView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibView.swift; sourceTree = "<group>"; };
 		75FECC561FD0BCDE00F0C7B9 /* ToastMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastMessage.swift; sourceTree = "<group>"; };
 		75FECC571FD0BCDE00F0C7B9 /* ToastMessage.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ToastMessage.xib; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 			isa = PBXGroup;
 			children = (
 				7538B9151FD218A500C9159B /* Prediction.swift */,
+				75D9964E1FD23E9B00353206 /* Place.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -383,6 +386,7 @@
 				75A032FB1FD180B600DD52F6 /* PermissionRequestViewController.swift in Sources */,
 				7538B9131FD2104800C9159B /* PredictionsView.swift in Sources */,
 				75BB45611FD090D300D3ADFC /* AppDelegate.swift in Sources */,
+				75D9964F1FD23E9B00353206 /* Place.swift in Sources */,
 				75A45E0E1FD0B0E600616EC1 /* DrawerContainerViewController.swift in Sources */,
 				75A032F31FD1478200DD52F6 /* FirebaseHelper.swift in Sources */,
 				75A45E0F1FD0B0E600616EC1 /* SplashScreenViewController.swift in Sources */,

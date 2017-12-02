@@ -74,28 +74,51 @@ class DrawerContainerViewController: MMDrawerController {
 
 extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
     func leftMenuViewController(_ leftMenuViewController: LeftMenuViewController, selectedOption: String) {
-                switch selectedOption {
-                case LeftMenuOptions.About.AboutApp:
-                    navigationController?.pushViewController(AboutViewController.instantiate(), animated: true)
-//                case LeftMenuOptions.Concurrency.GCD:
-//                    navigationController?.pushViewController(ConcurrencyViewController.instantiate(), animated: true)
-//                case LeftMenuOptions.UI.Views_Animations:
-//                    navigationController?.pushViewController(AnimationsViewController.instantiate(), animated: true)
-//                case LeftMenuOptions.UI.CollectionView:
-//                    let gameNavigationController = GameNavigationController(rootViewController: CollectionViewController.instantiate())
-//                    gameNavigationController.isNavigationBarHidden = true
-//                    navigationController?.present(gameNavigationController, animated: true, completion: nil)
-//                case LeftMenuOptions.iOS.Data:
-//                    navigationController?.pushViewController(DataViewController.instantiate(), animated: true)
-//                case LeftMenuOptions.iOS.CommunicationLocation:
-//                    navigationController?.pushViewController(CommunicationMapLocationViewController.instantiate(), animated: true)
-//                case LeftMenuOptions.iOS.Notifications:
-//                    navigationController?.pushViewController(NotificationsViewController.instantiate(), animated: true)
-//                case LeftMenuOptions.iOS.ImagesCoreMotion:
-//                    navigationController?.present(ImagesAndMotionViewController.instantiate(), animated: true, completion: nil)
-                default:
-                    UIAlertController.alert(title: "Under contruction 🔨", message: "to be continued... 😉")
-                    📗("to be continued...")
-                }
+        switch selectedOption {
+        case LeftMenuOptions.About.AboutApp:
+            navigationController?.pushViewController(AboutViewController.instantiate(), animated: true)
+        case LeftMenuOptions.Application.WhereIsHere:
+            if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {
+                LocationHelper.findAddressByCoordinates(latitude: currentLocation.latitude, longitude: currentLocation.longitude, completion: { address in
+                    if let address = address {
+                        UIAlertController.makeAlert(title: "Here you are...", message: address)
+                            .withAction(UIAlertAction(title: "Thanks", style: UIAlertActionStyle.cancel, handler: nil))
+                            .show()
+                    } else {
+                        UIAlertController.makeAlert(title: "Error", message: "Failed to fetch address")
+                            .withAction(UIAlertAction(title: "Fine", style: UIAlertActionStyle.cancel, handler: nil))
+                            .show()
+                    }
+                })
+            }
+        case LeftMenuOptions.Application.WhereIsMapCenter:
+            if let currentMapLocation = (centerViewController as? MapViewController)?.currentMapViewCenter {
+                LocationHelper.findAddressByCoordinates(latitude: currentMapLocation.latitude, longitude: currentMapLocation.longitude, completion: { address in
+                    if let address = address {
+                        UIAlertController.makeAlert(title: "Here you are...", message: address)
+                            .withAction(UIAlertAction(title: "Thanks", style: UIAlertActionStyle.cancel, handler: nil))
+                            .show()
+                    } else {
+                        UIAlertController.makeAlert(title: "Error", message: "Failed to fetch address")
+                            .withAction(UIAlertAction(title: "Fine", style: UIAlertActionStyle.cancel, handler: nil))
+                            .show()
+                    }
+                })
+            }
+        default:
+            UIAlertController.alert(title: "Under contruction 🔨", message: "to be continued... 😉")
+            📗("to be continued...")
+        }
     }
+    
+    override func prepare(toPresentDrawer drawer: MMDrawerSide, animated: Bool) {
+        super.prepare(toPresentDrawer: drawer, animated: animated)
+
+        NotificationCenter.default.post(name: Notification.Name.DrawerWillOpen, object: nil)
+    }
+}
+
+extension Notification.Name {
+    static var DrawerWillOpen = Notification.Name(rawValue: "DrawerWillOpenNotification")
+    static var CloseDrawer = Notification.Name(rawValue: "CloseDrawer")
 }

@@ -14,9 +14,8 @@ class Configurations {
 
     struct Keys {
         static let NoNoAnimation: String                = "noAnimation" // not using inferred on purpose, to help Swift compiler
-        static let CloseDrawerNotification: String      = "CloseDrawer"
         struct Persistency {
-            static let PermissionRequestCounter: String = "CloseDrawer"
+            static let PermissionRequestCounter: String = "PermissionRequestCounter"
             static let LastCrash: String                = "last crash"
         }
     }
@@ -43,8 +42,9 @@ public struct LeftMenuOptions {
         public static let title = "iHereU"
         
         public static let Announcements = "Announcements"
-        public static let SearchOthers = "Search others"
-        public static let RenameNickname = "Rename nickname"
+        public static let WhereIsHere = "Where am I?"
+        public static let WhereIsMapCenter = "What address is the map showing?"
+        public static let RenameNickname = "Change nickname"
     }
     public struct About {
         public static let title: (title: String, symbol: String) = ("About", "")

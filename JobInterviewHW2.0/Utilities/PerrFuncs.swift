@@ -464,10 +464,10 @@ extension UIView {
     }
 
     // MARK: - Animations
-    func animateScaleAndFadeOut(_ completion: ((Bool) -> Void)? = nil) {
+    func animateScaleAndFadeOut(scaleSize: CGFloat = 1.2, _ completion: ((Bool) -> Void)? = nil) {
         UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
             // Core Graphics Affine Transformation: https://en.wikipedia.org/wiki/Affine_transformation
-            self.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+            self.transform = CGAffineTransform(scaleX: scaleSize, y: scaleSize)
             self.alpha = 0.0
         }, completion: { (completed) -> Void in
             completion?(completed)
@@ -582,8 +582,24 @@ extension UIView {
         translatesAutoresizingMaskIntoConstraints = false
         superview.addConstraints(centerConstraints)
     }
-    
-    func constraintWithItem(_ view: UIView, attribute: NSLayoutAttribute, multiplier: CGFloat, constant: CGFloat) -> NSLayoutConstraint {
+
+    /// Reference: https://developer.apple.com/library/content/documentation/UserExperience/Conceptual/AutolayoutPG/VisualFormatLanguage.html
+    // https://blog.flashgen.com/2016/10/auto-layout-visual-format-language-helpers/
+    @discardableResult
+    func addConstraintsWithFormat(_ format: String, views: UIView...) -> [NSLayoutConstraint] {
+        var viewsDictionary = [String: UIView]()
+        for (index, view) in views.enumerated() {
+            let key = "v\(index)"
+            viewsDictionary[key] = view
+            view.translatesAutoresizingMaskIntoConstraints = false
+        }
+        
+        let constraints = NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutFormatOptions(), metrics: nil, views: viewsDictionary)
+        self.addConstraints(constraints)
+        return constraints
+    }
+
+    func constraintWithItem(_ view: UIView, attribute: NSLayoutAttribute, multiplier: CGFloat = 2, constant: CGFloat = 0) -> NSLayoutConstraint {
         return NSLayoutConstraint(item: self, attribute: attribute, relatedBy: .equal, toItem: view, attribute: attribute, multiplier: multiplier, constant: constant)
     }
 
@@ -677,8 +693,12 @@ extension UIView {
     
     @objc func onPanRecognized(_ panGestureRecognizer: UIPanGestureRecognizer) {
         guard let panGestureRecognizer = panGestureRecognizer as? OnPanListener else { return }
-        
         panGestureRecognizer.closure(panGestureRecognizer)
+        if panGestureRecognizer.state == .ended {
+            panGestureRecognizer.previousLocation = nil
+        } else {
+            panGestureRecognizer.previousLocation = panGestureRecognizer.location(in: panGestureRecognizer.view?.superview)
+        }
     }
 
     @discardableResult
@@ -808,6 +828,7 @@ typealias OnPanRecognizedClosure = (_ panGestureRecognizer: UIPanGestureRecogniz
 class OnPanListener: UIPanGestureRecognizer, UIGestureRecognizerDelegate {
     private(set) var closure: OnPanRecognizedClosure
     var additionalInfo: AnyObject?
+    var previousLocation: CGPoint?
 
     init(target: Any?, action: Selector?, closure: @escaping OnPanRecognizedClosure) {
         self.closure = closure

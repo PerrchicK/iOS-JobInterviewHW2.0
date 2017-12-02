@@ -22,10 +22,13 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
 
     @IBOutlet weak var distanceFromTopConstraint: NSLayoutConstraint!
     let menuItems: [String:[String]] =
-    [LeftMenuOptions.Application.title:
-        [LeftMenuOptions.Application.Announcements, LeftMenuOptions.Application.SearchOthers, LeftMenuOptions.Application.RenameNickname],
-    LeftMenuOptions.About.title.title:
-        [LeftMenuOptions.About.AboutApp, LeftMenuOptions.About.AboutDeveloper]]
+    [LeftMenuOptions.About.title.title:
+        [LeftMenuOptions.About.AboutApp, LeftMenuOptions.About.AboutDeveloper],
+     LeftMenuOptions.Application.title:
+        [LeftMenuOptions.Application.Announcements,
+         LeftMenuOptions.Application.WhereIsHere,
+         LeftMenuOptions.Application.WhereIsMapCenter,
+         LeftMenuOptions.Application.RenameNickname]]
 
     let leftMenuCellReuseIdentifier = NibView.className(LeftMenuCell.self)
 
@@ -92,6 +95,7 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
         let selectedOption = menuItems[menuItemSectionTitle(indexPath.section)]![indexPath.row]
         📗("selected \(selectedOption)")
         delegate?.leftMenuViewController(self, selectedOption: selectedOption)
+        NotificationCenter.default.post(name: Notification.Name.CloseDrawer, object: nil)
         tableView.deselectRow(at: indexPath, animated: true)
     }
 

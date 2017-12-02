@@ -9,8 +9,9 @@
 import Foundation
 import UIKit
 import GoogleMaps
+import GoogleMapsBase
 
-class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate {
+class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate, PredictionsViewDelegate {
     //, PlaceInfoViewControllerDelegate {
     
     override var shouldForceLocationPermissions: Bool {
@@ -18,49 +19,78 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
     private var panGestureRecognizer: UIGestureRecognizer?
     private var currentZoom: Float?
-    var middleHeight: CGFloat = 0
+    lazy var throttler = Throttler()
 
+    lazy var customInputAccessoryView: UIView = {
+        let customInputAccessoryButton = UIButton()
+        customInputAccessoryButton.setTitle("dismiss", for: UIControlState.normal)
+        customInputAccessoryButton.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        customInputAccessoryButton.backgroundColor = UIColor.gray
+        customInputAccessoryButton.onClick({ [weak self] _ in
+            self?.searchBar.resignFirstResponder()
+        })
+        return customInputAccessoryButton
+    }()
+
+    private(set) var currentMapViewCenter: CLLocationCoordinate2D?
     private var predictions: [Prediction]?
+    @IBOutlet weak var predictionsViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var mapView: GMSMapView!
+    @IBOutlet weak var predictionsView: PredictionsView!
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var toggleConsistCurrentLocationButton: UIButton!
     @IBOutlet weak var fetchPlacesButton: UIButton!
     @IBOutlet weak var radiusMagnifierHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var radiusMagnifierImageView: UIImageView!
-    lazy var throttler = Throttler()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        mapView.delegate = self;
-        
+        mapView.delegate = self
+        predictionsView.delegate = self
+        searchBar.delegate = self
+
         panGestureRecognizer = radiusMagnifierImageView.onPan { [unowned self] (panGestureRecognizer) in
             let location = panGestureRecognizer.location(in: self.view)
-            let draggingLocationYAxis = self.view.frame.height - location.y
+//            let draggingLocationYAxis = self.view.frame.height - location.y
             /// Percentage from screeen height
-            let maxHeight: CGFloat = self.view.frame.height
-            let magnifierValue: CGFloat = PerrFuncs.percentOfValue(ofValue: draggingLocationYAxis, fromValue: maxHeight)
-            self.radiusMagnifierHeightConstraint.constant = PerrFuncs.valueOfPercent(percentage: magnifierValue, fromValue: maxHeight)
+            if let previousLocation = (panGestureRecognizer as? OnPanListener)?.previousLocation {
+                📗(previousLocation)
+                let delta = location.y - previousLocation.y
+                var newHeight = self.radiusMagnifierHeightConstraint.constant + delta
+//                newHeight = min(newHeight, self.minMagnifierHeight)
+//                newHeight = max(newHeight, self.maxMagnifierHeight)
+                self.radiusMagnifierHeightConstraint.constant = newHeight
+            }
         }
         panGestureRecognizer?.delegate = self
 
-        searchBar.delegate = self
         configureUi()
     }
     
     func configureUi() {
-        self.searchBar.placeholder = "Search address...".localized()
+        predictionsView.isPresented = false
+        searchBar.placeholder = "Search address...".localized()
         searchBar.searchBarStyle = .minimal
         searchBar.barStyle = .blackTranslucent
+        searchBar.inputAccessoryView = customInputAccessoryView
         let found: [UIView] = searchBar.findSubviewsInTree(predicateClosure: { $0 is UITextField } )
-        (found.first as? UITextField)?.textColor = .white
-//
-//        self.lblPulse.hidden = YES;
-//
+        let innerTextFiled: UITextField? = found.first as? UITextField
+        innerTextFiled?.textColor = .white
+        predictionsView.getRoundedCornered()
+
 //        [self.btnCurrentCoordinate setTitle:@"" forState:UIControlStateNormal];
 //        self.lblAddress.text = @"";
 //        self.searchToolHeightConstraint.constant *= 2;
-        middleHeight = radiusMagnifierHeightConstraint.constant
     }
+    
+    lazy var maxMagnifierHeight: CGFloat = {
+        return self.view.frame.height
+    }()
+
+    lazy var minMagnifierHeight: CGFloat = {
+        return self.fetchPlacesButton.frame.height * 2
+    }()
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -77,25 +107,77 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
         LocationHelper.shared.startUpdate()
 
+        NotificationCenter.default.addObserver(self, selector: #selector(drawerWillOpenNotification), name: Notification.Name.DrawerWillOpen, object: nil)
         testGeocode()
     }
+
     
-    func testGeocode() {
-        let afkeaLatitude: Double = 32.115216
-        let afkeaLongitude: Double = 34.8174598
-        
-        LocationHelper.shared.findAddressByCoordinates(latitude: afkeaLatitude, longitude: afkeaLongitude) { address in
-            //result = "Found address: \(firstPlaceName)"
-            ToastMessage.show(messageText: address.or("Parsing failed"))
+    override func onLocationUpdated(updatedLocation: CLLocation) {
+        //📗("verticalAccuracy: \(updatedLocation.verticalAccuracy), horizontalAccuracy: \(updatedLocation.horizontalAccuracy)")
+        if shouldFollowLocation {
+            moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 15)
         }
+        
+        if updatedLocation.speed > 2 { // if updatedLocation.speed > 5 {
+            ToastMessage.show(messageText: "is running?")
+        }
+    }
+    
+    func moveCameraToLocation(coordinate: CLLocationCoordinate2D, andZoom zoomValue: Float? = nil) {
+        if let zoomValue = zoomValue {
+            mapView.animate(toZoom: zoomValue)
+        }
+
+        mapView.animate(toLocation: coordinate)
+    }
+    
+    @objc func drawerWillOpenNotification(notification: Notification) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func presentAdressesPredictions(predictions: [Prediction]) {
+        self.predictions = predictions
+        let maxHeight = view.frame.height - searchBar.frame.origin.y + searchBar.frame.height
+        predictionsViewHeightConstraint.constant = maxHeight//min(maxHeight, CGFloat(predictions.count) * PredictionsView.PredictionCellHeight)
+        if predictions.count == 0 {
+            dismissPredictionsList()
+        } else {
+            predictionsView.isPresented = true
+        }
+        predictionsView.refresh()
+    }
+    
+    func dismissPredictionsList() {
+        predictionsView.isPresented = false
+    }
+    
+    @IBAction func onToggleFollowLocationClicked(_ sender: UIButton) {
+        sender.alpha = sender.alpha == 1 ? 0.5 : 1
+    }
+
+    @IBAction func onSearchInRadiusClicked(_ sender: UIButton) {
+        guard sender == fetchPlacesButton else { return }
+        sender.animateScaleAndFadeOut(scaleSize: 20) { [weak self] _ in
+            self?.fetchPlacesButton.alpha = 1
+            self?.fetchPlacesButton.transform = CGAffineTransform(scaleX: 1, y: 1)
+        }
+    }
+
+    func testGeocode() {
+//        let afkeaLatitude: Double = 32.115216
+//        let afkeaLongitude: Double = 34.8174598
+//
+//        LocationHelper.findAddressByCoordinates(latitude: afkeaLatitude, longitude: afkeaLongitude) { address in
+//            //result = "Found address: \(firstPlaceName)"
+//            ToastMessage.show(messageText: address.or("Parsing failed"))
+//        }
     }
 
     //MARK: - GMSMapViewDelegate
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         currentZoom = position.zoom
-        LocationHelper.shared.stopUpdate()
-//    [self.locationManager stopUpdatingLocation];
-//    [self.searchBar resignFirstResponder];
+        searchBar.resignFirstResponder()
+        currentMapViewCenter = position.target
 //    [self _setLocationText:position.target];
     
     // Prevent searching address every time the text changes, wait for the user to pause his movement on the map
@@ -122,50 +204,57 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 //    [self _presentPlaceInfoOfPlaceId:marker.userData];
         return true
     }
-  
-//    -(void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-//    [searchBar resignFirstResponder];
-//    }
-
-    override func onLocationUpdated(updatedLocation: CLLocation) {
-        📗("verticalAccuracy: \(updatedLocation.verticalAccuracy), horizontalAccuracy: \(updatedLocation.horizontalAccuracy)")
-        moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 15)
-        if updatedLocation.speed > 2 { // if updatedLocation.speed > 5 {
-            ToastMessage.show(messageText: "is running?")
-        }
-    }
-
-    func moveCameraToLocation(coordinate: CLLocationCoordinate2D, andZoom zoomValue: Float? = nil) {
-        if let zoomValue = zoomValue {
-            mapView.animate(toZoom: zoomValue)
-        }// else if let currentZoom = currentZoom {
-//            mapView.animate(toZoom: zoomValue)
-//        }
-        
-        mapView.animate(toLocation: coordinate)
-    }
-
-    func presentAdressesPredictions(predictions: [Prediction]) {
-        self.predictions = predictions
-    }
 
     //MARK: - UIGestureRecognizerDelegate
-    //TODO: Sharpen this
+    //TODO: Sharpen user interaction
 //    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
 //        return radiusMagnifierImageView.pixelColor(atPoint: gestureRecognizer.location(in: radiusMagnifierImageView)) != .clear
 //    }
 
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+
+    var shouldFollowLocation: Bool {
+        return toggleConsistCurrentLocationButton.alpha == 1
+    }
     //MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.count == 0 { return }
+        if searchText.count == 0 { dismissPredictionsList(); return }
         throttler.throttle(timeout: 0.3) {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
             LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchText) { [weak self] (resultTupple) in
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == searchBar.text else { return }
+                guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == searchBar.text else { self?.dismissPredictionsList(); return }
 
                 strongSelf.presentAdressesPredictions(predictions: resultTupple.predictions)
             }
         }
+    }
+
+    //MARK: - PredictionsViewDelegate
+    func didScroll(_ predictionsView: PredictionsView) {
+        searchBar.resignFirstResponder()
+    }
+
+    func didSelectPrediction(_ predictionsView: PredictionsView, dataIndex: Int) {
+        dismissPredictionsList()
+        if let prediction = predictions?[safe: dataIndex] {
+            LocationHelper.fetchPlace(byPrediction: prediction, resultCallback: { [weak self] (resultTuple) in
+                guard let strongSelf = self, let resultTuple = resultTuple, let place = resultTuple.place else { return }
+                📗("resultTuple: \(resultTuple)")
+                strongSelf.moveCameraToLocation(coordinate: CLLocationCoordinate2D(latitude: place.latitude, longitude: place.longitude))
+            })
+        }
+    }
+    
+    func dataTitle(_ predictionsView: PredictionsView, dataIndex: Int) -> String {
+        let title: String = (predictions?[safe: dataIndex])?.predictionDescription ?? ""
+
+        return title
+    }
+    
+    func dataCount(_ predictionsView: PredictionsView) -> Int {
+        return predictions?.count ?? 0
     }
 }

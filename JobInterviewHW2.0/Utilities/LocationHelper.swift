@@ -18,7 +18,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
     static let shared: LocationHelper = LocationHelper()
 
     weak var delegate: LocationHelperDelegate?
-    var currentLocation: CLLocation?
+    private(set) var currentLocation: CLLocation?
     lazy var locationManager: CLLocationManager = {
         let locationManager: CLLocationManager = CLLocationManager();
         locationManager.delegate = self
@@ -52,7 +52,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         return CLLocationManager.authorizationStatus() == .authorizedWhenInUse
     }
 
-    func findAddressByCoordinates(latitude lat: Double, longitude lng: Double, completion: @escaping CompletionClosure<String>) {
+    static func findAddressByCoordinates(latitude lat: Double, longitude lng: Double, completion: @escaping CompletionClosure<String>) {
         let urlString = String(format: Communicator.API.Request.GeocodeFormat,
                                lat,
                                lng,
@@ -75,6 +75,41 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
 
             completion(result)
         })
+    }
+
+    static func fetchPlace(byPrediction placePrediction: Prediction, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)>) {
+        let urlString = String(format: Communicator.API.Request.PlaceSearchFormat,
+                               placePrediction.placeId,
+                               Configurations.shared.GoogleMapsWebApiKey)
+        
+        Communicator.request(urlString: urlString) { (response) in
+            guard let response = response else { resultCallback((placeId: placePrediction.placeId, place: nil)); return }
+            var resultPlace: Place?
+            switch response {
+            case .succeeded(let json):
+                if let jsonDictionary = (json as? RawJsonFormat),
+                    let jsonResult = jsonDictionary["result"] as? RawJsonFormat,
+                    let iconUrl = jsonResult["icon"] as? String,
+                let retreivedPlaceId = jsonResult["place_id"] as? String,
+                    let jsonGeometry = jsonResult["geometry"] as? RawJsonFormat,
+                    let jsonLocation = jsonGeometry["location"] as? RawJsonFormat
+                {
+                    if let latitude = jsonLocation["lat"] as? Double,
+                        let longitude = jsonLocation["lng"] as? Double {
+
+//                    for predictionJsonDictionary in jsonArray {
+//                        guard let description = predictionJsonDictionary[Prediction.InterpretationKeys.Description] as? String,
+//                            let placeId = predictionJsonDictionary[Prediction.InterpretationKeys.PlaceId] as? String
+//                            else { continue }
+                    resultPlace = Place(longitude: longitude, latitude: latitude, iconUrl: iconUrl, placeName: placePrediction.predictionDescription, placeId: retreivedPlaceId)
+                    }
+//                    }
+                }
+            case .failed(let message):
+                📕("request failed, message: \(message)")
+            }
+            resultCallback((placeId: placePrediction.placeId, place: resultPlace))
+        }
     }
 
     static func fetchAutocompleteSuggestions(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<(keyword: String, predictions: [Prediction])>) {
@@ -151,7 +186,6 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         guard let responseDictionary = responseObject as? [AnyHashable:Any],
             let status = responseDictionary["status"] as? String, status == "OK" else { return result }
         
-        //📗("Parsing JSON dictionary:\n\(responseDictionary)")
         if let results = responseDictionary["results"] as? [AnyObject],
             let firstPlace = results[0] as? [String:AnyObject],
             let firstPlaceName = firstPlace["formatted_address"] as? String {
