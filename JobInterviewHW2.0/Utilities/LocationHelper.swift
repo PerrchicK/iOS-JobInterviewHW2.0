@@ -132,8 +132,12 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
     }
 
     static func fetchAutocompleteSuggestions(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<(keyword: String, predictions: [Prediction])>) {
+        guard let urlQueryKeyword = keyword.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) else {
+            predictionsResultCallback(nil)
+            return
+        }
         let urlString = String(format: Communicator.API.RequestUrls.AutocompletePlacesFormat,
-                               keyword,
+                               urlQueryKeyword,
                                Configurations.shared.GoogleMapsWebApiKey)
 
         Communicator.request(urlString: urlString) { (response) in
@@ -173,6 +177,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
             case .failed(let message):
                 📕("request failed, message: \(message)")
             }
+
             predictionsResultCallback((keyword: keyword, predictions: predictionsResult))
         }
     }

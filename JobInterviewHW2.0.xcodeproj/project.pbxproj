@@ -29,6 +29,7 @@
 		75A45E171FD0B39E00616EC1 /* PerrFuncs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */; };
 		75A45E181FD0B39E00616EC1 /* Synchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E131FD0B39E00616EC1 /* Synchronizer.swift */; };
 		75A45E1D1FD0B3C100616EC1 /* UtilsObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */; };
+		75A593491FD2F9F500159830 /* PlaceInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A593481FD2F9F500159830 /* PlaceInfoViewController.swift */; };
 		75BB45611FD090D300D3ADFC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BB45601FD090D300D3ADFC /* AppDelegate.swift */; };
 		75BB45661FD090D300D3ADFC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45641FD090D300D3ADFC /* Main.storyboard */; };
 		75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45671FD090D300D3ADFC /* Assets.xcassets */; };
@@ -72,6 +73,7 @@
 		75A45E131FD0B39E00616EC1 /* Synchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronizer.swift; sourceTree = "<group>"; };
 		75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UtilsObjC.m; sourceTree = "<group>"; };
 		75A45E1C1FD0B3C100616EC1 /* UtilsObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UtilsObjC.h; sourceTree = "<group>"; };
+		75A593481FD2F9F500159830 /* PlaceInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceInfoViewController.swift; sourceTree = "<group>"; };
 		75BB455D1FD090D300D3ADFC /* iHereU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iHereU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75BB45601FD090D300D3ADFC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75BB45651FD090D300D3ADFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				75A45E0D1FD0B0E600616EC1 /* SplashScreenViewController.swift */,
 				75A032ED1FD13E5500DD52F6 /* IHUViewController.swift */,
 				75A032FA1FD180B600DD52F6 /* PermissionRequestViewController.swift */,
+				75A593481FD2F9F500159830 /* PlaceInfoViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -389,6 +392,7 @@
 				75D9964F1FD23E9B00353206 /* Place.swift in Sources */,
 				75A45E0E1FD0B0E600616EC1 /* DrawerContainerViewController.swift in Sources */,
 				75A032F31FD1478200DD52F6 /* FirebaseHelper.swift in Sources */,
+				75A593491FD2F9F500159830 /* PlaceInfoViewController.swift in Sources */,
 				75A45E0F1FD0B0E600616EC1 /* SplashScreenViewController.swift in Sources */,
 				75A45E161FD0B39E00616EC1 /* ClosureTimer.swift in Sources */,
 				7538B9161FD218A500C9159B /* Prediction.swift in Sources */,

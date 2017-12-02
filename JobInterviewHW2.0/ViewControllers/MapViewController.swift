@@ -71,7 +71,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                     self.radiusMagnifierImageView.animateBounce()
                     return
                 }
-                self.radiusMagnifierHeightConstraint.constant = newHeight
+                self.radiusMagnifierHeightConstraint.constant = newHeight - 2 // 2 pixels
             }
         }
         panGestureRecognizer?.delegate = self
@@ -99,6 +99,11 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     lazy var maxMagnifierHeight: CGFloat = {
         return self.view.frame.height
     }()
+    
+    var maxPredictionsListViewHeight: CGFloat {
+        let predictionsCount: CGFloat = CGFloat((self.predictions?.count) ?? 0)
+        return min(self.view.frame.height / 2, predictionsCount * PredictionsView.PredictionCellHeight)
+    }
 
     lazy var minMagnifierHeight: CGFloat = {
         return self.fetchPlacesButton.frame.height * 2
@@ -160,11 +165,11 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     
     func presentAdressesPredictions(predictions: [Prediction]) {
         self.predictions = predictions
-        let maxHeight = view.frame.height - searchBar.frame.origin.y + searchBar.frame.height
-        predictionsViewHeightConstraint.constant = maxHeight//min(maxHeight, CGFloat(predictions.count) * PredictionsView.PredictionCellHeight)
+
         if predictions.count == 0 {
             dismissPredictionsList()
         } else {
+            predictionsViewHeightConstraint.constant = maxPredictionsListViewHeight
             predictionsView.isPresented = true
         }
         predictionsView.refresh()
@@ -175,7 +180,15 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
     
     @IBAction func onToggleFollowLocationClicked(_ sender: UIButton) {
-        sender.alpha = sender.alpha == 1 ? 0.5 : 1
+        toggleFollowLocation()
+    }
+    
+    func toggleFollowLocation(shouldTurnOn: Bool? = nil) {
+        if let shouldTurnOn = shouldTurnOn {
+            toggleConsistCurrentLocationButton.alpha = shouldTurnOn ? 1 : 0.5
+        } else {
+            toggleConsistCurrentLocationButton.alpha = toggleConsistCurrentLocationButton.alpha == 1 ? 0.5 : 1
+        }
     }
 
     @IBAction func onSearchInRadiusClicked(_ sender: UIButton) {
@@ -223,9 +236,19 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     func putPlaceOnMap(place: Place) {
         let marker: GMSMarker = GMSMarker(position: place.position)//[ markerWithPosition:place.placePosition];
         marker.title = place.placeName
-        marker.snippet = place.position.toString()
+        marker.snippet = place.position.toString(precision: 3)
         marker.map = mapView
-        marker.userData = place.placeId
+        marker.userData = place
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
+        if let place = marker.userData as? Place {
+            presentPlaceInfo(place: place)
+        }
+    }
+    
+    func presentPlaceInfo(place: Place) {
+        📗(place)
     }
 
     //MARK: - GMSMapViewDelegate
@@ -254,7 +277,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
         selectedMarker = GMSMarker(position: location)
         selectedMarker?.title = name
-        selectedMarker?.snippet = location.toString()
+        selectedMarker?.snippet = location.toString(precision: 3)
         selectedMarker?.map = mapView
         mapView.selectedMarker = selectedMarker
     }
@@ -270,6 +293,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        fetchPredictions(searchText: searchBar.text)
         searchBar.resignFirstResponder()
     }
 
@@ -280,12 +304,21 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     //MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.count == 0 { dismissPredictionsList(); return }
+        fetchPredictions(searchText: searchText)
+    }
+    
+    func fetchPredictions(searchText: String? = nil) {
+        guard let searchText = searchText, searchText.count > 0 else {
+            dismissPredictionsList()
+            return
+        }
+
         throttler.throttle(timeout: 0.3) {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
             LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchText) { [weak self] (resultTupple) in
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == searchBar.text else { self?.dismissPredictionsList(); return }
-
+                guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == self?.searchBar.text else { self?.dismissPredictionsList(); return }
+                
                 strongSelf.presentAdressesPredictions(predictions: resultTupple.predictions)
             }
         }
@@ -298,6 +331,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
     func didSelectPrediction(_ predictionsView: PredictionsView, dataIndex: Int) {
         dismissPredictionsList()
+
+        toggleFollowLocation(shouldTurnOn: false)
+
         if let prediction = predictions?[safe: dataIndex] {
             LocationHelper.fetchPlace(byPrediction: prediction, resultCallback: { [weak self] (resultTuple) in
                 guard let strongSelf = self, let resultTuple = resultTuple, let place = resultTuple.place else { return }
@@ -325,7 +361,11 @@ extension Place {
 }
 
 extension CLLocationCoordinate2D {
-    func toString() -> String {
-        return String(format: "%.2f,%.2f", latitude, longitude)
+    func toString(precision: Int? = nil) -> String {
+        if let precision = precision {
+            return String(format: "%.\(precision)f,%.\(precision)f", latitude, longitude)
+        }
+
+        return String(format: "\(latitude),\(longitude)")
     }
 }

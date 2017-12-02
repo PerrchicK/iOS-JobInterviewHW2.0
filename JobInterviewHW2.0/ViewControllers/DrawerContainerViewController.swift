@@ -8,6 +8,7 @@
 
 import UIKit
 import MMDrawerController
+import FLEX
 
 class DrawerContainerViewController: MMDrawerController {
 
@@ -43,8 +44,18 @@ class DrawerContainerViewController: MMDrawerController {
         leftMenuViewController.delegate = self
         openDrawerGestureModeMask = .all
         closeDrawerGestureModeMask = .all
-        shouldStretchDrawer = false
-        title = "i Here U"
+        shouldStretchDrawer = true
+        let customTitleButton = UIButton()
+        let customTitleView = UIView()
+        customTitleView.backgroundColor = UIColor.red
+        //customTitleView.addSubview(customTitleButton)
+        //b.stretchToSuperViewEdges()
+        navigationItem.titleView = customTitleButton
+        customTitleButton.setTitle("i Here U", for: UIControlState.normal)
+        customTitleButton.setTitleColor(UIColor.black, for: UIControlState.normal)
+        customTitleButton.onClick { _ in
+            📗("TODO: Open sub menu")
+        }
     }
 
     override func viewDidLoad() {
@@ -67,11 +78,12 @@ class DrawerContainerViewController: MMDrawerController {
     
     override func motionBegan(_ motion: UIEventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
-            if isMenuOpen {
-                close()
-            } else {
-                open()
-            }
+            FLEXManager.shared().showExplorer()
+//            if isMenuOpen {
+//                close()
+//            } else {
+//                open()
+//            }
         }
     }
 }
@@ -88,6 +100,9 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
                 LocationHelper.findAddressByCoordinates(latitude: currentLocation.latitude, longitude: currentLocation.longitude, completion: { address in
                     if let address = address {
                         UIAlertController.makeAlert(title: "Here you are...", message: address)
+                            .withInputText(configurationBlock: { (textField) in
+                                textField.text = currentLocation.toString()
+                            })
                             .withAction(UIAlertAction(title: "Thanks", style: UIAlertActionStyle.cancel, handler: nil))
                             .show()
                     } else {
@@ -101,7 +116,10 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
             if let currentMapLocation = (centerViewController as? MapViewController)?.currentMapViewCenter {
                 LocationHelper.findAddressByCoordinates(latitude: currentMapLocation.latitude, longitude: currentMapLocation.longitude, completion: { address in
                     if let address = address {
-                        UIAlertController.makeAlert(title: "Here you are...", message: address)
+                        UIAlertController.makeAlert(title: "There you go...", message: address)
+                            .withInputText(configurationBlock: { (textField) in
+                                textField.text = currentMapLocation.toString()
+                            })
                             .withAction(UIAlertAction(title: "Thanks", style: UIAlertActionStyle.cancel, handler: nil))
                             .show()
                     } else {

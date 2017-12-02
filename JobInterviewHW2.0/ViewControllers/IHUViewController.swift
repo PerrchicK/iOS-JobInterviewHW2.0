@@ -15,13 +15,6 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
     var shouldForceLocationPermissions: Bool {
         return true
     }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Showing a local live debugging tool
-        //FLEXManager.shared().showExplorer()
-    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -52,7 +45,7 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
     
     func presentPermissionsScreenIfNeeded() {
         if shouldForceLocationPermissions && !LocationHelper.shared.isPermissionGranted {
-            present(PermissionRequestViewController(), animated: true, completion: nil)
+            present(UINavigationController(rootViewController: PermissionRequestViewController()), animated: true, completion: nil)
 //            let locationPermissionsView = PermissionsView()
 //            view.addSubview(locationPermissionsView)
 //            locationPermissionsView.stretchToSuperViewEdges()
