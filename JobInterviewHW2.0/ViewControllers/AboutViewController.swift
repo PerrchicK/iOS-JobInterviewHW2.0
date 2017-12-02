@@ -16,7 +16,7 @@ class AboutViewController: IHUViewController, UITextViewDelegate {
     
     func textView(_ textView: UITextView, shouldInteractWith URL: Foundation.URL, in characterRange: NSRange) -> Bool {
         📗("interacting with URL: \(URL)")
-        return URL.absoluteString == Configurations.shared.projectLocationInsideGitHub
+        return URL.absoluteString == Configurations.Constants.GitHubLink
     }
     
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {

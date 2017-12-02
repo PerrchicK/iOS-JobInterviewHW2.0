@@ -89,15 +89,15 @@ class DrawerContainerViewController: MMDrawerController {
 }
 
 extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
-    func leftMenuViewController(_ leftMenuViewController: LeftMenuViewController, selectedOption: String) {
+    func leftMenuViewController(_ leftMenuViewController: LeftMenuViewController, selectedOption: LeftMenuOptions.MenuOption) {
         close()
 
-        switch selectedOption {
-        case LeftMenuOptions.About.AboutApp:
+        switch selectedOption.symbol {
+        case LeftMenuOptions.About.AboutApp.symbol: // LeftMenuOptions.About.AboutApp():
             navigationController?.pushViewController(AboutViewController.instantiate(), animated: true)
-        case LeftMenuOptions.Application.WhereIsHere:
+        case LeftMenuOptions.Application.WhereIsHere.symbol:
             if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {
-                LocationHelper.findAddressByCoordinates(latitude: currentLocation.latitude, longitude: currentLocation.longitude, completion: { address in
+                LocationHelper.fetchAddressByCoordinates(latitude: currentLocation.latitude, longitude: currentLocation.longitude, completion: { address in
                     if let address = address {
                         UIAlertController.makeAlert(title: "Here you are...", message: address)
                             .withInputText(configurationBlock: { (textField) in
@@ -112,9 +112,9 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
                     }
                 })
             }
-        case LeftMenuOptions.Application.WhereIsMapCenter:
+        case LeftMenuOptions.Application.WhereIsMapCenter.symbol:
             if let currentMapLocation = (centerViewController as? MapViewController)?.currentMapViewCenter {
-                LocationHelper.findAddressByCoordinates(latitude: currentMapLocation.latitude, longitude: currentMapLocation.longitude, completion: { address in
+                LocationHelper.fetchAddressByCoordinates(latitude: currentMapLocation.latitude, longitude: currentMapLocation.longitude, completion: { address in
                     if let address = address {
                         UIAlertController.makeAlert(title: "There you go...", message: address)
                             .withInputText(configurationBlock: { (textField) in

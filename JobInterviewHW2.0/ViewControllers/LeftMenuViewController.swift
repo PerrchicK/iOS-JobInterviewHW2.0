@@ -9,7 +9,7 @@
 import UIKit
 
 protocol LeftMenuViewControllerDelegate: class {
-    func leftMenuViewController(_ leftMenuViewController: LeftMenuViewController, selectedOption: String)
+    func leftMenuViewController(_ leftMenuViewController: LeftMenuViewController, selectedOption: LeftMenuOptions.MenuOption)
 }
 
 class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -21,8 +21,8 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
     }()
 
     @IBOutlet weak var distanceFromTopConstraint: NSLayoutConstraint!
-    let menuItems: [String:[String]] =
-    [LeftMenuOptions.About.title.title:
+    let menuItems: [String:[Any]] =
+    [LeftMenuOptions.About.title:
         [LeftMenuOptions.About.AboutApp, LeftMenuOptions.About.AboutDeveloper],
      LeftMenuOptions.Application.title:
         [LeftMenuOptions.Application.Announcements,
@@ -71,8 +71,8 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
         // http://stackoverflow.com/questions/25826383/when-to-use-dequeuereusablecellwithidentifier-vs-dequeuereusablecellwithidentifi
         let cell = tableView.dequeueReusableCell(withIdentifier: leftMenuCellReuseIdentifier, for: indexPath) as! LeftMenuCell
 
-        if let tuple = menuItemTitle(indexPath) {
-            cell.configureCell(tuple.itemTitle, cellIcon: tuple.itemIcon)
+        if let tuple: LeftMenuOptions.MenuOption = menuItemTitle(indexPath) {
+            cell.configureCell(tuple.text, cellIcon: tuple.symbol)
         } else {
             📕("damaged tuple returned")
         }
@@ -92,7 +92,8 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
     // MARK: - UITableViewDelegate
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedOption = menuItems[menuItemSectionTitle(indexPath.section)]![indexPath.row]
+        guard let selectedOption = menuItems[menuItemSectionTitle(indexPath.section)]![indexPath.row] as? LeftMenuOptions.MenuOption
+            else { return }
         📗("selected \(selectedOption)")
         delegate?.leftMenuViewController(self, selectedOption: selectedOption)
         NotificationCenter.default.post(name: Notification.Name.CloseDrawer, object: nil)
@@ -111,7 +112,7 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
     /**
      Returns a tuple of 2 strings as (title, icon) for a gicen index path
      */
-    func menuItemTitle(_ indexPath: IndexPath) -> (itemTitle: String, itemIcon: String)? {
+    func menuItemTitle(_ indexPath: IndexPath) -> LeftMenuOptions.MenuOption? {
         let sectionIndex = menuItems.index(menuItems.startIndex, offsetBy: indexPath.section)
         let sectionTitle = menuItems.keys[sectionIndex]
 
@@ -119,10 +120,12 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
             return nil
         }
 
-        let itemTitle = itemsArray[indexPath.row]
-
-        // Return tuple
-        return (itemTitle, "🙃")
+        if let itemTitle = itemsArray[safe: indexPath.row] as? LeftMenuOptions.MenuOption {
+            // Return tuple
+            return itemTitle
+        }
+        
+        return nil
     }
 }
 

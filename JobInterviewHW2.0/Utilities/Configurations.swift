@@ -10,7 +10,12 @@ import Foundation
 
 class Configurations {
     static let shared = Configurations()
-    let projectLocationInsideGitHub = "https://github.com/PerrchicK"
+
+    struct Constants {
+        // From: http://gis.stackexchange.com/questions/7430/what-ratio-scales-do-google-maps-zoom-levels-correspond-to
+        static let ClosestZoomRatioScale: Double = 591657550.50
+        static let GitHubLink: String = "https://github.com/PerrchicK/iOS-JobInterviewHW2.0"
+    }
 
     struct Keys {
         static let NoNoAnimation: String                = "noAnimation" // not using inferred on purpose, to help Swift compiler
@@ -35,21 +40,25 @@ class Configurations {
     }
 }
 
-//typealias MenuOption = (String,String)
-
 public struct LeftMenuOptions {
+    public typealias MenuOption = (text: String, symbol: String)
+
+    public enum LeftMenuOption {
+        case option(text: String, symbol: String)
+    }
+
     public struct Application {
-        public static let title = "iHereU"
+        public static let title: String = ("iHereU")
         
-        public static let Announcements = "Announcements"
-        public static let WhereIsHere = "Where am I?"
-        public static let WhereIsMapCenter = "What address is the map showing?"
-        public static let RenameNickname = "Change nickname"
+        static let Announcements: MenuOption = (text: "Announcements", symbol: "📣")
+        public static let WhereIsHere: MenuOption = (text: "Where am I?", symbol: "🤔")
+        public static let WhereIsMapCenter: MenuOption = (text: "Map's current address", symbol: "✛")
+        public static let RenameNickname: MenuOption = (text: "Change nickname", symbol: "👽")
     }
     public struct About {
-        public static let title: (title: String, symbol: String) = ("About", "")
+        public static let title: String = "About"
         
-        public static let AboutApp = "About the app"
-        public static let AboutDeveloper = "About the developer"
+        public static let AboutApp: MenuOption = (text: "About the app", symbol: "📱")
+        public static let AboutDeveloper: MenuOption = (text: "About the developer", symbol: "💻")
     }
 }

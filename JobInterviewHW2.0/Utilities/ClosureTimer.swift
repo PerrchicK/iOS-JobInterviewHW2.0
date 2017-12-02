@@ -3,7 +3,7 @@
 //  Scenes
 //
 //  Created by Perry on 30/08/2016.
-//  Copyright © 2016 Nikolai Volodin. All rights reserved.
+//  Copyright © 2017 perrchick. All rights reserved.
 //
 
 import Foundation

@@ -53,12 +53,13 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         return CLLocationManager.authorizationStatus() == .authorizedWhenInUse
     }
 
-    static func findAddressByCoordinates(latitude lat: Double, longitude lng: Double, completion: @escaping CompletionClosure<String>) {
+    static func fetchAddressByCoordinates(latitude lat: Double, longitude lng: Double, completion: @escaping CompletionClosure<String>) {
         let urlString = String(format: Communicator.API.RequestUrls.GeocodeFormat,
                                lat,
                                lng,
                                Configurations.shared.GoogleMapsWebApiKey)
 
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         Communicator.request(urlString: urlString, completion: { response in
             var result: String?
             guard let response = response else {
@@ -74,6 +75,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
                 📕("request failed, message: \(message)")
             }
 
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             completion(result)
         })
     }
@@ -90,6 +92,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
 //        lng = 151.1957362
         // (-33.8670522,151.1957362)
         // (lat,lng)
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         Communicator.request(urlString: urlString) { (response) in
             guard let response = response else { resultCallback((location: location, places: [])); return }
             var placesResult: [Place] = [Place]()
@@ -106,6 +109,8 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
             case .failed(let message):
                 📕("request failed, message: \(message)")
             }
+
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             resultCallback((location: location, places: placesResult))
         }
     }
@@ -115,6 +120,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
                                placePrediction.placeId,
                                Configurations.shared.GoogleMapsWebApiKey)
         
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         Communicator.request(urlString: urlString) { (response) in
             guard let response = response else { resultCallback((placeId: placePrediction.placeId, place: nil)); return }
             var resultPlace: Place?
@@ -127,6 +133,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
             case .failed(let message):
                 📕("request failed, message: \(message)")
             }
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             resultCallback((placeId: placePrediction.placeId, place: resultPlace))
         }
     }

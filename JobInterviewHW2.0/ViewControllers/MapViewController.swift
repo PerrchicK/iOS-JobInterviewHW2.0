@@ -18,7 +18,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         return true
     }
     private var panGestureRecognizer: UIGestureRecognizer?
-    private var currentZoom: Float?
+    private var currentZoom: Float {
+        return mapView.camera.zoom
+    }
     lazy var throttler = Throttler()
     private var selectedMarker: GMSMarker?
     lazy var customInputAccessoryView: UIView = {
@@ -71,6 +73,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                     self.radiusMagnifierImageView.animateBounce()
                     return
                 }
+
                 self.radiusMagnifierHeightConstraint.constant = newHeight - 2 // 2 pixels
             }
         }
@@ -193,40 +196,27 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
     @IBAction func onSearchInRadiusClicked(_ sender: UIButton) {
         guard sender == fetchPlacesButton, let currentMapViewCenter = currentMapViewCenter else { return }
-        sender.animateScaleAndFadeOut(scaleSize: 20) { [weak self] _ in
+        sender.animateScaleAndFadeOut(scaleSize: 15) { [weak self] _ in
             self?.fetchPlacesButton.alpha = 1
             self?.fetchPlacesButton.transform = CGAffineTransform(scaleX: 1, y: 1)
         }
-        
-//            if (!self.isSearching) {
-//                self.isSearching = YES;
-//                CLLocationCoordinate2D coordinate = self.mapView.camera.target;
-//
-//                [self _pulseWithColor:[UIColor greenColor]];
-//
-//                CGFloat zoom = self.mapView.camera.zoom;
-//                CGFloat scale = kClosestZoomRatioScale / powf(2.0, zoom - 1);
-//                CGFloat metersPerPixel = scale/512;
-//                CGFloat range = self.radiusSlider.value * 2;
-//                NSInteger radius = range * metersPerPixel;
-//
-//                typeof(self) __weak weakSelf = self;
-//                [PlacesWebRequestsHelper findPlacesNearbyCoordinate:coordinate radius:radius completionBlock:^(BOOL succeeded, NSArray *placesNearby) {
-//                    typeof(self) strongSelf = weakSelf;
-//                    strongSelf.isSearching = NO;
-//                    if (succeeded) {
-//                    [strongSelf _putPlacesOnMap:placesNearby];
-//                    } else {
-//                    [self _alertWithTitle:@"Error" message:@"Something went wrong"];
-//                    }
-//                    }];
-//            }
 
-        LocationHelper.fetchNearByPlaces(aroundLocation: currentMapViewCenter, withRadius: 10) { [weak self] (locationAndResultsTuple) in
+        let scale: Double = Configurations.Constants.ClosestZoomRatioScale / (pow(2, Double(currentZoom - 1)))
+//                        CGFloat zoom = self.mapView.camera.zoom;
+//                        CGFloat scale = kClosestZoomRatioScale / powf(2.0, zoom - 1);
+        let metersPerPixel: Double = Double(scale / 512)
+        var magnifierValue: Double = Double(PerrFuncs.percentOfValue(ofValue: self.radiusMagnifierHeightConstraint.constant, fromValue: self.view.frame.height))
+        magnifierValue = magnifierValue / 100
+        let range: Double = magnifierValue * 2
+        let radius: Float = Float(range * metersPerPixel)
+
+        LocationHelper.fetchNearByPlaces(aroundLocation: currentMapViewCenter, withRadius: radius) { [weak self] (locationAndResultsTuple) in
             guard let places = locationAndResultsTuple?.places else { return }
-            📗(places.flatMap({ (p) -> String? in
+            let placeNames: [String] = places.flatMap({ (p) -> String? in
                 return p.placeName
-            }))
+            })
+            📗("fetched place names: \(placeNames)")
+
             for place in places {
                 self?.putPlaceOnMap(place: place)
             }
@@ -253,7 +243,6 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
     //MARK: - GMSMapViewDelegate
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
-        currentZoom = position.zoom
         currentMapViewCenter = position.target
 //    [self _setLocationText:position.target];
     
@@ -313,6 +302,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             return
         }
 
+        // Supplies a much better solution than this one: https://github.com/PerrchicK/iOS-JobInterviewProject/blob/076e8bd26929d55f658addc73625eb32744e3930/CandidateProject/Classes/ViewControllers/MapViewController.m#L180
         throttler.throttle(timeout: 0.3) {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
             LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchText) { [weak self] (resultTupple) in
