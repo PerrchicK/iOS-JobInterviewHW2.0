@@ -149,12 +149,12 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             guard presentedAlertController == nil else { return }
             presentedAlertController = UIAlertController.makeAlert(title: "Driving?".localized(), message: "Wanna navigate anyware?".localized())
                 .withAction(UIAlertAction(title: "Waze", style: UIAlertActionStyle.default, handler: { (alertAction) in
-                    if let wazeUrl = "waze://navigate".toUrl(), UIApplication.shared.canOpenURL(wazeUrl) {
+                    if let wazeUrl = "waze://".toUrl(), UIApplication.shared.canOpenURL(wazeUrl) {
                         UIApplication.shared.openURL(wazeUrl)
                     }
                 }))
                 .withAction(UIAlertAction(title: "Google Maps", style: UIAlertActionStyle.default, handler: { (alertAction) in
-                    if let mapsUrl = "maps://navigate".toUrl(), UIApplication.shared.canOpenURL(mapsUrl) {
+                    if let mapsUrl = "comgooglemaps://".toUrl(), UIApplication.shared.canOpenURL(mapsUrl) {
                         UIApplication.shared.openURL(mapsUrl)
                     }
                 }))
@@ -297,18 +297,6 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         currentMapViewCenter = position.target
-//    [self _setLocationText:position.target];
-    
-    // Prevent searching address every time the text changes, wait for the user to pause his movement on the map
-//    self.delayFromLastCoordinateChange = [[NSDate new] timeIntervalSince1970];
-//    dispatch_time_t dispatchTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kDelayBeforeSearch * NSEC_PER_SEC));
-//    typeof(self) __weak weakSelf = self;
-//    dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
-//    if ([[NSDate new] timeIntervalSince1970] - self.delayFromLastCoordinateChange > kDelayBeforeSearch) {
-//    typeof(self) strongSelf = weakSelf;
-//    [strongSelf _updateAddressByLocation];
-//    }
-//    });
     }
   
     func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
