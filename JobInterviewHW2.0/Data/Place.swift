@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Place {
+class Place: CustomStringConvertible {
     let longitude: Double
     let latitude: Double
     let iconUrl: String
@@ -21,5 +21,9 @@ class Place {
         self.latitude = latitude
         self.iconUrl = iconUrl
         self.placeName = placeName
+    }
+
+    var description: String {
+        return placeName
     }
 }
