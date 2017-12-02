@@ -61,10 +61,14 @@ class DrawerContainerViewController: MMDrawerController {
         open(.left, animated: true, completion: nil)
     }
     
+    func close() {
+        closeDrawer(animated: true, completion: nil)
+    }
+    
     override func motionBegan(_ motion: UIEventSubtype, with event: UIEvent?) {
         if motion == .motionShake {
             if isMenuOpen {
-                closeDrawer(animated: true, completion: nil)
+                close()
             } else {
                 open()
             }
@@ -74,6 +78,8 @@ class DrawerContainerViewController: MMDrawerController {
 
 extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
     func leftMenuViewController(_ leftMenuViewController: LeftMenuViewController, selectedOption: String) {
+        close()
+
         switch selectedOption {
         case LeftMenuOptions.About.AboutApp:
             navigationController?.pushViewController(AboutViewController.instantiate(), animated: true)

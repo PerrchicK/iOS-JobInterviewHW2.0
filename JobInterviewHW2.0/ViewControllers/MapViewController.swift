@@ -20,7 +20,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     private var panGestureRecognizer: UIGestureRecognizer?
     private var currentZoom: Float?
     lazy var throttler = Throttler()
-
+    private var selectedMarker: GMSMarker?
     lazy var customInputAccessoryView: UIView = {
         let customInputAccessoryButton = UIButton()
         customInputAccessoryButton.setTitle("dismiss", for: UIControlState.normal)
@@ -40,26 +40,37 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var toggleConsistCurrentLocationButton: UIButton!
     @IBOutlet weak var fetchPlacesButton: UIButton!
+    @IBOutlet weak var magnifierRulerView: UIView!
     @IBOutlet weak var radiusMagnifierHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var radiusMagnifierImageView: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        mapView.settings.rotateGestures = true
         mapView.delegate = self
         predictionsView.delegate = self
         searchBar.delegate = self
 
-        panGestureRecognizer = radiusMagnifierImageView.onPan { [unowned self] (panGestureRecognizer) in
+        panGestureRecognizer = magnifierRulerView.onPan { [unowned self] (panGestureRecognizer) in
+            // Ron, following our discussion in the interview,
+            // I almost never use 'unowned', but here is a good example for allowing myself to use it.
+            // As I learned from our interview it keeps better performance, thanks :)
+            
             let location = panGestureRecognizer.location(in: self.view)
-//            let draggingLocationYAxis = self.view.frame.height - location.y
-            /// Percentage from screeen height
             if let previousLocation = (panGestureRecognizer as? OnPanListener)?.previousLocation {
-                📗(previousLocation)
                 let delta = location.y - previousLocation.y
-                var newHeight = self.radiusMagnifierHeightConstraint.constant + delta
-//                newHeight = min(newHeight, self.minMagnifierHeight)
-//                newHeight = max(newHeight, self.maxMagnifierHeight)
+                let newHeight = self.radiusMagnifierHeightConstraint.constant - delta
+                if newHeight < self.radiusMagnifierHeightConstraint.constant &&
+                    self.radiusMagnifierHeightConstraint.constant <= self.fetchPlacesButton.frame.height {
+                    self.radiusMagnifierImageView.animateBounce()
+                    return
+                }
+                if newHeight > self.radiusMagnifierHeightConstraint.constant &&
+                    self.radiusMagnifierHeightConstraint.constant >= self.view.frame.height {
+                    self.radiusMagnifierImageView.animateBounce()
+                    return
+                }
                 self.radiusMagnifierHeightConstraint.constant = newHeight
             }
         }
@@ -69,6 +80,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
     
     func configureUi() {
+        radiusMagnifierImageView.isUserInteractionEnabled = false
         predictionsView.isPresented = false
         searchBar.placeholder = "Search address...".localized()
         searchBar.searchBarStyle = .minimal
@@ -108,7 +120,6 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         LocationHelper.shared.startUpdate()
 
         NotificationCenter.default.addObserver(self, selector: #selector(drawerWillOpenNotification), name: Notification.Name.DrawerWillOpen, object: nil)
-        testGeocode()
     }
 
     
@@ -118,8 +129,20 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 15)
         }
         
-        if updatedLocation.speed > 2 { // if updatedLocation.speed > 5 {
-            ToastMessage.show(messageText: "is running?")
+        if updatedLocation.speed > 5 { // 5 = 10kph
+            UIAlertController.makeAlert(title: "Driving?", message: "Wanna navigate anyware?")
+                .withAction(UIAlertAction(title: "Waze", style: UIAlertActionStyle.default, handler: { (alertAction) in
+                    if let wazeUrl = "waze://navigate".toUrl() {
+                        UIApplication.shared.canOpenURL(wazeUrl)
+                    }
+                }))
+                .withAction(UIAlertAction(title: "Waze", style: UIAlertActionStyle.default, handler: { (alertAction) in
+                    if let wazeUrl = "waze://navigate".toUrl() {
+                        UIApplication.shared.canOpenURL(wazeUrl)
+                    }
+                }))
+                .withAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
+                .show()
         }
     }
     
@@ -156,27 +179,58 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
 
     @IBAction func onSearchInRadiusClicked(_ sender: UIButton) {
-        guard sender == fetchPlacesButton else { return }
+        guard sender == fetchPlacesButton, let currentMapViewCenter = currentMapViewCenter else { return }
         sender.animateScaleAndFadeOut(scaleSize: 20) { [weak self] _ in
             self?.fetchPlacesButton.alpha = 1
             self?.fetchPlacesButton.transform = CGAffineTransform(scaleX: 1, y: 1)
         }
+        
+//            if (!self.isSearching) {
+//                self.isSearching = YES;
+//                CLLocationCoordinate2D coordinate = self.mapView.camera.target;
+//
+//                [self _pulseWithColor:[UIColor greenColor]];
+//
+//                CGFloat zoom = self.mapView.camera.zoom;
+//                CGFloat scale = kClosestZoomRatioScale / powf(2.0, zoom - 1);
+//                CGFloat metersPerPixel = scale/512;
+//                CGFloat range = self.radiusSlider.value * 2;
+//                NSInteger radius = range * metersPerPixel;
+//
+//                typeof(self) __weak weakSelf = self;
+//                [PlacesWebRequestsHelper findPlacesNearbyCoordinate:coordinate radius:radius completionBlock:^(BOOL succeeded, NSArray *placesNearby) {
+//                    typeof(self) strongSelf = weakSelf;
+//                    strongSelf.isSearching = NO;
+//                    if (succeeded) {
+//                    [strongSelf _putPlacesOnMap:placesNearby];
+//                    } else {
+//                    [self _alertWithTitle:@"Error" message:@"Something went wrong"];
+//                    }
+//                    }];
+//            }
+
+        LocationHelper.fetchNearByPlaces(aroundLocation: currentMapViewCenter, withRadius: 10) { [weak self] (locationAndResultsTuple) in
+            guard let places = locationAndResultsTuple?.places else { return }
+            📗(places.flatMap({ (p) -> String? in
+                return p.placeName
+            }))
+            for place in places {
+                self?.putPlaceOnMap(place: place)
+            }
+        }
     }
 
-    func testGeocode() {
-//        let afkeaLatitude: Double = 32.115216
-//        let afkeaLongitude: Double = 34.8174598
-//
-//        LocationHelper.findAddressByCoordinates(latitude: afkeaLatitude, longitude: afkeaLongitude) { address in
-//            //result = "Found address: \(firstPlaceName)"
-//            ToastMessage.show(messageText: address.or("Parsing failed"))
-//        }
+    func putPlaceOnMap(place: Place) {
+        let marker: GMSMarker = GMSMarker(position: place.position)//[ markerWithPosition:place.placePosition];
+        marker.title = place.placeName
+        marker.snippet = place.position.toString()
+        marker.map = mapView
+        marker.userData = place.placeId
     }
 
     //MARK: - GMSMapViewDelegate
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         currentZoom = position.zoom
-        searchBar.resignFirstResponder()
         currentMapViewCenter = position.target
 //    [self _setLocationText:position.target];
     
@@ -198,18 +252,22 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
   
     func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
-    }
-    
-    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-//    [self _presentPlaceInfoOfPlaceId:marker.userData];
-        return true
+        selectedMarker = GMSMarker(position: location)
+        selectedMarker?.title = name
+        selectedMarker?.snippet = location.toString()
+        selectedMarker?.map = mapView
+        mapView.selectedMarker = selectedMarker
     }
 
-    //MARK: - UIGestureRecognizerDelegate
-    //TODO: Sharpen user interaction
-//    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-//        return radiusMagnifierImageView.pixelColor(atPoint: gestureRecognizer.location(in: radiusMagnifierImageView)) != .clear
-//    }
+    func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+        searchBar.resignFirstResponder()
+    }
+
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+        selectedMarker = marker
+        mapView.selectedMarker = selectedMarker
+        return true
+    }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
@@ -218,6 +276,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     var shouldFollowLocation: Bool {
         return toggleConsistCurrentLocationButton.alpha == 1
     }
+
     //MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.count == 0 { dismissPredictionsList(); return }
@@ -256,5 +315,17 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     
     func dataCount(_ predictionsView: PredictionsView) -> Int {
         return predictions?.count ?? 0
+    }
+}
+
+extension Place {
+    var position: CLLocationCoordinate2D {
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+}
+
+extension CLLocationCoordinate2D {
+    func toString() -> String {
+        return String(format: "%.2f,%.2f", latitude, longitude)
     }
 }

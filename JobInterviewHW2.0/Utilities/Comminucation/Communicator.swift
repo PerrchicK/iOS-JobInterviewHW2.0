@@ -12,14 +12,15 @@ import Alamofire
 class Communicator {
     
     struct API {
-        struct Request {
+        struct RequestUrls {
             static let GeocodeFormat: String = "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%@"
             static let PlaceSearchFormat: String = "https://maps.googleapis.com/maps/api/place/details/json?placeid=%@&key=%@"
-            static let NearByPlacesFormat: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&radius=%@&key=%@"
+            static let NearByPlacesFormat: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&radius=%f&key=%@"
             static let AutocompletePlacesFormat: String = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=%@&types=address&language=iw&key=%@"
         }
-        struct Response {
+        struct ResponseKeys {
             static let GoogleMapsPredictions: String = "predictions"
+            static let GoogleMapsResults: String = "results"
         }
     }
     

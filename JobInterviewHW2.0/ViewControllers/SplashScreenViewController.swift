@@ -28,17 +28,13 @@ class SplashScreenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        appTitleLabel.onClick({ [unowned self] _ in // Ron, following our discussion in the interview,
-            // I almost never use 'unowned', but here is a good example for allowing myself to use it.
-            // As I learned from our interview it keeps better performance, thanks :)
-            self.appTitleLabel.animateNo(duration: 0.2)
+        appTitleLabel.onClick({ [weak self] _ in
+            self?.appTitleLabel.animateNo(duration: 0.2)
         })
 
-        appLogoImageView.onClick({ [unowned self] _ in // Ron, following our discussion in the interview,
-            // I almost never use 'unowned', but here is a good example for allowing myself to use it.
-            // As I learned from our interview it keeps better performance, thanks :)
-            self.appLogoImageView.animateFade(fadeIn: false, duration: 0.5, completion: { _ in
-                self.presentMainView()
+        appLogoImageView.onClick({ [weak self] _ in
+            self?.appLogoImageView.animateFade(fadeIn: false, duration: 0.5, completion: { _ in
+                self?.presentMainView()
             })
         })
     }
@@ -59,7 +55,11 @@ class SplashScreenViewController: UIViewController {
             })
         }
     }
-    
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.all
+    }
+
     func presentMainView() {
         let navigationController = UINavigationController(rootViewController: DrawerContainerViewController())
         navigationController.modalTransitionStyle = .crossDissolve
