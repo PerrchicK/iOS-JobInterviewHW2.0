@@ -29,6 +29,9 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
     override init() {
         super.init()
 
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground), name: Notification.Name.UIApplicationDidEnterBackground, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground), name: Notification.Name.UIApplicationWillEnterForeground, object: nil)
+
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
     }
@@ -80,6 +83,14 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         })
     }
 
+    @objc func applicationWillEnterForeground(notification: Notification) {
+        startUpdate()
+    }
+
+    @objc func applicationDidEnterBackground(notification: Notification) {
+        stopUpdate()
+    }
+
     static func fetchNearByPlaces(aroundLocation location: CLLocationCoordinate2D, withRadius radius: Float, resultCallback: @escaping CompletionClosure<(location: CLLocationCoordinate2D, places: [Place])>) {
 
         let urlString = String(format: Communicator.API.RequestUrls.NearByPlacesFormat,
@@ -115,27 +126,31 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    static func fetchPlace(byPrediction placePrediction: Prediction, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)>) {
+    static func fetchPlace(byPlaceId placeId: String, andPlaceName placeName: String? = nil, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)>) {
         let urlString = String(format: Communicator.API.RequestUrls.PlaceSearchFormat,
-                               placePrediction.placeId,
+                               placeId,
                                Configurations.shared.GoogleMapsWebApiKey)
         
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         Communicator.request(urlString: urlString) { (response) in
-            guard let response = response else { resultCallback((placeId: placePrediction.placeId, place: nil)); return }
+            guard let response = response else { resultCallback((placeId: placeId, place: nil)); return }
             var resultPlace: Place?
             switch response {
             case .succeeded(let json):
                 if let jsonDictionary = (json as? RawJsonFormat),
                     let jsonResult = jsonDictionary["result"] as? RawJsonFormat {
-                    resultPlace = Place.from(json: jsonResult, placeName: placePrediction.predictionDescription)
+                    resultPlace = Place.from(json: jsonResult, placeName: placeName)
                 }
             case .failed(let message):
                 📕("request failed, message: \(message)")
             }
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            resultCallback((placeId: placePrediction.placeId, place: resultPlace))
+            resultCallback((placeId: placeId, place: resultPlace))
         }
+    }
+    
+    static func fetchPlace(byPrediction placePrediction: Prediction, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)>) {
+        fetchPlace(byPlaceId: placePrediction.placeId, andPlaceName: placePrediction.predictionDescription, resultCallback: resultCallback)
     }
 
     static func fetchAutocompleteSuggestions(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<(keyword: String, predictions: [Prediction])>) {
@@ -229,6 +244,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
 
 extension Place {
     static func from(json: RawJsonFormat, placeName: String? = nil) -> Place? {
+        📗(json)
         guard let iconUrl = json["icon"] as? String,
             let retreivedPlaceId = json["place_id"] as? String,
             let jsonGeometry = json["geometry"] as? RawJsonFormat,
@@ -239,7 +255,10 @@ extension Place {
         }
 
         let name: String = placeName.or(json["name"] as? String).or("")
+        let formattedAddress = json["formatted_address"] as? String
+        let phoneNumber = json["international_phone_number"] as? String
+        let website = json["website"] as? String
 
-        return Place(longitude: longitude, latitude: latitude, iconUrl: iconUrl, placeName: name, placeId: retreivedPlaceId)
+        return Place(longitude: longitude, latitude: latitude, iconUrl: iconUrl, placeName: name, placeId: retreivedPlaceId, address: formattedAddress, phoneNumber: phoneNumber, website: website)
     }
 }

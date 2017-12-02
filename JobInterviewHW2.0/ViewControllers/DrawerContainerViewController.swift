@@ -99,11 +99,15 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
             if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {
                 LocationHelper.fetchAddressByCoordinates(latitude: currentLocation.latitude, longitude: currentLocation.longitude, completion: { address in
                     if let address = address {
-                        UIAlertController.makeAlert(title: "Here you are...", message: address)
-                            .withInputText(configurationBlock: { (textField) in
-                                textField.text = currentLocation.toString()
-                            })
+                        let currentLocation = currentLocation.toString()
+                        UIAlertController.makeActionSheet(title: "You are here:", message: "\(address)\n\(currentLocation)")
                             .withAction(UIAlertAction(title: "Thanks", style: UIAlertActionStyle.cancel, handler: nil))
+                            .withAction(UIAlertAction(title: "Copy coordinates", style: UIAlertActionStyle.default, handler: { _ in
+                                PerrFuncs.copyToClipboard(stringToCopy: currentLocation)
+                            }))
+                            .withAction(UIAlertAction(title: "Center map", style: UIAlertActionStyle.default, handler: { [weak self] _ in
+                                (self?.centerViewController as? MapViewController)?.moveCameraToCurrentLocation()
+                            }))
                             .show()
                     } else {
                         UIAlertController.makeAlert(title: "Error", message: "Failed to fetch address")
@@ -116,11 +120,11 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
             if let currentMapLocation = (centerViewController as? MapViewController)?.currentMapViewCenter {
                 LocationHelper.fetchAddressByCoordinates(latitude: currentMapLocation.latitude, longitude: currentMapLocation.longitude, completion: { address in
                     if let address = address {
-                        UIAlertController.makeAlert(title: "There you go...", message: address)
-                            .withInputText(configurationBlock: { (textField) in
-                                textField.text = currentMapLocation.toString()
-                            })
+                        UIAlertController.makeActionSheet(title: "Map current location:", message: "\(address)\n\(currentMapLocation.toString())")
                             .withAction(UIAlertAction(title: "Thanks", style: UIAlertActionStyle.cancel, handler: nil))
+                            .withAction(UIAlertAction(title: "Copy coordinates", style: UIAlertActionStyle.default, handler: { _ in
+                                PerrFuncs.copyToClipboard(stringToCopy: currentMapLocation.toString())
+                            }))
                             .show()
                     } else {
                         UIAlertController.makeAlert(title: "Error", message: "Failed to fetch address")

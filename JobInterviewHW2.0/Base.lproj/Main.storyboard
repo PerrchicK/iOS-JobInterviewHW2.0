@@ -265,10 +265,10 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Y1-pi-JAF" customClass="PredictionsView" customModule="iHereU" customModuleProvider="target">
-                                <rect key="frame" x="10" y="76" width="355" height="491"/>
+                                <rect key="frame" x="10" y="76" width="355" height="20"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="491" id="hWh-ju-o17"/>
+                                    <constraint firstAttribute="height" constant="20" id="hWh-ju-o17"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -280,16 +280,16 @@
                             <constraint firstItem="Ll5-NS-YCC" firstAttribute="top" secondItem="MUy-t6-Dc6" secondAttribute="top" id="71a-xl-lAD"/>
                             <constraint firstItem="hhl-7C-fk0" firstAttribute="trailing" secondItem="Ll5-NS-YCC" secondAttribute="trailing" id="A34-MI-CbB"/>
                             <constraint firstItem="2Y1-pi-JAF" firstAttribute="width" secondItem="Ifk-Cm-fRM" secondAttribute="width" constant="-20" id="CT3-sD-5t1"/>
-                            <constraint firstItem="ysl-kq-bOw" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="LFW-6m-tQF"/>
                             <constraint firstItem="hhl-7C-fk0" firstAttribute="height" secondItem="Ll5-NS-YCC" secondAttribute="height" id="McP-bL-BEs"/>
                             <constraint firstItem="vAx-Ak-7zd" firstAttribute="leading" secondItem="Ll5-NS-YCC" secondAttribute="leading" id="MtC-ux-ySC"/>
                             <constraint firstItem="YPw-1N-bd5" firstAttribute="leading" secondItem="Ll5-NS-YCC" secondAttribute="leading" id="SQf-bq-xAG"/>
-                            <constraint firstItem="NUp-8i-RDO" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="Uxa-tK-U6b"/>
                             <constraint firstItem="hhl-7C-fk0" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="dQD-zf-kgZ"/>
                             <constraint firstItem="2Y1-pi-JAF" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="eVC-p4-fps"/>
                             <constraint firstItem="NUp-8i-RDO" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="ext-ko-NlK"/>
                             <constraint firstItem="vAx-Ak-7zd" firstAttribute="top" secondItem="sgS-A8-yoc" secondAttribute="bottom" id="jl4-jQ-QWN"/>
+                            <constraint firstItem="ysl-kq-bOw" firstAttribute="centerY" secondItem="vAx-Ak-7zd" secondAttribute="centerY" id="kDb-d1-RuO"/>
                             <constraint firstItem="Zaj-TX-hZi" firstAttribute="bottom" secondItem="Ll5-NS-YCC" secondAttribute="bottom" id="nKb-eA-rRj"/>
+                            <constraint firstItem="NUp-8i-RDO" firstAttribute="centerY" secondItem="vAx-Ak-7zd" secondAttribute="centerY" id="oVW-yd-1ko"/>
                             <constraint firstItem="Ll5-NS-YCC" firstAttribute="trailing" secondItem="vAx-Ak-7zd" secondAttribute="trailing" id="sRt-rc-Q1e"/>
                             <constraint firstItem="ysl-kq-bOw" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="t17-rq-NfL"/>
                             <constraint firstItem="YPw-1N-bd5" firstAttribute="height" secondItem="Ifk-Cm-fRM" secondAttribute="height" id="t83-gQ-05n"/>

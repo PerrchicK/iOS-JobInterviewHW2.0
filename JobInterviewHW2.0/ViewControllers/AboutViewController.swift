@@ -13,12 +13,12 @@ class AboutViewController: IHUViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-    
+
     func textView(_ textView: UITextView, shouldInteractWith URL: Foundation.URL, in characterRange: NSRange) -> Bool {
         📗("interacting with URL: \(URL)")
         return URL.absoluteString == Configurations.Constants.GitHubLink
     }
-    
+
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         return false
     }

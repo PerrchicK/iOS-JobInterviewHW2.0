@@ -65,5 +65,7 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
         }
     }
 
-    func onLocationUpdated(updatedLocation: CLLocation) { }
+    func onLocationUpdated(updatedLocation: CLLocation) {
+        currentLocation = updatedLocation
+    }
 }

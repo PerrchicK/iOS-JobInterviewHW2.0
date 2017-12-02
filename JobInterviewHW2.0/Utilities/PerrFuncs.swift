@@ -119,6 +119,10 @@ open class PerrFuncs {
         return fromValue * percentage / 100; // Example: 2000 * 2.5% / 100 == 50
     }
 
+    static func copyToClipboard(stringToCopy string: String) {
+        UIPasteboard.general.string = string
+    }
+
     // Perry: delete?
     @discardableResult
     static func postRequest(urlString: String, jsonDictionary: [String: Any], httpHeaders: [String:String]? = nil, completion: @escaping ([String: Any]?) -> ()) -> URLSessionDataTask? {
