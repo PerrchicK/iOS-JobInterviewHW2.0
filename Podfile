@@ -13,15 +13,11 @@ pod 'MMDrawerController', '~> 0.5.7'
 pod 'Alamofire', '~> 4.0.1'
 pod 'BetterSegmentedControl', '0.8'
 
-pod 'Firebase/Core'
-pod 'Firebase/Database'
-pod 'Firebase/Messaging'
-
-# Installing Firebase (4.6.0)
-# Installing FirebaseAnalytics (4.0.5)
-# Installing FirebaseCore (4.0.11)
-# Installing FirebaseInstanceID (2.0.6)
-# Installing GoogleToolboxForMac (2.1.3)
-# Installing nanopb (0.3.8)
+pod 'Firebase/Auth', '~> 4.0.0' # https://stackoverflow.com/questions/20213751/what-is-the-usage-of-in-cocoapods
+pod 'Firebase/Crash', '~> 4.0.0'
+pod 'Firebase/Database', '~> 4.0.0'
+pod 'Firebase/RemoteConfig', '~> 4.0.0'
+pod 'Firebase/Core', '~> 4.0.0'
+pod 'Firebase/Messaging', '~> 4.0.0'
 
 end

@@ -8,6 +8,7 @@
 
 import Foundation
 import Firebase
+import FirebaseAuth
 
 class FirebaseHelper {
     private(set) static var isConfigured: Bool = false
@@ -21,5 +22,9 @@ class FirebaseHelper {
 
 //        PATH_TO_USER_ONLINE_STATE()?.onDisconnectSetValue(false)
         isConfigured = true
+        
+        Auth.auth().signInAnonymously() { (user, error) in
+            📗("Logged in, user: \(user)")
+        }
     }
 }

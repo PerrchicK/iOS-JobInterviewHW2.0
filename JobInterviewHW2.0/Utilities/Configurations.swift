@@ -47,17 +47,27 @@ public struct LeftMenuOptions {
         case option(text: String, symbol: String)
     }
 
+    public struct Driving {
+        public static let title: String = "Driving"
+
+        public static let LeaveParking: MenuOption = (text: "iLeave", symbol: "👋")
+        public static let SeekParking: MenuOption = (text: "iPark", symbol: "🚙")
+    }
+    public struct User {
+        public static let title: String = "User stuff"
+
+        public static let RenameNickname: MenuOption = (text: "Change nickname", symbol: "👽")
+    }
     public struct Application {
-        public static let title: String = ("iHereU")
+        public static let title: String = "iHereU"
         
-        static let Announcements: MenuOption = (text: "Announcements", symbol: "📣")
         public static let WhereIsHere: MenuOption = (text: "Where am I?", symbol: "🤔")
         public static let WhereIsMapCenter: MenuOption = (text: "Map's current address", symbol: "✛")
-        public static let RenameNickname: MenuOption = (text: "Change nickname", symbol: "👽")
     }
     public struct About {
         public static let title: String = "About"
         
+        static let Announcements: MenuOption = (text: "Announcements", symbol: "📣")
         public static let AboutApp: MenuOption = (text: "About the app", symbol: "📱")
         public static let AboutDeveloper: MenuOption = (text: "About the developer", symbol: "💻")
     }

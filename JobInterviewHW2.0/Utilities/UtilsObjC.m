@@ -53,10 +53,15 @@ __strong static UtilsObjC *_shared;
 }
 
 +(SCEnvironment) currentEnvironment {
+    // Lazy instantiations of current environment
     if ([UtilsObjC shared].currentEnvironment == SCEnvironmentUnknown) {
         // uninitialized
         if ([[NSUserDefaults standardUserDefaults] stringForKey: @"shouldUseDevEnvironment"] == nil) {
+#ifdef DEBUG
+            [UtilsObjC shared].currentEnvironment = SCEnvironmentDev; // For now, no matter what, always run on development environment
+#else
             [UtilsObjC shared].currentEnvironment = SCEnvironmentProduction;
+#endif
         } else {
             [UtilsObjC shared].currentEnvironment = SCEnvironmentDev;
         }
@@ -106,39 +111,18 @@ __strong static UtilsObjC *_shared;
     DLog(@"%@", logMessage);
 }
 
-+(NSString *) saveData:(NSData *) data toFileNamed:(NSString *) fileName {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-
-    // guard
-    if (paths.count == 0) {
-        return nil;
-    }
-
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *filePath = [documentsDirectory  stringByAppendingPathComponent: fileName];
-    if ([data writeToFile: filePath atomically: YES]) {
-        return filePath;
-    }
-
-    return nil;
-}
-
 +(FIROptions *) firebaseEnvironmentOptions {
     FIROptions* options;
 //    NSString *tempFileName = @"GoogleService-Info.plist";
     NSString *tempFilePath;
 
 #ifdef DEBUG
-//    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
     if (UtilsObjC.currentEnvironment == SCEnvironmentDev) {
-//        tempFilePath = [UtilsObjC saveData: [[UtilsObjC devPlistContent] dataUsingEncoding: NSUTF8StringEncoding] toFileNamed: tempFileName];
         tempFilePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info-dev" ofType:@"plist"];
     } else {
-//        tempFilePath = [UtilsObjC saveData: [[UtilsObjC prodPlistContent] dataUsingEncoding: NSUTF8StringEncoding] toFileNamed: tempFileName];
         tempFilePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
     }
 #else
-//    tempFilePath = [UtilsObjC saveData: [[UtilsObjC prodPlistContent] dataUsingEncoding: NSUTF8StringEncoding] toFileNamed: tempFileName];
     tempFilePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
 #endif
 

@@ -15,6 +15,11 @@ protocol LocationHelperDelegate: class {
 
 typealias RawJsonFormat = [AnyHashable:Any]
 
+enum LocationHandlingMode {
+    case seeker
+    case leaver
+}
+
 class LocationHelper: NSObject, CLLocationManagerDelegate {
     static let shared: LocationHelper = LocationHelper()
 
@@ -125,6 +130,14 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
             resultCallback((location: location, places: placesResult))
         }
     }
+    
+    var isCarSpeed: Bool {
+        return (currentLocation?.speed).or(0) > 5
+    }
+
+    var isAlmostIdle: Bool {
+        return (currentLocation?.speed).or(0) < 1
+    }
 
     static func fetchPlace(byPlaceId placeId: String, andPlaceName placeName: String? = nil, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)>) {
         let urlString = String(format: Communicator.API.RequestUrls.PlaceSearchFormat,
@@ -162,6 +175,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
                                urlQueryKeyword,
                                Configurations.shared.GoogleMapsWebApiKey)
 
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         Communicator.request(urlString: urlString) { (response) in
             var predictionsResult: [Prediction] = [Prediction]()
             guard let response = response else { predictionsResultCallback((keyword: keyword, predictions: predictionsResult)); return }
@@ -200,6 +214,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
                 📕("request failed, message: \(message)")
             }
 
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             predictionsResultCallback((keyword: keyword, predictions: predictionsResult))
         }
     }
@@ -262,3 +277,4 @@ extension Place {
         return Place(longitude: longitude, latitude: latitude, iconUrl: iconUrl, placeName: name, placeId: retreivedPlaceId, address: formattedAddress, phoneNumber: phoneNumber, website: website)
     }
 }
+

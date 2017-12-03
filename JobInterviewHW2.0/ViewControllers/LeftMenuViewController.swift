@@ -23,12 +23,17 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var distanceFromTopConstraint: NSLayoutConstraint!
     let menuItems: [String:[Any]] =
     [LeftMenuOptions.About.title:
-        [LeftMenuOptions.About.AboutApp, LeftMenuOptions.About.AboutDeveloper],
+        [LeftMenuOptions.About.AboutApp,
+         LeftMenuOptions.About.AboutDeveloper,
+         LeftMenuOptions.About.Announcements],
+     LeftMenuOptions.Driving.title:
+        [LeftMenuOptions.Driving.LeaveParking,
+        LeftMenuOptions.Driving.SeekParking],
+     LeftMenuOptions.User.title:
+        [LeftMenuOptions.User.RenameNickname],
      LeftMenuOptions.Application.title:
-        [LeftMenuOptions.Application.Announcements,
-         LeftMenuOptions.Application.WhereIsHere,
-         LeftMenuOptions.Application.WhereIsMapCenter,
-         LeftMenuOptions.Application.RenameNickname]]
+        [LeftMenuOptions.Application.WhereIsHere,
+         LeftMenuOptions.Application.WhereIsMapCenter]]
 
     let leftMenuCellReuseIdentifier = NibView.className(LeftMenuCell.self)
 

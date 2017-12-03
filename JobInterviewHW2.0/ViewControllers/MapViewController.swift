@@ -25,6 +25,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     private var currentZoom: Float {
         return mapView.camera.zoom
     }
+    var searchMethod: (() -> ())? // A function pointer, will be assign according to the user's needs
     weak var presentedAlertController: UIAlertController?
     lazy var throttler = Throttler()
     private var selectedMarker: GMSMarker?
@@ -58,6 +59,8 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         mapView.delegate = self
         predictionsView.delegate = self
         searchBar.delegate = self
+        
+        changeSearchToPlacesMode()
 
         📗(mapView.findSubviewsInTree(predicateClosure: { $0 is UIScrollView}))
 
@@ -353,14 +356,8 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         }
 
         // Supplies a much better solution than this one: https://github.com/PerrchicK/iOS-JobInterviewProject/blob/076e8bd26929d55f658addc73625eb32744e3930/CandidateProject/Classes/ViewControllers/MapViewController.m#L180
-        throttler.throttle(timeout: 0.3) {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchText) { [weak self] (resultTupple) in
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == self?.searchBar.text else { self?.dismissPredictionsList(); return }
-                
-                strongSelf.presentAdressesPredictions(predictions: resultTupple.predictions)
-            }
+        throttler.throttle(timeout: 0.3) { [weak self] in
+            self?.searchMethod?()
         }
     }
 
@@ -407,5 +404,25 @@ extension CLLocationCoordinate2D {
         }
 
         return String(format: "\(latitude),\(longitude)")
+    }
+}
+
+extension MapViewController {
+    func changeSearchToUsersMode() {
+        searchMethod = { [weak self] in
+            guard let searchPhrase = self?.searchBar.text else { return }
+            //FirebaseHelper.updateUserFreeParking()
+        }
+    }
+    
+    func changeSearchToPlacesMode() {
+        searchMethod = { [weak self] in
+            guard let searchPhrase = self?.searchBar.text else { return }
+            LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchPhrase) { [weak self] (resultTupple) in
+                guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == self?.searchBar.text else { self?.dismissPredictionsList(); return }
+                
+                strongSelf.presentAdressesPredictions(predictions: resultTupple.predictions)
+            }
+        }
     }
 }
