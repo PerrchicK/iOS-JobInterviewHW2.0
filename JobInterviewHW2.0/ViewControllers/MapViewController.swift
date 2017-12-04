@@ -19,7 +19,13 @@ func ==(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> Bool {
     return left.latitude == right.latitude && left.longitude == right.longitude
 }
 
-// Reference: http://nshipster.com/swift-operators/
+// Allows this: { let temp = -3 ~ -80 ~ 5 ~ 10 }
+precedencegroup Additive {
+    associativity: left // Explanation: https://en.wikipedia.org/wiki/Operator_associativity
+}
+// References: http://nshipster.com/swift-operators/ + https://developer.apple.com/documentation/swift/operator_declarations
+infix operator ~ : Additive
+
 func ~(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
     return CLLocationCoordinate2D(latitude: left.latitude - right.latitude, longitude: left.longitude - right.longitude)
 }

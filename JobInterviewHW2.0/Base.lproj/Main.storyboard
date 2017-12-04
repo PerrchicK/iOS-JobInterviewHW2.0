@@ -348,13 +348,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="What this app does?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nf4-FY-mA9">
-                                <rect key="frame" x="22" y="119" width="331" height="28"/>
+                                <rect key="frame" x="22" y="70" width="331" height="28"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="23"/>
                                 <color key="textColor" red="0.93092105260000002" green="0.53939423340000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L1E-d9-xrJ">
-                                <rect key="frame" x="36" y="246.5" width="303" height="410.5"/>
+                                <rect key="frame" x="36" y="108" width="303" height="549"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -369,8 +369,8 @@
                             <constraint firstItem="Nf4-FY-mA9" firstAttribute="leading" secondItem="ebi-H4-C4t" secondAttribute="leadingMargin" constant="6" id="4Gn-lV-0bq"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Nf4-FY-mA9" secondAttribute="trailing" constant="6" id="Aoe-C1-Z4F"/>
                             <constraint firstItem="I49-b1-npP" firstAttribute="top" secondItem="L1E-d9-xrJ" secondAttribute="bottom" constant="10" id="DnS-at-Zqg"/>
-                            <constraint firstItem="Nf4-FY-mA9" firstAttribute="top" secondItem="dU4-Pc-v4f" secondAttribute="bottom" constant="99" id="T6a-NZ-gJw"/>
-                            <constraint firstItem="L1E-d9-xrJ" firstAttribute="top" secondItem="Nf4-FY-mA9" secondAttribute="bottom" constant="100" id="W6K-Hr-c8k"/>
+                            <constraint firstItem="Nf4-FY-mA9" firstAttribute="top" secondItem="dU4-Pc-v4f" secondAttribute="bottom" constant="50" id="T6a-NZ-gJw"/>
+                            <constraint firstItem="L1E-d9-xrJ" firstAttribute="top" secondItem="Nf4-FY-mA9" secondAttribute="bottom" constant="10" id="W6K-Hr-c8k"/>
                             <constraint firstAttribute="trailingMargin" secondItem="L1E-d9-xrJ" secondAttribute="trailing" constant="20" id="tar-N2-9TS"/>
                             <constraint firstItem="L1E-d9-xrJ" firstAttribute="leading" secondItem="ebi-H4-C4t" secondAttribute="leadingMargin" constant="20" id="zSZ-oY-y3L"/>
                         </constraints>

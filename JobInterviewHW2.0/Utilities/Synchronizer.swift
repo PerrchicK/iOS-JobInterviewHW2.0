@@ -50,7 +50,7 @@ class Synchronizer {
      */
     init(userInfo: AnyObject? = nil, queueToRunOnDone: DispatchQueue = DispatchQueue.main, finalOperation: @escaping (_ userInfo: AnyObject?) -> Void) {
         let completionOperation = BlockOperation {
-                DispatchQueue.main.async(execute: {
+                queueToRunOnDone.async(execute: {
                     finalOperation(userInfo)
                 })
         }
