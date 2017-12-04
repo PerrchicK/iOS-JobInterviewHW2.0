@@ -140,6 +140,7 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
                 let alertController = UIAlertController.makeAlert(title: "Choose nickanme".localized(), message: "Choose the name you would like people to see:")
                     .withInputText(configurationBlock: { (textField) in
                         textField.placeholder = "nickname".localized()
+                        textField.text = FirebaseHelper.currentNicknameOnFirebase ?? ""
                     })
 
                     alertController.withAction(UIAlertAction(title: "Cancel".localized(), style: UIAlertActionStyle.cancel, handler: nil))

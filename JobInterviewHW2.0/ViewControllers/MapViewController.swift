@@ -154,27 +154,6 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         let innerTextFiled: UITextField? = found.first as? UITextField
         innerTextFiled?.textColor = .white
         predictionsView.getRoundedCornered()
-
-        var mapViewPanGestureRecognizers = [UIGestureRecognizer]()
-        mapView.iterateAllSubviewsInTree(withClosure: { subview in
-            if let allPanGestureRecognizers: [UIGestureRecognizer] = subview.gestureRecognizers?.filter( { $0 is UIPanGestureRecognizer} ) {
-                mapViewPanGestureRecognizers.append(contentsOf: allPanGestureRecognizers)
-            }
-        })
-        // swizzle...
-        📗(mapViewPanGestureRecognizers)
-
-        for mapViewPanGestureRecognizer in mapViewPanGestureRecognizers {
-            if let _ = mapViewPanGestureRecognizer.delegate?.gestureRecognizerShouldBegin(_:) {
-                let originalSelector = #selector(mapViewPanGestureRecognizer.delegate?.gestureRecognizerShouldBegin(_:))
-                let swizzledSelector = #selector(swizzled_gestureRecognizerShouldBegin)
-                PerrFuncs.swizzle(UIView.self, originalSelector, swizzledSelector)
-            }
-        }
-
-//        [self.btnCurrentCoordinate setTitle:@"" forState:UIControlStateNormal];
-//        self.lblAddress.text = @"";
-//        self.searchToolHeightConstraint.constant *= 2;
     }
     
     lazy var maxMagnifierHeight: CGFloat = {
@@ -513,10 +492,6 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if predictionsView.isHidden {
-            fetchPredictions(searchText: searchBar.text)
-        }
-        
         searchBar.resignFirstResponder()
         
         if let components: [String] = searchBar.text?

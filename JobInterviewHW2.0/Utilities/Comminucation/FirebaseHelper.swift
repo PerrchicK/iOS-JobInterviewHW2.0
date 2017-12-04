@@ -25,16 +25,17 @@ struct FirebaseHelper {
         static let Locations = "Locations"
     }
 
-    //Firebase database reference
-    static let MAIN_PATH = Database.database().reference()
-    static let MAIN_INDEXED_PATH = MAIN_PATH.child(Keys.Indexed)
-    static let MAIN_USERS_PATH = MAIN_PATH.child(Keys.Users)
-    static let INDEXED_USERS_PATH = MAIN_INDEXED_PATH.child(Keys.Users)
-    static let INDEXED_LOCATIONS_PATH = MAIN_INDEXED_PATH.child(Keys.Locations)
+    static let FORBIDDEN_CHARACTERS: String = ".$#[]"
 
-    static var currentObservedReference: DatabaseReference?
-    static var currentNicknameOnFirebase: String?
-    static var currentLocationOnFirebase: CLLocationCoordinate2D?
+    static let MAIN_PATH: DatabaseReference = Database.database().reference()
+    static let MAIN_INDEXED_PATH: DatabaseReference = MAIN_PATH.child(Keys.Indexed)
+    static let MAIN_USERS_PATH: DatabaseReference = MAIN_PATH.child(Keys.Users)
+    static let INDEXED_USERS_PATH: DatabaseReference = MAIN_INDEXED_PATH.child(Keys.Users)
+    static let INDEXED_LOCATIONS_PATH: DatabaseReference = MAIN_INDEXED_PATH.child(Keys.Locations)
+
+    static private var currentObservedReference: DatabaseReference?
+    static private(set) var currentNicknameOnFirebase: String?
+    static private(set)var currentLocationOnFirebase: CLLocationCoordinate2D?
 
     static func configureFirebase() {
         if let firebaseOptions = UtilsObjC.firebaseEnvironmentOptions() {
@@ -173,24 +174,16 @@ struct FirebaseHelper {
         let indexUsersPath: DatabaseReference = createIndexedPath(root: INDEXED_USERS_PATH, lowercasedPrefix: prefix.lowercased())
         
         indexUsersPath.observeSingleEvent(of: DataEventType.value) { (dataSnapshot) in
-            callback(parseArray(fromDataSnapshot: dataSnapshot))
+            callback(parseDataArray(fromDataSnapshot: dataSnapshot))
         }
     }
 
-//    static func queryNicknames(startsWith prefix: String, callback:@escaping CompletionClosure<[String]>) {
-//        let indexUsersPath: DatabaseReference = createIndexedPath(root: INDEXED_USERS_PATH, lowercasedPrefix: prefix.lowercased())
-//
-//        indexUsersPath.observeSingleEvent(of: DataEventType.value) { (dataSnapshot) in
-//            callback(indexedNicknames(fromDataSnapshot: dataSnapshot))
-//        }
-//    }
-
-    private static func parseArray<T: DataSnapshotConvertalbe>(fromDataSnapshot dataSnapshot: DataSnapshot) -> [T] {
+    private static func parseDataArray<T: DataSnapshotConvertalbe>(fromDataSnapshot dataSnapshot: DataSnapshot) -> [T] {
         guard dataSnapshot.childrenCount > 0 else { return [] }
-        return concatArray(child: dataSnapshot)
+        return parseAndConcatDataArray(fromDataSnapshot: dataSnapshot)
     }
     
-    private static func concatArray<T: DataSnapshotConvertalbe>(child: DataSnapshot) -> [T] {
+    private static func parseAndConcatDataArray<T: DataSnapshotConvertalbe>(fromDataSnapshot child: DataSnapshot) -> [T] {
         var parsed: [T] = []
 
         let iterator = child.children
@@ -199,7 +192,7 @@ struct FirebaseHelper {
                 📗("parsed this to a DataSnapshotConvertalbe instance: \(converted)") // PersonSharedLocation
                 parsed.append(converted)
             } else {
-                parsed.append(contentsOf: concatArray(child: node))
+                parsed.append(contentsOf: parseAndConcatDataArray(fromDataSnapshot: node))
             }
         }
 
@@ -208,30 +201,16 @@ struct FirebaseHelper {
 }
 
 extension String {
+    /// A helper method to prevent using forbidden characters (., $, #, [, ], /, or ASCII...) when updating firebase: https://firebase.google.com/docs/database/android/structure-data#how_data_is_structured_its_a_json_tree
     func replacedDotsWithTilde() -> String {
         return self.replacingOccurrences(of: ".", with: "~")
     }
 
+    /// A helper method to prevent using forbidden characters (., $, #, [, ], /, or ASCII...) when updating firebase: https://firebase.google.com/docs/database/android/structure-data#how_data_is_structured_its_a_json_tree
     func replacedTildeWithDots() -> String {
         return self.replacingOccurrences(of: "~", with: ".")
     }
 }
-
-//class IHUDatabaseReference: DatabaseReference {
-//    deinit {
-//        self.removeAllObservers()
-//    }
-//
-//    override func child(_ pathString: String) -> DatabaseReference {
-//        <#code#>
-//    }
-//}
-//
-//extension DatabaseReference {
-//    func ihuChild(_ pathString: String) -> IHUDatabaseReference {
-//        return IHUDatabaseReference()
-//    }
-//}
 
 extension AvailableParkingLocation: DataSnapshotConvertalbe {
     static func parse(dataSnapshot: DataSnapshot) -> DataSnapshotConvertalbe? {
