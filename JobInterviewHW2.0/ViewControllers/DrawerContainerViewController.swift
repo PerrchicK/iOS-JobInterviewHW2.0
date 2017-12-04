@@ -103,18 +103,37 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
             aboutViewController.aboutTitle = "About the app".localized()
             aboutViewController.aboutText = "about the app info".localized()
             aboutViewController.title = "About"
-            navigationController?.pushViewController(aboutViewController, animated: true)
+            navigationController?.present(aboutViewController, animated: true, completion: nil)
         case LeftMenuOptions.Driving.LeaveParking.symbol:
             aboutViewController.aboutTitle = "How iLeave works?".localized()
             aboutViewController.title = "iLeave"
             aboutViewController.aboutText = "Simply takes your location automatically and shares it with anyone that is in a parking search 'mission', no user action is needed, only may undo in a 'false alarm'.".localized()
-            navigationController?.pushViewController(aboutViewController, animated: true)
+            navigationController?.present(aboutViewController, animated: true, completion: nil)
         case LeftMenuOptions.Driving.SeekParking.symbol:
             aboutViewController.aboutTitle = "How iPark works?".localized()
             aboutViewController.title = "iPark"
-            aboutViewController.aboutText = "Simply shares free parking spot locations, from anyone who left one while using this app, on the map screen".localized()
-            navigationController?.pushViewController(aboutViewController, animated: true)
-        case LeftMenuOptions.Location.WhereIsHere.symbol:
+            aboutViewController.aboutText = "Simply shares free parking spot locations, from anyone who left one while using this app, on the map screen.".localized()
+            navigationController?.present(aboutViewController, animated: true, completion: { [weak self] in
+                guard let strongSelf = self else { return }
+                let isActivated = strongSelf.mapViewController.mapState == MapViewController.MapState.parkingSeeker
+
+                let toggleActionTitle = isActivated ? "Deacivate".localized() : "Acivate".localized()
+                let toggleAlertTitle = isActivated ? "iPark is Acivated".localized() : "iPark is Deacivated".localized()
+                UIAlertController.makeAlert(title: toggleAlertTitle, message: "Acivate iPark? You can decide later...")
+                    .withAction(UIAlertAction(title: "Cancel".localized(), style: UIAlertActionStyle.cancel, handler: nil))
+                    .withAction(UIAlertAction(title: toggleActionTitle, style: UIAlertActionStyle.default, handler: { [weak self] _ in
+                        guard let strongSelf = self else { return }
+                        // The usr chose to toggle:
+                        if isActivated {
+                            // It's activated, so let's decativate
+                            strongSelf.mapViewController.mapState = MapViewController.MapState.placesSeeker
+                        } else {
+                            strongSelf.mapViewController.mapState = MapViewController.MapState.parkingSeeker
+                        }
+                    }))
+                .show()
+            })
+        case LeftMenuOptions.Location.WhereIsHere.symbol: // Just a thought, It feels like messing UI with logic, but it's a string eventually :)
             if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {
                 LocationHelper.fetchAddressByCoordinates(latitude: currentLocation.latitude, longitude: currentLocation.longitude, completion: { address in
                     if let address = address {
@@ -159,7 +178,7 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
             if let currentMapLocation = mapViewController.currentMapViewCenter {
                 LocationHelper.fetchAddressByCoordinates(latitude: currentMapLocation.latitude, longitude: currentMapLocation.longitude, completion: { address in
                     if let address = address {
-                        UIAlertController.makeActionSheet(title: "Map current location:", message: "\(address)\n\(currentMapLocation.toString())")
+                        UIAlertController.makeActionSheet(title: "Map's current location:", message: "\(address)\n\(currentMapLocation.toString())")
                             .withAction(UIAlertAction(title: "Thanks", style: UIAlertActionStyle.cancel, handler: nil))
                             .withAction(UIAlertAction(title: "Copy coordinates", style: UIAlertActionStyle.default, handler: { _ in
                                 PerrFuncs.copyToClipboard(stringToCopy: currentMapLocation.toString())

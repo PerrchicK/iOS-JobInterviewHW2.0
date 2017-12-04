@@ -32,6 +32,10 @@ class AboutViewController: IHUViewController, UITextViewDelegate {
         return URL.absoluteString == Configurations.Constants.GitHubLink
     }
 
+    @IBAction func closeButtonDidPressed(_ sender: UIButton) {
+        // Needed when presented and not pushed
+        dismiss(animated: true, completion: nil)
+    }
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         return false
     }

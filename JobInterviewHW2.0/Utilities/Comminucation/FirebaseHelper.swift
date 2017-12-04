@@ -23,6 +23,8 @@ struct FirebaseHelper {
         static let Users = "Users"
         static let Indexed = "Indexed"
         static let Locations = "Locations"
+        static let Latitude = "latitude"
+        static let Longitude = "longitude"
     }
 
     static let FORBIDDEN_CHARACTERS: String = ".$#[]"
@@ -58,8 +60,8 @@ struct FirebaseHelper {
         let latitudeString: String = String(latitude)
         let longitudeString: String = String(longitude)
 
-        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
-        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
+        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings).child(Keys.Latitude), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
+        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings).child(Keys.Longitude), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
 
         let locationString: String = "\(latitude),\(longitude)"
         let nodeValue: [String : Any] = ["location": locationString, "timestamp": timestamp]
@@ -74,30 +76,38 @@ struct FirebaseHelper {
         }
     }
 
-    static func observeUsersLocations(locationPrefix: String, onUpdate: @escaping CompletionClosure<[PersonSharedLocation]>) -> DatabaseReference? {
-        return observeNode(databaseReference: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(locationPrefix), onUpdate: onUpdate)
-    }
-    
-    static func observeParkingLocations<T: DataSnapshotConvertalbe>(overlappingCoordinates: CLLocationCoordinate2D, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {
+    static func observeParkingLocations<T: DataSnapshotConvertalbe>(overlappingCoordinates: CLLocationCoordinate2D, onUpdate: @escaping CompletionClosure<[T]>) -> [DatabaseReference] {
         
         let latitudeString: String = String(overlappingCoordinates.latitude)
         let longitudeString: String = String(overlappingCoordinates.longitude)
         
-        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
-        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
-        
-        return observeNode(databaseReference: overlappingCoordinatesIndexedPath, onUpdate: onUpdate)
+        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings).child(Keys.Latitude), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
+        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings).child(Keys.Longitude), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
+
+        if let latitudeReference = observeNode(databaseReference: indexLatitudePath, onUpdate: onUpdate),
+            let longitudeReference = observeNode(databaseReference: indexLongitudePath, onUpdate: onUpdate) {
+            return [latitudeReference, longitudeReference]
+        } else {
+            📕("Failed to observe parking location nodes")
+            return []
+        }
     }
     
-    static func observePeopleLocations<T: DataSnapshotConvertalbe>(overlappingCoordinates: CLLocationCoordinate2D, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {
+    static func observePeopleLocations<T: DataSnapshotConvertalbe>(overlappingCoordinates: CLLocationCoordinate2D, onUpdate: @escaping CompletionClosure<[T]>) -> [DatabaseReference] {
 
         let latitudeString: String = String(overlappingCoordinates.latitude)
         let longitudeString: String = String(overlappingCoordinates.longitude)
 
-        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
-        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
+        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(Keys.Latitude), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
+        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(Keys.Longitude), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
 
-        return observeNode(databaseReference: overlappingCoordinatesIndexedPath, onUpdate: onUpdate)
+        if let latitudeReference = observeNode(databaseReference: indexLatitudePath, onUpdate: onUpdate),
+            let longitudeReference = observeNode(databaseReference: indexLongitudePath, onUpdate: onUpdate) {
+            return [latitudeReference, longitudeReference]
+        } else {
+            📕("Failed to observe parking location nodes")
+            return []
+        }
     }
 
     private static func observeNode<T: DataSnapshotConvertalbe>(databaseReference: DatabaseReference, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {
@@ -105,20 +115,28 @@ struct FirebaseHelper {
         currentObservedReference = databaseReference
         currentObservedReference?.observe(.value, with: { (dataSnapshot) in
             📗(dataSnapshot)
+            if let parsed: T = T.parse(dataSnapshot: dataSnapshot) as? T {
+                onUpdate([parsed])
+            } else {
+                onUpdate([])
+            }
         })
 
         return currentObservedReference
     }
 
+    static func removeNode(databaseReference: DatabaseReference) {
+        databaseReference.removeValue()
+    }
     static func removeCurrentLocationSharing() {
         if let currentNickname = currentNicknameOnFirebase {
-            MAIN_USERS_PATH.child(currentNickname).removeValue()
-            createIndexedPath(root: INDEXED_USERS_PATH, lowercasedPrefix: currentNickname.lowercased()).removeValue()
+            removeNode(databaseReference: MAIN_USERS_PATH.child(currentNickname))
+            removeNode(databaseReference: createIndexedPath(root: INDEXED_USERS_PATH, lowercasedPrefix: currentNickname.lowercased()))
         }
 
         if let currentLocation = currentLocationOnFirebase {
-            createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: String(currentLocation.latitude).replacedDotsWithTilde().lowercased()).removeValue()
-            createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: String(currentLocation.longitude).replacedDotsWithTilde().lowercased()).removeValue()
+            removeNode(databaseReference: createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(Keys.Latitude), lowercasedPrefix: String(currentLocation.latitude).replacedDotsWithTilde().lowercased()))
+            removeNode(databaseReference: createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(Keys.Longitude), lowercasedPrefix: String(currentLocation.longitude).replacedDotsWithTilde().lowercased()))
         }
     }
 
@@ -235,7 +253,17 @@ extension AvailableParkingLocation: DataSnapshotConvertalbe {
         guard let jsonDictionary = dataSnapshot.value as? RawJsonFormat,
             let location = jsonDictionary["location"] as? String,
             let coordinate = CLLocationCoordinate2D(string: location),
-            let timestamp = jsonDictionary["timestamp"] as? Int64 else { return nil }
+            let timestamp: Int64 = jsonDictionary["timestamp"] as? Int64 else { return nil }
+
+        // Logic check:
+        let numOfSecondsInMinutes: Int64 = 60
+        let age = ((Date().timestampMillis - timestamp) * numOfSecondsInMinutes)
+        let isExpired: Bool = age > Configurations.shared.maximumParkLifeInMinutes
+        if (isExpired) {
+            FirebaseHelper.removeNode(databaseReference: dataSnapshot.ref)
+            return nil
+        }
+        
         return AvailableParkingLocation(location: coordinate, timestamp: timestamp)
     }
 }

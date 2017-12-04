@@ -22,6 +22,7 @@ class SplashScreenViewController: UIViewController {
     var wallGravityAnimator: UIDynamicAnimator!
     var wallGravityBehavior: UIGravityBehavior!
     var wallCollision: UICollisionBehavior!
+    var timer: ClosureTimer?
 
     lazy var drawer: DrawerContainerViewController = DrawerContainerViewController()
 
@@ -54,6 +55,16 @@ class SplashScreenViewController: UIViewController {
                 strongSelf.wallGravityAnimator.addBehavior(strongSelf.wallCollision)
             })
         }
+        
+        timer = ClosureTimer.runBlockAfterDelay(afterDelay: 2, repeats: true, userInfo: nil, onQueue: DispatchQueue.main) { [weak self] _ in
+            self?.appLogoImageView.animateBounce()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        timer?.invalidate()
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

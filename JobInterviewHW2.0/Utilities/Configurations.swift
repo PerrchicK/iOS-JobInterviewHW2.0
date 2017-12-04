@@ -13,7 +13,7 @@ class Configurations {
     static let shared = Configurations()
 
     struct Constants {
-        // From: http://gis.stackexchange.com/questions/7430/what-ratio-scales-do-google-maps-zoom-levels-correspond-to
+        /// This const helps for radius calculation, reference: http://gis.stackexchange.com/questions/7430/what-ratio-scales-do-google-maps-zoom-levels-correspond-to
         static let ClosestZoomRatioScale: Double = 591657550.50
         static let GitHubLink: String = "https://github.com/PerrchicK/iOS-JobInterviewHW2.0"
     }

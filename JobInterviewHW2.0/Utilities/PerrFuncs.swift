@@ -197,7 +197,8 @@ public protocol Localizable {
 }
 
 public extension Localizable {
-    
+    // localizing xibs, hanve't tried this out: https://ayeohyes.wordpress.com/2015/07/24/localizing-storyboards-and-xibs/
+    // Only this for now: https://gist.github.com/quocnb/35e7c75a623300f2ac612f87cb82a1bb
     public func localize(_ string: String?) -> String? {
         guard let term = string, term.hasPrefix("@") else {
             return string

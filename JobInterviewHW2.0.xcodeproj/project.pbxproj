@@ -14,6 +14,8 @@
 		7538B90E1FD20B9600C9159B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7538B9101FD20B9600C9159B /* Localizable.strings */; };
 		7538B9131FD2104800C9159B /* PredictionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9121FD2104700C9159B /* PredictionsView.swift */; };
 		7538B9161FD218A500C9159B /* Prediction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9151FD218A500C9159B /* Prediction.swift */; };
+		759229F91FD5F26A00CD48E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 759229F51FD5F26A00CD48E6 /* LaunchScreen.storyboard */; };
+		759229FA1FD5F26A00CD48E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 759229F71FD5F26A00CD48E6 /* Main.storyboard */; };
 		75A032EC1FD13CDD00DD52F6 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032EB1FD13CDD00DD52F6 /* AboutViewController.swift */; };
 		75A032EE1FD13E5500DD52F6 /* IHUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032ED1FD13E5500DD52F6 /* IHUViewController.swift */; };
 		75A032F01FD142BA00DD52F6 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032EF1FD142BA00DD52F6 /* Communicator.swift */; };
@@ -34,9 +36,7 @@
 		75B7BE961FD5B5F600636300 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75B7BE941FD5B5F600636300 /* GoogleMaps.framework */; };
 		75B861111FD4EE21004BB72A /* PersonSharedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */; };
 		75BB45611FD090D300D3ADFC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BB45601FD090D300D3ADFC /* AppDelegate.swift */; };
-		75BB45661FD090D300D3ADFC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45641FD090D300D3ADFC /* Main.storyboard */; };
 		75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45671FD090D300D3ADFC /* Assets.xcassets */; };
-		75BB456B1FD090D300D3ADFC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45691FD090D300D3ADFC /* LaunchScreen.storyboard */; };
 		75D9964F1FD23E9B00353206 /* Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D9964E1FD23E9B00353206 /* Place.swift */; };
 		75FECC581FD0BCDE00F0C7B9 /* NibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC551FD0BCDE00F0C7B9 /* NibView.swift */; };
 		75FECC591FD0BCDE00F0C7B9 /* ToastMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC561FD0BCDE00F0C7B9 /* ToastMessage.swift */; };
@@ -59,6 +59,8 @@
 		7538B9111FD20BBA00C9159B /* he */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7538B9121FD2104700C9159B /* PredictionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PredictionsView.swift; sourceTree = "<group>"; };
 		7538B9151FD218A500C9159B /* Prediction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Prediction.swift; sourceTree = "<group>"; };
+		759229F61FD5F26A00CD48E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		759229F81FD5F26A00CD48E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		75A032EB1FD13CDD00DD52F6 /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		75A032ED1FD13E5500DD52F6 /* IHUViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IHUViewController.swift; sourceTree = "<group>"; };
 		75A032EF1FD142BA00DD52F6 /* Communicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Communicator.swift; sourceTree = "<group>"; };
@@ -82,9 +84,7 @@
 		75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonSharedLocation.swift; sourceTree = "<group>"; };
 		75BB455D1FD090D300D3ADFC /* iHereU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iHereU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75BB45601FD090D300D3ADFC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		75BB45651FD090D300D3ADFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		75BB45671FD090D300D3ADFC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		75BB456A1FD090D300D3ADFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		75D9964E1FD23E9B00353206 /* Place.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 		75FECC551FD0BCDE00F0C7B9 /* NibView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NibView.swift; sourceTree = "<group>"; };
 		75FECC561FD0BCDE00F0C7B9 /* ToastMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastMessage.swift; sourceTree = "<group>"; };
@@ -209,9 +209,9 @@
 				75A45E101FD0B39E00616EC1 /* Utilities */,
 				75A45E0B1FD0B0E600616EC1 /* ViewControllers */,
 				75BB45601FD090D300D3ADFC /* AppDelegate.swift */,
-				75BB45641FD090D300D3ADFC /* Main.storyboard */,
+				759229F51FD5F26A00CD48E6 /* LaunchScreen.storyboard */,
+				759229F71FD5F26A00CD48E6 /* Main.storyboard */,
 				75BB45671FD090D300D3ADFC /* Assets.xcassets */,
-				75BB45691FD090D300D3ADFC /* LaunchScreen.storyboard */,
 			);
 			path = JobInterviewHW2.0;
 			sourceTree = "<group>";
@@ -311,16 +311,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75BB456B1FD090D300D3ADFC /* LaunchScreen.storyboard in Resources */,
 				75B7BE951FD5B5F600636300 /* GoogleMaps.bundle in Resources */,
 				75A033021FD187F900DD52F6 /* GoogleService-Info-dev.plist in Resources */,
 				7538B90E1FD20B9600C9159B /* Localizable.strings in Resources */,
+				759229F91FD5F26A00CD48E6 /* LaunchScreen.storyboard in Resources */,
 				75A033031FD187F900DD52F6 /* SecretConstants.plist in Resources */,
+				759229FA1FD5F26A00CD48E6 /* Main.storyboard in Resources */,
 				75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */,
 				7538B9081FD1F27C00C9159B /* PermissionsView.xib in Resources */,
 				75A033011FD187F900DD52F6 /* Info.plist in Resources */,
 				75A033001FD187F900DD52F6 /* GoogleService-Info.plist in Resources */,
-				75BB45661FD090D300D3ADFC /* Main.storyboard in Resources */,
 				75FECC5A1FD0BCDE00F0C7B9 /* ToastMessage.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -446,20 +446,20 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		75BB45641FD090D300D3ADFC /* Main.storyboard */ = {
+		759229F51FD5F26A00CD48E6 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				75BB45651FD090D300D3ADFC /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		75BB45691FD090D300D3ADFC /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				75BB456A1FD090D300D3ADFC /* Base */,
+				759229F61FD5F26A00CD48E6 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		759229F71FD5F26A00CD48E6 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				759229F81FD5F26A00CD48E6 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

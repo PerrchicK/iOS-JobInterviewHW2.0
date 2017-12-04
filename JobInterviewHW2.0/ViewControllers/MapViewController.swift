@@ -23,9 +23,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         case driving
     }
 
-    enum MapState {
+    public enum MapState {
         case parkingSeeker
-        case peopleSeeker
+        case peopleSeeker // This state is yet not implemented, but the behaviour is pretty similar to the parking seeking
         case placesSeeker
     }
 
@@ -61,19 +61,26 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             switch mapState {
             case .parkingSeeker:
                 onCameraChanged = { [weak self] in
-                    guard let strongSelf = self else { return }
-                    strongSelf.observationHandler = FirebaseHelper.observeParkingLocations(overlappingCoordinates: strongSelf.getOverlappingCoordinates(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
+                    guard let strongSelf = self, strongSelf.mapView.camera.zoom > 12 else {
+                        self?.cleanupObservers()
+                        return
+                    }
+                    let observationHandlers = FirebaseHelper.observeParkingLocations(overlappingCoordinates: strongSelf.getOverlappingCoordinates(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
                         📗(parkingLocations)
                     })
+                    strongSelf.observationHandlers.append(contentsOf: observationHandlers)
                 }
             case .placesSeeker:
                 onCameraChanged = nil // do nothing
             case .peopleSeeker:
                 onCameraChanged = { [weak self] in
                     guard let strongSelf = self else { return }
-                    FirebaseHelper.observePeopleLocations(overlappingCoordinates: strongSelf.getOverlappingCoordinates(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
-                        📗(parkingLocations)
+                    let observationHandlers = FirebaseHelper.observePeopleLocations(overlappingCoordinates: strongSelf.getOverlappingCoordinates(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
+                        for parkingLocation in parkingLocations {
+                            strongSelf.putParkingOnMap(availableParkingLocation: parkingLocation)
+                        }
                     })
+                    strongSelf.observationHandlers.append(contentsOf: observationHandlers)
                 }
             default:
                 📕("unhandled state")
@@ -87,7 +94,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     override var shouldForceLocationPermissions: Bool {
         return true
     }
-    private var observationHandler: DatabaseReference?
+    private lazy var observationHandlers: [DatabaseReference] = []
     private var panGestureRecognizer: UIGestureRecognizer?
     private var currentZoom: Float {
         return mapView.camera.zoom
@@ -143,13 +150,15 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        shouldFollowUserLocation = true
+
         mapView.settings.rotateGestures = true
         mapView.delegate = self
         predictionsView.delegate = self
         searchBar.delegate = self
 
         searchType = .addresses
-        mapState = .parkingSeeker
+        mapState = MapState.peopleSeeker // MapState.placesSeeker
 
         panGestureRecognizer = magnifierRulerView.onPan { [unowned self] (panGestureRecognizer) in
             // Ron, following our discussion in the interview,
@@ -190,7 +199,8 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         radiusMagnifierImageView.isUserInteractionEnabled = false
         predictionsView.isPresented = false
         toggleConsistCurrentLocationButton.transform = CGAffineTransform(rotationAngle: CGFloat(-Double.pi / 4)).concatenating(CGAffineTransform(scaleX: 1.5, y: 1.5))
-        searchBar.placeholder = "Search address...".localized()
+        // Definetely, I prefer to use a const instead of writing "free strings", such as: "search address..."
+        searchBar.placeholder = "search address...".localized()
         searchBar.searchBarStyle = .minimal
         searchBar.barStyle = .blackTranslucent
         searchBar.inputAccessoryView = customInputAccessoryView
@@ -235,8 +245,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        observationHandler?.removeAllObservers()
-        observationHandler = nil
+        cleanupObservers()
     }
 
     override func onLocationUpdated(updatedLocation: CLLocation) {
@@ -248,12 +257,12 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         }
 
         if shouldFollowUserLocation ?? false {
-            moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 15)
+            moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 17)
         }
 
-        guard movementState != MovementState.driving else { return }
+        guard movementState == nil else { return }
 
-        if updatedLocation.isDriving {
+//        if updatedLocation.isDriving {
             movementState = MovementState.driving
 
             if let parkingCandidate = parkingCandidate {
@@ -267,7 +276,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             }
 
             presentedNavigationAlertController()
-        }
+//        }
     }
 
     func presentedNavigationAlertController(coordinates: CLLocationCoordinate2D? = nil) {
@@ -302,7 +311,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
     func moveCameraToCurrentLocation() {
         guard let currentLocation = currentLocation else { return }
-        moveCameraToLocation(coordinate: currentLocation.coordinate, andZoom: 3)
+        moveCameraToLocation(coordinate: currentLocation.coordinate, andZoom: 15)
     }
 
     func moveCameraToLocation(coordinate: CLLocationCoordinate2D, andZoom zoomValue: Float? = nil) {
@@ -395,8 +404,6 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         }
 
         let scale: Double = Configurations.Constants.ClosestZoomRatioScale / (pow(2, Double(currentZoom - 1)))
-//                        CGFloat zoom = self.mapView.camera.zoom;
-//                        CGFloat scale = kClosestZoomRatioScale / powf(2.0, zoom - 1);
         let metersPerPixel: Double = Double(scale / 512)
         var magnifierValue: Double = Double(PerrFuncs.percentOfValue(ofValue: self.radiusMagnifierHeightConstraint.constant, fromValue: self.view.frame.height))
         magnifierValue = magnifierValue / 100
@@ -453,6 +460,13 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         } else if let availableParkingLocation = marker.userData as? AvailableParkingLocation {
             presentedNavigationAlertController(coordinates: availableParkingLocation.location)
         }
+    }
+
+    func cleanupObservers() {
+        observationHandlers.forEach({ (ref) in
+            ref.removeAllObservers()
+        })
+        observationHandlers.removeAll()
     }
     
     func getOverlappingCoordinates() -> CLLocationCoordinate2D {
@@ -532,7 +546,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         mapView.selectedMarker = selectedMarker
         LocationHelper.fetchPlace(byPlaceId: placeID) { placeInfoTuple in
             _selectedMarker.userData = placeInfoTuple?.place
-        }
+        }// placeID    String    "ChIJj0OPM1uzAhURj3PnG_XlEyY"
     }
 
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {

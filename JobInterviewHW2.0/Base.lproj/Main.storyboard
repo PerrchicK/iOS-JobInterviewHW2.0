@@ -347,7 +347,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="What this app does?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nf4-FY-mA9">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="What does this app do?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nf4-FY-mA9">
                                 <rect key="frame" x="22" y="70" width="331" height="28"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="23"/>
                                 <color key="textColor" red="0.93092105260000002" green="0.53939423340000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -363,6 +363,13 @@
                                     <outlet property="delegate" destination="bEj-JX-dsg" id="ItU-UA-UZj"/>
                                 </connections>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9lx-BF-So7">
+                                <rect key="frame" x="8" y="20" width="30" height="30"/>
+                                <state key="normal" title="❌"/>
+                                <connections>
+                                    <action selector="closeButtonDidPressed:" destination="bEj-JX-dsg" eventType="touchUpInside" id="mJu-z4-SXq"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -371,6 +378,8 @@
                             <constraint firstItem="I49-b1-npP" firstAttribute="top" secondItem="L1E-d9-xrJ" secondAttribute="bottom" constant="10" id="DnS-at-Zqg"/>
                             <constraint firstItem="Nf4-FY-mA9" firstAttribute="top" secondItem="dU4-Pc-v4f" secondAttribute="bottom" constant="50" id="T6a-NZ-gJw"/>
                             <constraint firstItem="L1E-d9-xrJ" firstAttribute="top" secondItem="Nf4-FY-mA9" secondAttribute="bottom" constant="10" id="W6K-Hr-c8k"/>
+                            <constraint firstItem="9lx-BF-So7" firstAttribute="leading" secondItem="fWO-GH-nXq" secondAttribute="leading" constant="8" id="ZEf-xE-i2u"/>
+                            <constraint firstItem="9lx-BF-So7" firstAttribute="top" secondItem="fWO-GH-nXq" secondAttribute="top" id="jEE-Z7-hwe"/>
                             <constraint firstAttribute="trailingMargin" secondItem="L1E-d9-xrJ" secondAttribute="trailing" constant="20" id="tar-N2-9TS"/>
                             <constraint firstItem="L1E-d9-xrJ" firstAttribute="leading" secondItem="ebi-H4-C4t" secondAttribute="leadingMargin" constant="20" id="zSZ-oY-y3L"/>
                         </constraints>
