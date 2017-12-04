@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import ObjectiveC
+import CoreLocation
 
 // MARK: - "macros" (... like)
 
@@ -219,6 +219,19 @@ public extension Localizable {
         setter(localize(getter(.highlighted)), .highlighted)
         setter(localize(getter(.disabled)), .disabled)
     }
+}
+
+//MARK: - Operators overloading
+
+// Allows this: { let temp = -3 ~ -80 ~ 5 ~ 10 }
+precedencegroup Additive {
+    associativity: left // Explanation: https://en.wikipedia.org/wiki/Operator_associativity
+}
+// References: http://nshipster.com/swift-operators/ + https://developer.apple.com/documentation/swift/operator_declarations
+infix operator ~ : Additive
+
+func ~(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
+    return CLLocationCoordinate2D(latitude: left.latitude - right.latitude, longitude: left.longitude - right.longitude)
 }
 
 //MARK: - Global Extensions

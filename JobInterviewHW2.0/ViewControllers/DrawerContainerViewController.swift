@@ -107,12 +107,12 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
         case LeftMenuOptions.Driving.LeaveParking.symbol:
             aboutViewController.aboutTitle = "How iLeave works?".localized()
             aboutViewController.title = "iLeave"
-            aboutViewController.aboutText = "Simply takes your location automatically and share it with averyone in need to seek for parking".localized()
+            aboutViewController.aboutText = "Simply takes your location automatically and shares it with anyone that is in a parking search 'mission', no user action is needed, only may undo in a 'false alarm'.".localized()
             navigationController?.pushViewController(aboutViewController, animated: true)
         case LeftMenuOptions.Driving.SeekParking.symbol:
             aboutViewController.aboutTitle = "How iPark works?".localized()
             aboutViewController.title = "iPark"
-            aboutViewController.aboutText = "Simply shares averyone who left his parking slot around the searching user".localized()
+            aboutViewController.aboutText = "Simply shares free parking spot locations, from anyone who left one while using this app, on the map screen".localized()
             navigationController?.pushViewController(aboutViewController, animated: true)
         case LeftMenuOptions.Location.WhereIsHere.symbol:
             if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {

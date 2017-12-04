@@ -77,9 +77,27 @@ struct FirebaseHelper {
     static func observeUsersLocations(locationPrefix: String, onUpdate: @escaping CompletionClosure<[PersonSharedLocation]>) -> DatabaseReference? {
         return observeNode(databaseReference: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(locationPrefix), onUpdate: onUpdate)
     }
+    
+    static func observeParkingLocations<T: DataSnapshotConvertalbe>(overlappingCoordinates: CLLocationCoordinate2D, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {
+        
+        let latitudeString: String = String(overlappingCoordinates.latitude)
+        let longitudeString: String = String(overlappingCoordinates.longitude)
+        
+        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
+        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Parkings), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
+        
+        return observeNode(databaseReference: overlappingCoordinatesIndexedPath, onUpdate: onUpdate)
+    }
+    
+    static func observePeopleLocations<T: DataSnapshotConvertalbe>(overlappingCoordinates: CLLocationCoordinate2D, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {
 
-    static func observeParkingLocations<T: DataSnapshotConvertalbe>(locationPrefix: String, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {
-        return observeNode(databaseReference: INDEXED_LOCATIONS_PATH.child(Keys.Parkings).child(locationPrefix), onUpdate: onUpdate)
+        let latitudeString: String = String(overlappingCoordinates.latitude)
+        let longitudeString: String = String(overlappingCoordinates.longitude)
+
+        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
+        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
+
+        return observeNode(databaseReference: overlappingCoordinatesIndexedPath, onUpdate: onUpdate)
     }
 
     private static func observeNode<T: DataSnapshotConvertalbe>(databaseReference: DatabaseReference, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {

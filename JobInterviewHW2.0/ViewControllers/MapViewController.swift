@@ -12,24 +12,6 @@ import GoogleMaps
 import GoogleMapsBase
 import BetterSegmentedControl
 
-//MARK: - Operators overloading
-
-// Reference: http://nshipster.com/swift-operators/
-func ==(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> Bool {
-    return left.latitude == right.latitude && left.longitude == right.longitude
-}
-
-// Allows this: { let temp = -3 ~ -80 ~ 5 ~ 10 }
-precedencegroup Additive {
-    associativity: left // Explanation: https://en.wikipedia.org/wiki/Operator_associativity
-}
-// References: http://nshipster.com/swift-operators/ + https://developer.apple.com/documentation/swift/operator_declarations
-infix operator ~ : Additive
-
-func ~(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
-    return CLLocationCoordinate2D(latitude: left.latitude - right.latitude, longitude: left.longitude - right.longitude)
-}
-
 class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate, PredictionsViewDelegate {
     enum SearchType: String {
         case people
@@ -41,12 +23,71 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         case driving
     }
 
+    enum MapState {
+        case parkingSeeker
+        case peopleSeeker
+        case placesSeeker
+    }
+
+    // Yes, I'm using an explicit unwarp here, taking the "risk" in case a developer will try to put nil here. Which is not suposed to happen.
+    var searchType: SearchType! {
+        didSet {
+            if searchType == .addresses {
+                searchBar.placeholder = "search address".localized()
+                onSearchCommand = { [weak self] in
+                    guard let searchPhrase = self?.searchBar.text else { return }
+                    LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchPhrase) { [weak self] (resultTupple) in
+                        guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == self?.searchBar.text else { self?.dismissPredictionsList(); return }
+                        
+                        strongSelf.presentPredictions(predictions: resultTupple.predictions)
+                    }
+                }
+            } else { // SearchType.people
+                searchBar.placeholder = "search people".localized()
+                onSearchCommand = { [weak self] in
+                    guard let searchPhrase = self?.searchBar.text else { return }
+                    
+                    FirebaseHelper.queryIndexedData(startsWith: searchPhrase, callback: { [weak self] (people: [PersonSharedLocation]) in
+                        self?.presentPredictions(predictions: people)
+                    })
+                }
+            }
+        }
+    }
+
+    // Same here, using an explicit unwarp here.
+    var mapState: MapState! {
+        didSet {
+            switch mapState {
+            case .parkingSeeker:
+                onCameraChanged = { [weak self] in
+                    guard let strongSelf = self else { return }
+                    strongSelf.observationHandler = FirebaseHelper.observeParkingLocations(overlappingCoordinates: strongSelf.getOverlappingCoordinates(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
+                        📗(parkingLocations)
+                    })
+                }
+            case .placesSeeker:
+                onCameraChanged = nil // do nothing
+            case .peopleSeeker:
+                onCameraChanged = { [weak self] in
+                    guard let strongSelf = self else { return }
+                    FirebaseHelper.observePeopleLocations(overlappingCoordinates: strongSelf.getOverlappingCoordinates(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
+                        📗(parkingLocations)
+                    })
+                }
+            default:
+                📕("unhandled state")
+            }
+        }
+    }
+
     //MARK: - Function pointers, will be assigned according to user's needs
-    var onSearchStarted: (() -> ())?
+    var onSearchCommand: (() -> ())?
     var onCameraChanged: (() -> ())?
     override var shouldForceLocationPermissions: Bool {
         return true
     }
+    private var observationHandler: DatabaseReference?
     private var panGestureRecognizer: UIGestureRecognizer?
     private var currentZoom: Float {
         return mapView.camera.zoom
@@ -106,11 +147,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         mapView.delegate = self
         predictionsView.delegate = self
         searchBar.delegate = self
-        
-        changeSearchToAddressesMode()
-        changeToLocationSharingMode()
 
-        📗(mapView.findSubviewsInTree(predicateClosure: { $0 is UIScrollView}))
+        searchType = .addresses
+        mapState = .parkingSeeker
 
         panGestureRecognizer = magnifierRulerView.onPan { [unowned self] (panGestureRecognizer) in
             // Ron, following our discussion in the interview,
@@ -193,7 +232,13 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         NotificationCenter.default.addObserver(self, selector: #selector(drawerWillOpenNotification), name: Notification.Name.DrawerWillOpen, object: nil)
     }
 
-    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        observationHandler?.removeAllObservers()
+        observationHandler = nil
+    }
+
     override func onLocationUpdated(updatedLocation: CLLocation) {
         super.onLocationUpdated(updatedLocation: updatedLocation)
 
@@ -202,13 +247,13 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             📗("idle")
         }
 
-        if shouldFollowLocation {
+        if shouldFollowUserLocation ?? false {
             moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 15)
         }
 
         guard movementState != MovementState.driving else { return }
 
-        if updatedLocation.isDriving { // 5 = 20kph
+        if updatedLocation.isDriving {
             movementState = MovementState.driving
 
             if let parkingCandidate = parkingCandidate {
@@ -222,7 +267,6 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             }
 
             presentedNavigationAlertController()
-
         }
     }
 
@@ -271,9 +315,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     
     @objc func searchTypeControlValueChanged(_ sender: BetterSegmentedControl) {
         if sender.index == 0 {
-            changeSearchToAddressesMode()
+            searchType = .addresses
         } else {
-            changeSearchToUsersMode()
+            searchType = .people
         }
     }
     @objc func drawerWillOpenNotification(notification: Notification) {
@@ -328,13 +372,17 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         toggleFollowLocation()
     }
     
-    func toggleFollowLocation(shouldTurnOn: Bool? = nil) {
-        let _shouldTurnOn = shouldTurnOn ?? (toggleConsistCurrentLocationButton.alpha != 1)
-        let rotation: CGFloat = _shouldTurnOn ? CGFloat(-Double.pi / 4) : CGFloat(Double.pi / 8)
-        let scaleValue: CGFloat = _shouldTurnOn ? 1.5 : 1
+    func toggleFollowLocation(shouldTurnOn turnOn: Bool? = nil) {
+        let shouldTurnOn = turnOn ?? (toggleConsistCurrentLocationButton.alpha != 1)
+        shouldFollowUserLocation = shouldTurnOn
+
+        let rotation: CGFloat = shouldTurnOn ? CGFloat(-Double.pi / 4) : CGFloat(Double.pi / 8)
+        let scaleValue: CGFloat = shouldTurnOn ? 1.5 : 1
+        let alpha: CGFloat = shouldTurnOn ? 1 : 0.5
         let scaleTransform: CGAffineTransform = CGAffineTransform(scaleX: scaleValue, y: scaleValue)
+
         UIView.animate(withDuration: 0.2) { [weak self] in
-            self?.toggleConsistCurrentLocationButton.alpha = _shouldTurnOn ? 1 : 0.5
+            self?.toggleConsistCurrentLocationButton.alpha = alpha
             self?.toggleConsistCurrentLocationButton.transform = CGAffineTransform(rotationAngle: rotation).concatenating(scaleTransform)
         }
     }
@@ -409,7 +457,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     
     func getOverlappingCoordinates() -> CLLocationCoordinate2D {
         let cameraBounds = mapView.cameraBounds(inView: actualMagnifierBoundaries)
-        let precision = (cameraBounds.bottomRight ~ cameraBounds.topLeft).latitude.getPrecision()
+        let precision = (cameraBounds.bottomRight ~ cameraBounds.topLeft).latitude.exractPrecision()
         let multiplier = Double(10 * precision - 1)
         let latitude = Double(Int(cameraBounds.bottomRight.latitude * multiplier)) / multiplier
         let longitude = Double(Int(cameraBounds.bottomRight.longitude * multiplier)) / multiplier
@@ -511,9 +559,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         }
     }
 
-    var shouldFollowLocation: Bool {
-        return toggleConsistCurrentLocationButton.alpha == 1
-    }
+    var shouldFollowUserLocation: Bool?
 
     //MARK: - UISearchBarDelegate
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -529,7 +575,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
         // Supplies a much better solution than this one: https://github.com/PerrchicK/iOS-JobInterviewProject/blob/076e8bd26929d55f658addc73625eb32744e3930/CandidateProject/Classes/ViewControllers/MapViewController.m#L180
         throttler.throttle(timeout: 0.3) { [weak self] in
-            self?.onSearchStarted?()
+            self?.onSearchCommand?()
         }
     }
 
@@ -582,48 +628,6 @@ extension CLLocationCoordinate2D {
     }
 }
 
-extension MapViewController {
-    func changeToParkSeekingMode() {
-        onCameraChanged = { [weak self] in
-            guard let strongSelf = self else { return }
-            FirebaseHelper.observeParkingLocations(locationPrefix: strongSelf.getOverlappingCoordinates().toString(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
-                📗(parkingLocations)
-            })
-        }
-    }
-
-    func changeToLocationSharingMode() {
-        onCameraChanged = { [weak self] in
-            if let cameraTargetBounds = self?.mapView.cameraBounds() {
-                let delta: CLLocationCoordinate2D = cameraTargetBounds.topLeft ~ cameraTargetBounds.bottomRight
-            }
-        }
-    }
-
-    func changeSearchToUsersMode() {
-        searchBar.placeholder = "search people".localized()
-        onSearchStarted = { [weak self] in
-            guard let searchPhrase = self?.searchBar.text else { return }
-
-            FirebaseHelper.queryIndexedData(startsWith: searchPhrase, callback: { [weak self] (people: [PersonSharedLocation]) in
-                self?.presentPredictions(predictions: people)
-            })
-        }
-    }
-    
-    func changeSearchToAddressesMode() {
-        searchBar.placeholder = "search address".localized()
-        onSearchStarted = { [weak self] in
-            guard let searchPhrase = self?.searchBar.text else { return }
-            LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchPhrase) { [weak self] (resultTupple) in
-                guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == self?.searchBar.text else { self?.dismissPredictionsList(); return }
-                
-                strongSelf.presentPredictions(predictions: resultTupple.predictions)
-            }
-        }
-    }
-}
-
 extension GMSMapView {
     // From: https://stackoverflow.com/questions/31943778/google-maps-sdk-ios-calculate-radius-according-zoom-level
     // and: http://jslim.net/blog/2013/07/02/ios-get-the-radius-of-mkmapview/
@@ -664,8 +668,8 @@ extension GMSMapView {
 }
 
 extension Double {
-    func getPrecision() -> Int {
-        // Keep sign
+    func exractPrecision() -> Int {
+        // Keep the sign
         let sign: Double = self < 0 ? -1 : 1
         let unsigned: Double = self * sign
 
@@ -683,7 +687,7 @@ extension Double {
 
 extension CLLocation {
     var isDriving: Bool {
-        return speed > 5
+        return speed > 5 // 5 = 20kph
     }
 }
 
