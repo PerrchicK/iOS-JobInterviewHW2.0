@@ -82,11 +82,6 @@ public struct LeftMenuOptions {
         public static let LeaveParking: MenuOption = (text: "iLeave", symbol: "👋")
         public static let SeekParking: MenuOption = (text: "iPark", symbol: "🚙")
     }
-    public struct User {
-        public static let title: String = "User stuff".localized()
-
-        public static let RenameNickname: MenuOption = (text: "Change nickname".localized(), symbol: "👽")
-    }
     public struct Location {
         public static let title: String = "Location".localized()
         

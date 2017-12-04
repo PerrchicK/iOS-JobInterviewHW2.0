@@ -12,9 +12,7 @@ import FirebaseAuth
 import CoreLocation
 
 protocol DataSnapshotConvertalbe {
-    static func from(dataSnapshot: DataSnapshot) -> DataSnapshotConvertalbe?
-    //init?(dataSnapshot: DataSnapshot)
-    //func parse(from: DataSnapshot)
+    static func parse(dataSnapshot: DataSnapshot) -> DataSnapshotConvertalbe?
 }
 
 struct FirebaseHelper {
@@ -35,15 +33,14 @@ struct FirebaseHelper {
     static let INDEXED_LOCATIONS_PATH = MAIN_INDEXED_PATH.child(Keys.Locations)
 
     static var currentObservedReference: DatabaseReference?
+    static var currentNicknameOnFirebase: String?
+    static var currentLocationOnFirebase: CLLocationCoordinate2D?
 
     static func configureFirebase() {
         if let firebaseOptions = UtilsObjC.firebaseEnvironmentOptions() {
             FirebaseApp.configure(options: firebaseOptions)
         }
 
-//        observeConnectionState()
-
-//        PATH_TO_USER_ONLINE_STATE()?.onDisconnectSetValue(false)
         isConfigured = true
         
         Auth.auth().signInAnonymously() { (user, error) in
@@ -76,15 +73,15 @@ struct FirebaseHelper {
         }
     }
 
-    static func observeUsersLocations(locationPrefix: String, onUpdate: @escaping () -> ()) -> DatabaseReference? {
+    static func observeUsersLocations(locationPrefix: String, onUpdate: @escaping CompletionClosure<[PersonSharedLocation]>) -> DatabaseReference? {
         return observeNode(databaseReference: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(locationPrefix), onUpdate: onUpdate)
     }
 
-    static func observeParkingLocations(locationPrefix: String, onUpdate: @escaping () -> ()) -> DatabaseReference? {
+    static func observeParkingLocations<T: DataSnapshotConvertalbe>(locationPrefix: String, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {
         return observeNode(databaseReference: INDEXED_LOCATIONS_PATH.child(Keys.Parkings).child(locationPrefix), onUpdate: onUpdate)
     }
 
-    private static func observeNode(databaseReference: DatabaseReference, onUpdate: @escaping () -> ()) -> DatabaseReference? {
+    private static func observeNode<T: DataSnapshotConvertalbe>(databaseReference: DatabaseReference, onUpdate: @escaping CompletionClosure<[T]>) -> DatabaseReference? {
         currentObservedReference?.removeAllObservers()
         currentObservedReference = databaseReference
         currentObservedReference?.observe(.value, with: { (dataSnapshot) in
@@ -94,19 +91,36 @@ struct FirebaseHelper {
         return currentObservedReference
     }
 
-    static func shareLocation(_ nickname: String, withLocationLatitude latitude: Double, withLocationLongitude longitude: Double, completionCallback: @escaping CompletionClosure<Error?>) {
-        let locationString: String = "\(latitude),\(longitude)"
-        MAIN_USERS_PATH.child(nickname).setValue(locationString)
+    static func removeCurrentLocationSharing() {
+        if let currentNickname = currentNicknameOnFirebase {
+            MAIN_USERS_PATH.child(currentNickname).removeValue()
+            createIndexedPath(root: INDEXED_USERS_PATH, lowercasedPrefix: currentNickname.lowercased()).removeValue()
+        }
+
+        if let currentLocation = currentLocationOnFirebase {
+            createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: String(currentLocation.latitude).replacedDotsWithTilde().lowercased()).removeValue()
+            createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: String(currentLocation.longitude).replacedDotsWithTilde().lowercased()).removeValue()
+        }
+    }
+
+    static func shareLocation(_ nickname: String, withLocation locationCoordinate: CLLocationCoordinate2D, completionCallback: @escaping CompletionClosure<Error?>) {
+        removeCurrentLocationSharing()
+        currentNicknameOnFirebase = nickname
+        currentLocationOnFirebase = locationCoordinate
+
+        MAIN_USERS_PATH.child(nickname).setValue(locationCoordinate.toString())
         MAIN_USERS_PATH.child(nickname).onDisconnectRemoveValue()
         
-        indexLocationSharing(nickname, withLocationLatitude: latitude, withLocationLongitude: longitude, completionCallback: completionCallback)
-        indexNickname(nickname, withLocationLatitude: latitude, withLocationLongitude: longitude) { error in
-            completionCallback(error)
-
-            queryIndexedData(startsWith: "pe", callback: { (people: [PersonSharedLocation]) in
-                📗(people)
-            })
-        }
+        indexLocationSharing(nickname, withLocationLatitude: locationCoordinate.latitude, withLocationLongitude: locationCoordinate.longitude, completionCallback: { error in
+            if let error = error {
+                📕(error)
+                completionCallback(error)
+            } else {
+                indexNickname(nickname, withLocation: locationCoordinate) { error in
+                    completionCallback(error)
+                }
+            }
+        })
     }
 
     private static func indexLocationSharing(_ nickname: String, withLocationLatitude latitude: Double, withLocationLongitude longitude: Double, completionCallback: @escaping CompletionClosure<Error?>) {
@@ -132,11 +146,11 @@ struct FirebaseHelper {
         indexLatitudePath.child(nickname).onDisconnectRemoveValue()
     }
 
-    private static func indexNickname(_ nickname: String, withLocationLatitude latitude: Double, withLocationLongitude longitude: Double, completionCallback: @escaping CompletionClosure<Error?>) {
+    private static func indexNickname(_ nickname: String, withLocation locationCoordinate: CLLocationCoordinate2D, completionCallback: @escaping CompletionClosure<Error?>) {
         let indexUsersPath: DatabaseReference = createIndexedPath(root: INDEXED_USERS_PATH, lowercasedPrefix: nickname.lowercased())
         📗("Indexing '\(nickname)' to: \(indexUsersPath)")
-        let locationString: String = "\(latitude),\(longitude)"
-        let nodeValue: [String : Any] = ["location": locationString, "nickname": nickname]
+
+        let nodeValue: [String : Any] = ["location": locationCoordinate.toString(), "nickname": nickname]
         MAIN_USERS_PATH.child(nickname).setValue(nodeValue) { (error, databaseReference) in
             indexUsersPath.setValue(nodeValue)
             indexUsersPath.onDisconnectRemoveValue()
@@ -154,6 +168,7 @@ struct FirebaseHelper {
         return concatPath(updatedReference: updatedReference.child(String(chars[position])), chars: chars, position: position + 1);
     }
 
+    // Inspiration: https://medium.com/developermind/generics-in-swift-4-4f802cd6f53c
     static func queryIndexedData<T: DataSnapshotConvertalbe>(startsWith prefix: String, callback:@escaping CompletionClosure<[T]>) {
         let indexUsersPath: DatabaseReference = createIndexedPath(root: INDEXED_USERS_PATH, lowercasedPrefix: prefix.lowercased())
         
@@ -180,7 +195,7 @@ struct FirebaseHelper {
 
         let iterator = child.children
         while let node = iterator.nextObject() as? DataSnapshot {
-            if let converted: T = T.from(dataSnapshot: node) as? T {
+            if let converted: T = T.parse(dataSnapshot: node) as? T {
                 📗("parsed this to a DataSnapshotConvertalbe instance: \(converted)") // PersonSharedLocation
                 parsed.append(converted)
             } else {
@@ -219,7 +234,7 @@ extension String {
 //}
 
 extension AvailableParkingLocation: DataSnapshotConvertalbe {
-    static func from(dataSnapshot: DataSnapshot) -> DataSnapshotConvertalbe? {
+    static func parse(dataSnapshot: DataSnapshot) -> DataSnapshotConvertalbe? {
         guard let jsonDictionary = dataSnapshot.value as? RawJsonFormat,
             let location = jsonDictionary["location"] as? String,
             let coordinate = CLLocationCoordinate2D(string: location),
@@ -229,7 +244,7 @@ extension AvailableParkingLocation: DataSnapshotConvertalbe {
 }
 
 extension PersonSharedLocation: DataSnapshotConvertalbe {
-    static func from(dataSnapshot: DataSnapshot) -> DataSnapshotConvertalbe? {
+    static func parse(dataSnapshot: DataSnapshot) -> DataSnapshotConvertalbe? {
         guard let jsonDictionary = dataSnapshot.value as? RawJsonFormat,
             let location = jsonDictionary["location"] as? String,
             let coordinate = CLLocationCoordinate2D(string: location),

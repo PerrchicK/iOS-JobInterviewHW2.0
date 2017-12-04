@@ -25,6 +25,8 @@
 import UIKit
 import GoogleMaps
 
+// Hmm... somehow I needed to use this solution, but I did not uploaded these files to the GitHub repo. https://stackoverflow.com/questions/14744479/google-maps-sdk-for-ios-requires-googlemaps-bundle-to-be-part-of-your-target-und
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?

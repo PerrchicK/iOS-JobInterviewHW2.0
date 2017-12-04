@@ -10,8 +10,21 @@ import UIKit
 
 class AboutViewController: IHUViewController, UITextViewDelegate {
 
+    var aboutText: String?
+    var aboutTitle: String?
+
+    @IBOutlet weak var informationTextView: UITextView!
+    @IBOutlet weak var titleLabel: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        titleLabel.text = aboutTitle
+        informationTextView.text = aboutText
     }
 
     func textView(_ textView: UITextView, shouldInteractWith URL: Foundation.URL, in characterRange: NSRange) -> Bool {

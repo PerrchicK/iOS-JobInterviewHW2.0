@@ -8,3 +8,9 @@
 
 "LocationPermissionTitle" = "אל תתביישו, אתם משתמשים באפליקציית מיקום. בנוסף, המיקום שלכם עוזר לאחרים למצוא חניה.\nsharing is caring 😉";
 "GrantPermissions" = "אוקיי";
+"search address" = "חפשו כתובות";
+"search people" = "חפשו אנשים";
+"dismiss keyboard" = "הסתר";
+"dismiss alert" = "לא כרגע";
+"about the app" = "Many things, around location and people.\n\nSuch as: Finding friends who would like to share their location, even search them with an auto-complete tool. Finding avalable parking slots (valid for 30 minutes), while on the other hand, telling evertyone that your parking slot is now available. Using google places to look for interesting places around a specific location with specific raius.\n\n\nVisit this project's repository at: https://github.com/PerrchicK/iOS-JobInterviewHW2.0";
+

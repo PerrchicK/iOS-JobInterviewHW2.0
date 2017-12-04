@@ -33,8 +33,6 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
                 LeftMenuOptions.Driving.title:
                     [LeftMenuOptions.Driving.LeaveParking,
                      LeftMenuOptions.Driving.SeekParking],
-                LeftMenuOptions.User.title:
-                    [LeftMenuOptions.User.RenameNickname],
                 LeftMenuOptions.Location.title:
                     [LeftMenuOptions.Location.WhereIsHere,
                      LeftMenuOptions.Location.ShareLocation,

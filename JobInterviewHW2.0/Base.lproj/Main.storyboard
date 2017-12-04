@@ -235,8 +235,15 @@
                                 <rect key="frame" x="20" y="20" width="335" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ahy-y2-YrC" customClass="BetterSegmentedControl" customModule="BetterSegmentedControl">
+                                <rect key="frame" x="19.5" y="76" width="335" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="2d8-gI-bm6"/>
+                                </constraints>
+                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zaj-TX-hZi" userLabel="Toggle Follow Current Location Button">
-                                <rect key="frame" x="315" y="613" width="40" height="54"/>
+                                <rect key="frame" x="315" y="593" width="40" height="54"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="35"/>
                                 <state key="normal" title="📌"/>
                                 <connections>
@@ -264,6 +271,10 @@
                                     <action selector="onSearchInRadiusClicked:" destination="ADO-Qf-Pvb" eventType="touchUpInside" id="ltU-uM-dbd"/>
                                 </connections>
                             </button>
+                            <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Zu-P9-ffH">
+                                <rect key="frame" x="157" y="318" width="60" height="50"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Y1-pi-JAF" customClass="PredictionsView" customModule="iHereU" customModuleProvider="target">
                                 <rect key="frame" x="10" y="76" width="355" height="20"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -274,24 +285,31 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="9Zu-P9-ffH" firstAttribute="centerY" secondItem="ysl-kq-bOw" secondAttribute="centerY" id="02L-ld-ci3"/>
                             <constraint firstItem="MUy-t6-Dc6" firstAttribute="leading" secondItem="YPw-1N-bd5" secondAttribute="trailing" id="1s1-sO-M9b"/>
                             <constraint firstItem="YPw-1N-bd5" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="2B2-py-HHX"/>
                             <constraint firstItem="74w-3c-C7v" firstAttribute="top" secondItem="vAx-Ak-7zd" secondAttribute="bottom" id="2PT-sG-hE6"/>
                             <constraint firstItem="Ll5-NS-YCC" firstAttribute="top" secondItem="MUy-t6-Dc6" secondAttribute="top" id="71a-xl-lAD"/>
                             <constraint firstItem="hhl-7C-fk0" firstAttribute="trailing" secondItem="Ll5-NS-YCC" secondAttribute="trailing" id="A34-MI-CbB"/>
+                            <constraint firstItem="9Zu-P9-ffH" firstAttribute="width" secondItem="ysl-kq-bOw" secondAttribute="width" multiplier="0.25" id="B6a-aH-O3a"/>
+                            <constraint firstItem="ahy-y2-YrC" firstAttribute="centerX" secondItem="MUy-t6-Dc6" secondAttribute="centerX" id="C1d-qh-end"/>
                             <constraint firstItem="2Y1-pi-JAF" firstAttribute="width" secondItem="Ifk-Cm-fRM" secondAttribute="width" constant="-20" id="CT3-sD-5t1"/>
+                            <constraint firstItem="ahy-y2-YrC" firstAttribute="width" secondItem="MUy-t6-Dc6" secondAttribute="width" id="Gpv-EY-N74"/>
+                            <constraint firstItem="9Zu-P9-ffH" firstAttribute="centerX" secondItem="ysl-kq-bOw" secondAttribute="centerX" id="IqB-XZ-gSd"/>
                             <constraint firstItem="hhl-7C-fk0" firstAttribute="height" secondItem="Ll5-NS-YCC" secondAttribute="height" id="McP-bL-BEs"/>
                             <constraint firstItem="vAx-Ak-7zd" firstAttribute="leading" secondItem="Ll5-NS-YCC" secondAttribute="leading" id="MtC-ux-ySC"/>
+                            <constraint firstItem="ahy-y2-YrC" firstAttribute="top" secondItem="MUy-t6-Dc6" secondAttribute="bottom" id="QlM-FF-YjN"/>
                             <constraint firstItem="YPw-1N-bd5" firstAttribute="leading" secondItem="Ll5-NS-YCC" secondAttribute="leading" id="SQf-bq-xAG"/>
                             <constraint firstItem="hhl-7C-fk0" firstAttribute="centerY" secondItem="Ll5-NS-YCC" secondAttribute="centerY" id="dQD-zf-kgZ"/>
                             <constraint firstItem="2Y1-pi-JAF" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="eVC-p4-fps"/>
                             <constraint firstItem="NUp-8i-RDO" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="ext-ko-NlK"/>
                             <constraint firstItem="vAx-Ak-7zd" firstAttribute="top" secondItem="sgS-A8-yoc" secondAttribute="bottom" id="jl4-jQ-QWN"/>
                             <constraint firstItem="ysl-kq-bOw" firstAttribute="centerY" secondItem="vAx-Ak-7zd" secondAttribute="centerY" id="kDb-d1-RuO"/>
-                            <constraint firstItem="Zaj-TX-hZi" firstAttribute="bottom" secondItem="Ll5-NS-YCC" secondAttribute="bottom" id="nKb-eA-rRj"/>
+                            <constraint firstItem="Ll5-NS-YCC" firstAttribute="bottom" secondItem="Zaj-TX-hZi" secondAttribute="bottom" constant="20" id="nKb-eA-rRj"/>
                             <constraint firstItem="NUp-8i-RDO" firstAttribute="centerY" secondItem="vAx-Ak-7zd" secondAttribute="centerY" id="oVW-yd-1ko"/>
                             <constraint firstItem="Ll5-NS-YCC" firstAttribute="trailing" secondItem="vAx-Ak-7zd" secondAttribute="trailing" id="sRt-rc-Q1e"/>
                             <constraint firstItem="ysl-kq-bOw" firstAttribute="centerX" secondItem="Ll5-NS-YCC" secondAttribute="centerX" id="t17-rq-NfL"/>
+                            <constraint firstItem="9Zu-P9-ffH" firstAttribute="height" secondItem="ysl-kq-bOw" secondAttribute="height" multiplier="0.25" id="t2X-yE-7nJ"/>
                             <constraint firstItem="YPw-1N-bd5" firstAttribute="height" secondItem="Ifk-Cm-fRM" secondAttribute="height" id="t83-gQ-05n"/>
                             <constraint firstItem="Zaj-TX-hZi" firstAttribute="trailing" secondItem="hhl-7C-fk0" secondAttribute="leading" id="v8G-ZM-YFF"/>
                             <constraint firstItem="hhl-7C-fk0" firstAttribute="leading" secondItem="MUy-t6-Dc6" secondAttribute="trailing" id="wHl-S2-snR"/>
@@ -300,6 +318,7 @@
                         <viewLayoutGuide key="safeArea" id="Ll5-NS-YCC"/>
                     </view>
                     <connections>
+                        <outlet property="actualMagnifierBoundaries" destination="9Zu-P9-ffH" id="bpG-X9-7CJ"/>
                         <outlet property="fetchPlacesButton" destination="NUp-8i-RDO" id="0IV-4n-MOz"/>
                         <outlet property="magnifierRulerView" destination="hhl-7C-fk0" id="8gR-Ae-Q9r"/>
                         <outlet property="mapView" destination="vAx-Ak-7zd" id="hYi-Qs-Rub"/>
@@ -308,6 +327,7 @@
                         <outlet property="radiusMagnifierHeightConstraint" destination="spx-Iu-Ja7" id="WDW-Tu-12f"/>
                         <outlet property="radiusMagnifierImageView" destination="ysl-kq-bOw" id="G6b-pO-D7e"/>
                         <outlet property="searchBar" destination="MUy-t6-Dc6" id="Ab4-5b-arc"/>
+                        <outlet property="searchTypeSegmentedControl" destination="ahy-y2-YrC" id="2eK-J8-UhM"/>
                         <outlet property="toggleConsistCurrentLocationButton" destination="Zaj-TX-hZi" id="0Wl-Df-U17"/>
                     </connections>
                 </viewController>
@@ -333,7 +353,7 @@
                                 <color key="textColor" red="0.93092105260000002" green="0.53939423340000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" editable="NO" text="Visit this project's repository at: https://github.com/PerrchicK/swift-app" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="L1E-d9-xrJ">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L1E-d9-xrJ">
                                 <rect key="frame" x="36" y="246.5" width="303" height="410.5"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -356,6 +376,10 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="fWO-GH-nXq"/>
                     </view>
+                    <connections>
+                        <outlet property="informationTextView" destination="L1E-d9-xrJ" id="6aD-JV-9r5"/>
+                        <outlet property="titleLabel" destination="Nf4-FY-mA9" id="9nM-rV-l3K"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Al6-WA-n2p" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

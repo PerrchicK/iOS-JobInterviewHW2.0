@@ -174,6 +174,15 @@ open class PerrFuncs {
         
         return nil
     }
+
+    // From: https://stackoverflow.com/questions/39562887/how-to-implement-method-swizzling-swift-3-0
+    static let swizzle: (AnyClass, Selector, Selector) -> () = { forClass, originalSelector, swizzledSelector in
+        let originalMethod = class_getInstanceMethod(forClass, originalSelector)
+        let swizzledMethod = class_getInstanceMethod(forClass, swizzledSelector)
+        if let originalMethod = originalMethod, let swizzledMethod = swizzledMethod {
+            method_exchangeImplementations(originalMethod, swizzledMethod)
+        }
+    }
 }
 
 extension String {
@@ -386,6 +395,13 @@ extension UIView {
         getRoundedCornered(frame.width / 2)
         clipsToBounds = true
         contentMode = .scaleAspectFill
+    }
+
+    func iterateAllSubviewsInTree(withClosure closure: (UIView) -> ()) {
+        for view in subviews {
+            view.iterateAllSubviewsInTree(withClosure: closure)
+            closure(view)
+        }
     }
 
     func findSubviewsInTree(predicateClosure: PredicateClosure<UIView>) -> [UIView] {

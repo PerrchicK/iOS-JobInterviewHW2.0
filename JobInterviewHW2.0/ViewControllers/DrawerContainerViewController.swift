@@ -28,6 +28,8 @@ class DrawerContainerViewController: MMDrawerController {
     var isMenuOpen: Bool {
         return openSide != .none
     }
+
+    lazy var aboutViewController: AboutViewController = AboutViewController.instantiate()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -98,7 +100,20 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
 
         switch selectedOption.symbol {
         case LeftMenuOptions.About.AboutApp.symbol: // LeftMenuOptions.About.AboutApp():
-            navigationController?.pushViewController(AboutViewController.instantiate(), animated: true)
+            aboutViewController.aboutTitle = "About the app".localized()
+            aboutViewController.aboutText = "about the app info".localized()
+            aboutViewController.title = "About"
+            navigationController?.pushViewController(aboutViewController, animated: true)
+        case LeftMenuOptions.Driving.LeaveParking.symbol:
+            aboutViewController.aboutTitle = "How iLeave works?".localized()
+            aboutViewController.title = "iLeave"
+            aboutViewController.aboutText = "Simply takes your location automatically and share it with averyone in need to seek for parking".localized()
+            navigationController?.pushViewController(aboutViewController, animated: true)
+        case LeftMenuOptions.Driving.SeekParking.symbol:
+            aboutViewController.aboutTitle = "How iPark works?".localized()
+            aboutViewController.title = "iPark"
+            aboutViewController.aboutText = "Simply shares averyone who left his parking slot around the searching user".localized()
+            navigationController?.pushViewController(aboutViewController, animated: true)
         case LeftMenuOptions.Location.WhereIsHere.symbol:
             if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {
                 LocationHelper.fetchAddressByCoordinates(latitude: currentLocation.latitude, longitude: currentLocation.longitude, completion: { address in
@@ -122,11 +137,22 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
             }
         case LeftMenuOptions.Location.ShareLocation.symbol:
             if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {
-                FirebaseHelper.shareLocation("perry", withLocationLatitude: currentLocation.latitude, withLocationLongitude: currentLocation.longitude, completionCallback: { (error) in
-                    if error != nil {
-                        ToastMessage.show(messageText: "Failed!")
-                    }
-                })
+                let alertController = UIAlertController.makeAlert(title: "Choose nickanme".localized(), message: "Choose the name you would like people to see:")
+                    .withInputText(configurationBlock: { (textField) in
+                        textField.placeholder = "nickname".localized()
+                    })
+
+                    alertController.withAction(UIAlertAction(title: "Cancel".localized(), style: UIAlertActionStyle.cancel, handler: nil))
+                    .withAction(UIAlertAction(title: "Publish".localized(), style: UIAlertActionStyle.default, handler: { alertAction in
+                        if let textField = alertController.textFields?.first, let nickname = textField.text {
+                            FirebaseHelper.shareLocation(nickname, withLocation: currentLocation, completionCallback: { (error) in
+                                if error != nil {
+                                    ToastMessage.show(messageText: "Failed!")
+                                }
+                            })
+                        }
+                    }))
+                .show()
             }
         case LeftMenuOptions.Location.WhereIsMapCenter.symbol:
             if let currentMapLocation = mapViewController.currentMapViewCenter {
