@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FirebaseRemoteConfig
 
 class Configurations {
     static let shared = Configurations()
@@ -18,6 +19,10 @@ class Configurations {
     }
 
     struct Keys {
+        struct RemoteConfig {
+            static let MaximumParkLifeInMinutes: String                = "MaximumParkLifeInMinutes"
+        }
+        
         static let NoNoAnimation: String                = "noAnimation" // not using inferred on purpose, to help Swift compiler
         struct Persistency {
             static let PermissionRequestCounter: String = "PermissionRequestCounter"
@@ -27,8 +32,19 @@ class Configurations {
 
     let GoogleMapsWebApiKey: String
     let GoogleMapsMobileSdkApiKey: String
+    private(set) var maximumParkLifeInMinutes: Int
     
+    private var remoteConfig: RemoteConfig
+
     init() {
+        remoteConfig = RemoteConfig.remoteConfig()
+
+        maximumParkLifeInMinutes = 30
+
+        if let remoteConfigSettings = RemoteConfigSettings(developerModeEnabled: true) {
+            remoteConfig.configSettings = remoteConfigSettings
+        }
+
         guard let secretConstantsPlistFilePath: String = Bundle.main.path(forResource: "SecretConstants", ofType: "plist"),
         let config: [String: String] = NSDictionary(contentsOfFile: secretConstantsPlistFilePath) as? [String : String],
         let googleMapsWebApiKey = config["GoogleMapsWebApiKey"],
@@ -37,6 +53,19 @@ class Configurations {
 
         GoogleMapsWebApiKey = googleMapsWebApiKey
         GoogleMapsMobileSdkApiKey = googleMapsMobileSdkApiKey
+    }
+    func fetchRemoteConfig() {
+        remoteConfig.fetch(withExpirationDuration: 2, completionHandler: { [weak self] (fetchStatus, error) -> () in
+            if fetchStatus == .success {
+                if let maximumParkLifeInMinutes = self?.remoteConfig[Keys.RemoteConfig.MaximumParkLifeInMinutes].numberValue?.intValue, maximumParkLifeInMinutes > 0 {
+                    self?.maximumParkLifeInMinutes = maximumParkLifeInMinutes
+                }
+            } else if let error = error {
+                📕("Failed to fetch remote config! Error: \(error)")
+            } else {
+                📕("Failed to fetch remote config! Missing error object...")
+            }
+        })
     }
 }
 
@@ -48,27 +77,28 @@ public struct LeftMenuOptions {
     }
 
     public struct Driving {
-        public static let title: String = "Driving"
+        public static let title: String = "Driving".localized()
 
         public static let LeaveParking: MenuOption = (text: "iLeave", symbol: "👋")
         public static let SeekParking: MenuOption = (text: "iPark", symbol: "🚙")
     }
     public struct User {
-        public static let title: String = "User stuff"
+        public static let title: String = "User stuff".localized()
 
-        public static let RenameNickname: MenuOption = (text: "Change nickname", symbol: "👽")
+        public static let RenameNickname: MenuOption = (text: "Change nickname".localized(), symbol: "👽")
     }
-    public struct Application {
-        public static let title: String = "iHereU"
+    public struct Location {
+        public static let title: String = "Location".localized()
         
-        public static let WhereIsHere: MenuOption = (text: "Where am I?", symbol: "🤔")
-        public static let WhereIsMapCenter: MenuOption = (text: "Map's current address", symbol: "✛")
+        public static let WhereIsHere: MenuOption = (text: "Where am I?".localized(), symbol: "🤔")
+        public static let ShareLocation: MenuOption = (text: "Expose your location?".localized(), symbol: "📍")
+        public static let WhereIsMapCenter: MenuOption = (text: "Map's current address".localized(), symbol: "✛")
     }
     public struct About {
-        public static let title: String = "About"
+        public static let title: String = "About".localized()
         
-        static let Announcements: MenuOption = (text: "Announcements", symbol: "📣")
-        public static let AboutApp: MenuOption = (text: "About the app", symbol: "📱")
-        public static let AboutDeveloper: MenuOption = (text: "About the developer", symbol: "💻")
+        static let Announcements: MenuOption = (text: "Announcements".localized(), symbol: "📣")
+        public static let AboutApp: MenuOption = (text: "About the app".localized(), symbol: "📱")
+        public static let AboutDeveloper: MenuOption = (text: "About the developer".localized(), symbol: "💻")
     }
 }

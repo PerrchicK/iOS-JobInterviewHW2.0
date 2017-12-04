@@ -11,7 +11,7 @@ import Foundation
 class ClosureTimer {
     let timer: Timer
     class Executor {
-        let block: CompletionClosure<Any>
+        let block: CompletionClosure<Any?>
         
         init(block: @escaping CompletionClosure<Any>) {
             self.block = block

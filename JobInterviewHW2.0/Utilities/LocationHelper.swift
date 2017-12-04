@@ -61,7 +61,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         return CLLocationManager.authorizationStatus() == .authorizedWhenInUse
     }
 
-    static func fetchAddressByCoordinates(latitude lat: Double, longitude lng: Double, completion: @escaping CompletionClosure<String>) {
+    static func fetchAddressByCoordinates(latitude lat: Double, longitude lng: Double, completion: @escaping CompletionClosure<String?>) {
         let urlString = String(format: Communicator.API.RequestUrls.GeocodeFormat,
                                lat,
                                lng,
@@ -96,7 +96,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         stopUpdate()
     }
 
-    static func fetchNearByPlaces(aroundLocation location: CLLocationCoordinate2D, withRadius radius: Float, resultCallback: @escaping CompletionClosure<(location: CLLocationCoordinate2D, places: [Place])>) {
+    static func fetchNearByPlaces(aroundLocation location: CLLocationCoordinate2D, withRadius radius: Float, resultCallback: @escaping CompletionClosure<(location: CLLocationCoordinate2D, places: [Place])?>) {
 
         let urlString = String(format: Communicator.API.RequestUrls.NearByPlacesFormat,
                                location.latitude,
@@ -139,7 +139,7 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         return (currentLocation?.speed).or(0) < 1
     }
 
-    static func fetchPlace(byPlaceId placeId: String, andPlaceName placeName: String? = nil, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)>) {
+    static func fetchPlace(byPlaceId placeId: String, andPlaceName placeName: String? = nil, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)?>) {
         let urlString = String(format: Communicator.API.RequestUrls.PlaceSearchFormat,
                                placeId,
                                Configurations.shared.GoogleMapsWebApiKey)
@@ -162,11 +162,64 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    static func fetchPlace(byPrediction placePrediction: Prediction, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)>) {
-        fetchPlace(byPlaceId: placePrediction.placeId, andPlaceName: placePrediction.predictionDescription, resultCallback: resultCallback)
+    static func fetchAutocompletePeople(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<(keyword: String, predictions: [Prediction])?>) {
+        guard let urlQueryKeyword = keyword.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) else {
+            predictionsResultCallback(nil)
+            return
+        }
+        let urlString = String(format: Communicator.API.RequestUrls.AutocompletePlacesFormat,
+                               urlQueryKeyword,
+                               Configurations.shared.GoogleMapsWebApiKey)
+        
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        Communicator.request(urlString: urlString) { (response) in
+            var predictionsResult: [Prediction] = [Prediction]()
+            guard let response = response else { predictionsResultCallback((keyword: keyword, predictions: predictionsResult)); return }
+            
+            switch response {
+            case .succeeded(let json):
+                if let jsonDictionary = (json as? RawJsonFormat),
+                    let jsonArray = jsonDictionary[Communicator.API.ResponseKeys.GoogleMapsPredictions] as? [RawJsonFormat] {
+                    for predictionJsonDictionary in jsonArray {
+                        guard let description = predictionJsonDictionary[AddressPrediction.InterpretationKeys.Description] as? String,
+                            let placeId = predictionJsonDictionary[AddressPrediction.InterpretationKeys.PlaceId] as? String
+                            else { continue }
+                        let prediction = AddressPrediction(placeId: placeId, addressDescription: description)
+                        predictionsResult.append(prediction)
+                    }
+                    
+                    //                if (jsonAsDictionary.count && [jsonAsDictionary[kGoogleMapsPredictionsKey] count]) {
+                    //                    NSArray *predictionsArrayFromJson = jsonAsDictionary[kGoogleMapsPredictionsKey];
+                    //                    for (NSDictionary *predictionAsDictionary in predictionsArrayFromJson) {
+                    //                        // Validate before parsing
+                    //                        if (predictionAsDictionary.count &&
+                    //                            predictionAsDictionary[kGoogleMapsPredictionDescriptionKey] &&
+                    //                            predictionAsDictionary[kGoogleMapsPlaceIdKey]) {
+                    //                            Prediction *prediction = [Prediction new];
+                    //                            prediction.predictionDescription = predictionAsDictionary[kGoogleMapsPredictionDescriptionKey];
+                    //                            prediction.placeId = predictionAsDictionary[kGoogleMapsPlaceIdKey];
+                    //                            [predictions addObject:prediction];
+                    //                        }
+                    //                    }
+                    //                }
+                    
+                    // So glad we're developing in Swift ツ 👆
+                    
+                }
+            case .failed(let message):
+                📕("request failed, message: \(message)")
+            }
+            
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            predictionsResultCallback((keyword: keyword, predictions: predictionsResult))
+        }
+    }
+    
+    static func fetchPlace(byPrediction placePrediction: AddressPrediction, resultCallback: @escaping CompletionClosure<(placeId: String, place: Place?)?>) {
+        fetchPlace(byPlaceId: placePrediction.placeId, andPlaceName: placePrediction.addressDescription, resultCallback: resultCallback)
     }
 
-    static func fetchAutocompleteSuggestions(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<(keyword: String, predictions: [Prediction])>) {
+    static func fetchAutocompleteSuggestions(forPhrase keyword: String, predictionsResultCallback: @escaping CompletionClosure<(keyword: String, predictions: [Prediction])?>) {
         guard let urlQueryKeyword = keyword.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) else {
             predictionsResultCallback(nil)
             return
@@ -185,10 +238,10 @@ class LocationHelper: NSObject, CLLocationManagerDelegate {
                 if let jsonDictionary = (json as? RawJsonFormat),
                     let jsonArray = jsonDictionary[Communicator.API.ResponseKeys.GoogleMapsPredictions] as? [RawJsonFormat] {
                     for predictionJsonDictionary in jsonArray {
-                        guard let description = predictionJsonDictionary[Prediction.InterpretationKeys.Description] as? String,
-                            let placeId = predictionJsonDictionary[Prediction.InterpretationKeys.PlaceId] as? String
+                        guard let description = predictionJsonDictionary[AddressPrediction.InterpretationKeys.Description] as? String,
+                            let placeId = predictionJsonDictionary[AddressPrediction.InterpretationKeys.PlaceId] as? String
                             else { continue }
-                        let prediction = Prediction(placeId: placeId, predictionDescription: description)
+                        let prediction = AddressPrediction(placeId: placeId, addressDescription: description)
                         predictionsResult.append(prediction)
                     }
 

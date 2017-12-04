@@ -8,19 +8,27 @@
 
 import Foundation
 
-class Prediction: CustomStringConvertible {
+protocol Prediction: CustomStringConvertible {
+    var predictionDescription: String { get }
+    
+}
+class AddressPrediction: Prediction {
     struct InterpretationKeys {
         static let Description: String = "description"
         static let Icon: String = "icon"
         static let PlaceId: String = "place_id"
         static let Name: String = "name"
     }
-    let predictionDescription: String
+    let addressDescription: String
     let placeId: String
 
-    init(placeId: String, predictionDescription: String) {
+    init(placeId: String, addressDescription: String) {
         self.placeId = placeId
-        self.predictionDescription = predictionDescription
+        self.addressDescription = addressDescription
+    }
+    
+    var predictionDescription: String {
+        return addressDescription
     }
     
     var description: String {

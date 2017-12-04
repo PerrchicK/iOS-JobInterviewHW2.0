@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		750BA86D1FD19D2B00B2AD50 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750BA86C1FD19D2B00B2AD50 /* Throttler.swift */; };
+		750CC5AF1FD5121D00428B79 /* AvailableParkingLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750CC5AE1FD5121C00428B79 /* AvailableParkingLocation.swift */; };
 		7538B9061FD1F25A00C9159B /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9051FD1F25A00C9159B /* PermissionsView.swift */; };
 		7538B9081FD1F27C00C9159B /* PermissionsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7538B9071FD1F27C00C9159B /* PermissionsView.xib */; };
 		7538B90E1FD20B9600C9159B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7538B9101FD20B9600C9159B /* Localizable.strings */; };
@@ -30,6 +31,7 @@
 		75A45E181FD0B39E00616EC1 /* Synchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E131FD0B39E00616EC1 /* Synchronizer.swift */; };
 		75A45E1D1FD0B3C100616EC1 /* UtilsObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */; };
 		75A593491FD2F9F500159830 /* PlaceInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A593481FD2F9F500159830 /* PlaceInfoViewController.swift */; };
+		75B861111FD4EE21004BB72A /* PersonSharedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */; };
 		75BB45611FD090D300D3ADFC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BB45601FD090D300D3ADFC /* AppDelegate.swift */; };
 		75BB45661FD090D300D3ADFC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45641FD090D300D3ADFC /* Main.storyboard */; };
 		75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45671FD090D300D3ADFC /* Assets.xcassets */; };
@@ -49,6 +51,7 @@
 		1B02570E6FE127D56B9E645E /* Pods_JobInterviewHW2_0.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_JobInterviewHW2_0.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A43F92711CFC4F27726C92B /* Pods-JobInterviewHW2.0.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JobInterviewHW2.0.debug.xcconfig"; path = "Pods/Target Support Files/Pods-JobInterviewHW2.0/Pods-JobInterviewHW2.0.debug.xcconfig"; sourceTree = "<group>"; };
 		750BA86C1FD19D2B00B2AD50 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
+		750CC5AE1FD5121C00428B79 /* AvailableParkingLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AvailableParkingLocation.swift; sourceTree = "<group>"; };
 		7538B9051FD1F25A00C9159B /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		7538B9071FD1F27C00C9159B /* PermissionsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PermissionsView.xib; sourceTree = "<group>"; };
 		7538B90F1FD20B9600C9159B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -74,6 +77,7 @@
 		75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UtilsObjC.m; sourceTree = "<group>"; };
 		75A45E1C1FD0B3C100616EC1 /* UtilsObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UtilsObjC.h; sourceTree = "<group>"; };
 		75A593481FD2F9F500159830 /* PlaceInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceInfoViewController.swift; sourceTree = "<group>"; };
+		75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonSharedLocation.swift; sourceTree = "<group>"; };
 		75BB455D1FD090D300D3ADFC /* iHereU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iHereU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75BB45601FD090D300D3ADFC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		75BB45651FD090D300D3ADFC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -114,8 +118,10 @@
 		7538B9141FD2189500C9159B /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				750CC5AE1FD5121C00428B79 /* AvailableParkingLocation.swift */,
 				7538B9151FD218A500C9159B /* Prediction.swift */,
 				75D9964E1FD23E9B00353206 /* Place.swift */,
+				75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -392,10 +398,12 @@
 				75D9964F1FD23E9B00353206 /* Place.swift in Sources */,
 				75A45E0E1FD0B0E600616EC1 /* DrawerContainerViewController.swift in Sources */,
 				75A032F31FD1478200DD52F6 /* FirebaseHelper.swift in Sources */,
+				750CC5AF1FD5121D00428B79 /* AvailableParkingLocation.swift in Sources */,
 				75A593491FD2F9F500159830 /* PlaceInfoViewController.swift in Sources */,
 				75A45E0F1FD0B0E600616EC1 /* SplashScreenViewController.swift in Sources */,
 				75A45E161FD0B39E00616EC1 /* ClosureTimer.swift in Sources */,
 				7538B9161FD218A500C9159B /* Prediction.swift in Sources */,
+				75B861111FD4EE21004BB72A /* PersonSharedLocation.swift in Sources */,
 				750BA86D1FD19D2B00B2AD50 /* Throttler.swift in Sources */,
 				75FECC581FD0BCDE00F0C7B9 /* NibView.swift in Sources */,
 				75A032F71FD17B6E00DD52F6 /* LocationHelper.swift in Sources */,

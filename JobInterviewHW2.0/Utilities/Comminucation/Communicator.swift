@@ -30,7 +30,7 @@ class Communicator {
         case failed(error: NSError)
     }
 
-    static func request(urlString: String, completion: @escaping CompletionClosure<Response>) {
+    static func request(urlString: String, completion: @escaping CompletionClosure<Response?>) {
         // Make HTTP request and fetch...
         📗("Calling: \(urlString)")
         Alamofire.request(urlString).responseJSON { (response) in

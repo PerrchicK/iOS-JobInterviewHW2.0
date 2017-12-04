@@ -21,6 +21,10 @@ class DrawerContainerViewController: MMDrawerController {
         super.init(center: centerViewController, leftDrawerViewController: leftDrawerViewController, rightDrawerViewController: rightDrawerViewController)
     }
     
+    var mapViewController: MapViewController {
+        return centerViewController as! MapViewController // Yes, forcing unwrap, because it it's nil than it's MY problem (the developer's problem, a missing implementation bug)
+    }
+    
     var isMenuOpen: Bool {
         return openSide != .none
     }
@@ -95,7 +99,7 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
         switch selectedOption.symbol {
         case LeftMenuOptions.About.AboutApp.symbol: // LeftMenuOptions.About.AboutApp():
             navigationController?.pushViewController(AboutViewController.instantiate(), animated: true)
-        case LeftMenuOptions.Application.WhereIsHere.symbol:
+        case LeftMenuOptions.Location.WhereIsHere.symbol:
             if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {
                 LocationHelper.fetchAddressByCoordinates(latitude: currentLocation.latitude, longitude: currentLocation.longitude, completion: { address in
                     if let address = address {
@@ -106,7 +110,7 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
                                 PerrFuncs.copyToClipboard(stringToCopy: currentLocation)
                             }))
                             .withAction(UIAlertAction(title: "Center map", style: UIAlertActionStyle.default, handler: { [weak self] _ in
-                                (self?.centerViewController as? MapViewController)?.moveCameraToCurrentLocation()
+                                self?.mapViewController.moveCameraToCurrentLocation()
                             }))
                             .show()
                     } else {
@@ -116,8 +120,16 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
                     }
                 })
             }
-        case LeftMenuOptions.Application.WhereIsMapCenter.symbol:
-            if let currentMapLocation = (centerViewController as? MapViewController)?.currentMapViewCenter {
+        case LeftMenuOptions.Location.ShareLocation.symbol:
+            if let currentLocation = LocationHelper.shared.currentLocation?.coordinate {
+                FirebaseHelper.shareLocation("perry", withLocationLatitude: currentLocation.latitude, withLocationLongitude: currentLocation.longitude, completionCallback: { (error) in
+                    if error != nil {
+                        ToastMessage.show(messageText: "Failed!")
+                    }
+                })
+            }
+        case LeftMenuOptions.Location.WhereIsMapCenter.symbol:
+            if let currentMapLocation = mapViewController.currentMapViewCenter {
                 LocationHelper.fetchAddressByCoordinates(latitude: currentMapLocation.latitude, longitude: currentMapLocation.longitude, completion: { address in
                     if let address = address {
                         UIAlertController.makeActionSheet(title: "Map current location:", message: "\(address)\n\(currentMapLocation.toString())")

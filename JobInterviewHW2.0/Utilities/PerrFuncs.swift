@@ -11,7 +11,7 @@ import ObjectiveC
 
 // MARK: - "macros" (... like)
 
-public typealias CompletionClosure<T> = ((T?) -> Void)
+public typealias CompletionClosure<T> = ((T) -> Void)
 public typealias PredicateClosure<T> = ((T) -> Bool)
 
 func WIDTH(_ frame: CGRect?) -> CGFloat { return frame == nil ? 0 : (frame?.size.width)! }
@@ -181,6 +181,12 @@ extension String {
         return NSLocalizedString(self, comment: comment)
     }
 
+    // https://stackoverflow.com/questions/24092884/get-nth-character-of-a-string-in-swift-programming-language
+    subscript (index: Int) -> Character {
+        guard count > index else {return Character("") }
+        return self[self.index(startIndex, offsetBy: index)]
+    }
+
     func toUrl() -> URL? {
         return URL(string: self)
     }
@@ -250,53 +256,6 @@ extension UIColor {
         let rgb:Int = (Int)(r*255)<<16 | (Int)(g*255)<<8 | (Int)(b*255)<<0
         
         return NSString(format:"#%06x", rgb) as String
-    }
-}
-
-extension UIImage {
-    static func fetchImage(withUrl urlString: String, completionClosure: CompletionClosure<Any>?) {
-        guard let url = URL(string: urlString) else { completionClosure?(nil); return }
-
-        let backgroundQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.background)
-        // Run on background thread:
-        backgroundQueue.async {
-            var image: UIImage? = nil
-            
-            // No matter what, make the callback call on the main thread:
-            defer {
-                // Run on UI thread:
-                DispatchQueue.main.async {
-                    completionClosure?(image)
-                }
-            }
-
-            // The most (and inefficient) simple way to download a photo from the web (no timeout, error handling etc.)
-            do {
-                let data = try Data(contentsOf: url)
-                image = UIImage(data: data)
-            } catch let error {
-                print("Failed to fetch image from url: \(url)\nwith error: \(error)")
-            }
-        }
-    }
-}
-
-extension UIImageView {
-    func fetchImage(withUrl urlString: String, completionClosure: CompletionClosure<UIImageView>?) {
-        guard !urlString.isEmpty else { completionClosure?(nil); return }
-
-        UIImage.fetchImage(withUrl: urlString) { (image) in
-            defer {
-                DispatchQueue.main.async {
-                    completionClosure?(self)
-                }
-            }
-
-            guard let image = image as? UIImage else { return }
-
-            self.image = image
-            self.contentMode = .scaleAspectFit
-        }
     }
 }
 
@@ -647,6 +606,10 @@ extension UIView {
         return tapGestureRecognizer
     }
 
+    static func currentTimestamp() -> Int64 {
+        return Date().timestampMillis
+    }
+    
     @objc func onTapRecognized(_ tapGestureRecognizer: UITapGestureRecognizer) {
         var onClickListener: OnClickListener?
         if self is UIButton {
@@ -915,5 +878,17 @@ extension Bool {
     /// Inspired by: https://twitter.com/TT_Kilew/status/922458025713119232/photo/1
     func `if`<T>(then valueIfTrue: T, else valueIfFalse: T) -> T {
         return self ? valueIfTrue : valueIfFalse
+    }
+}
+
+extension Date {
+    var timestampMillis: Int64 {
+        return timeIntervalSince1970.milliseconds
+    }
+    
+    func shortHourRepresentation() -> String {
+        let shortDateFormatter = DateFormatter()
+        shortDateFormatter.dateFormat = "HH:mm"
+        return shortDateFormatter.string(from: self)
     }
 }

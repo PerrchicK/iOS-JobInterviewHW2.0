@@ -11,13 +11,30 @@ import UIKit
 import GoogleMaps
 import GoogleMapsBase
 
-func ==(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> Bool { // Reference: http://nshipster.com/swift-operators/
+//MARK: - Operators overloading
+ // Reference: http://nshipster.com/swift-operators/
+func ==(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> Bool {
     return left.latitude == right.latitude && left.longitude == right.longitude
 }
 
+ // Reference: http://nshipster.com/swift-operators/
+func ~(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
+    return CLLocationCoordinate2D(latitude: left.latitude - right.latitude, longitude: left.longitude - right.longitude)
+}
+
+//func *(left: Int, right: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
+//    return CLLocationCoordinate2D(latitude: left * right.latitude, longitude: left * right.longitude)
+//}
+
 class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDelegate, UIGestureRecognizerDelegate, PredictionsViewDelegate {
-    //, PlaceInfoViewControllerDelegate {
-    
+    enum MovementState {
+        case walking
+        case driving
+    }
+    //MARK: - Function pointers, will be assigned according to user's needs
+    var onSearchStarted: (() -> ())?
+    var onCameraChanged: (() -> ())?
+
     override var shouldForceLocationPermissions: Bool {
         return true
     }
@@ -25,7 +42,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     private var currentZoom: Float {
         return mapView.camera.zoom
     }
-    var searchMethod: (() -> ())? // A function pointer, will be assign according to the user's needs
+    var movementState: MovementState?
+    var parkingCandidate: (timeInterval: TimeInterval, coordinate: CLLocationCoordinate2D)?
+
     weak var presentedAlertController: UIAlertController?
     lazy var throttler = Throttler()
     private var selectedMarker: GMSMarker?
@@ -61,6 +80,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         searchBar.delegate = self
         
         changeSearchToPlacesMode()
+        changeToLocationSharingMode()
 
         📗(mapView.findSubviewsInTree(predicateClosure: { $0 is UIScrollView}))
 
@@ -143,12 +163,31 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     
     override func onLocationUpdated(updatedLocation: CLLocation) {
         super.onLocationUpdated(updatedLocation: updatedLocation)
-        //📗("verticalAccuracy: \(updatedLocation.verticalAccuracy), horizontalAccuracy: \(updatedLocation.horizontalAccuracy)")
+        
+        if updatedLocation.speed == 0 {
+            parkingCandidate = (Date().timeIntervalSince1970, updatedLocation.coordinate)
+            📗("idle")
+        }
+
         if shouldFollowLocation {
             moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 15)
         }
-        
-        if updatedLocation.speed > 5 { // 5 = 20kph
+
+        guard movementState != MovementState.driving else { return }
+
+        if updatedLocation.isDriving { // 5 = 20kph
+            movementState = MovementState.driving
+
+            if let parkingCandidate = parkingCandidate {
+                let timestamp = parkingCandidate.timeInterval.milliseconds
+                FirebaseHelper.indexParking(timestamp, withLocationLatitude: parkingCandidate.coordinate.latitude, withLocationLongitude: parkingCandidate.coordinate.longitude, completionCallback: { (error) in
+                    if let error = error {
+                        📕("Failed to update location, error: \(error)")
+                    }
+                })
+                putParkingOnMap(availableParkingLocation: AvailableParkingLocation(location: parkingCandidate.coordinate, timestamp: timestamp))
+            }
+
             guard presentedAlertController == nil else { return }
             presentedAlertController = UIAlertController.makeAlert(title: "Driving?".localized(), message: "Wanna navigate anyware?".localized())
                 .withAction(UIAlertAction(title: "Waze", style: UIAlertActionStyle.default, handler: { (alertAction) in
@@ -161,7 +200,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                         UIApplication.shared.openURL(mapsUrl)
                     }
                 }))
-                .withAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel, handler: nil))
+                .withAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.cancel, handler: nil))
                 .show()
         }
     }
@@ -183,19 +222,47 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         searchBar.resignFirstResponder()
     }
     
-    func presentAdressesPredictions(predictions: [Prediction]) {
+    func presentPredictions(predictions: [Prediction]) {
         self.predictions = predictions
 
         if predictions.count == 0 {
             dismissPredictionsList()
         } else {
             predictionsViewHeightConstraint.constant = maxPredictionsListViewHeight - 2 // 2 pixels
-            predictionsView.isPresented = true
+            if predictionsView.isHidden {
+                popInPredictionsView()
+            }
         }
         predictionsView.refresh()
     }
     
+    func popInPredictionsView() {
+        let transition = CATransition()
+        transition.startProgress = 0
+        transition.endProgress = 1
+        transition.type = kCATransitionPush
+        transition.subtype = kCATransitionFromBottom
+        transition.duration = 0.3
+        
+        // Add the transition animation to both layers
+        predictionsView.layer.add(transition, forKey: "transition")
+        
+        // Finally, change the visibility of the layers.
+        predictionsView.isPresented = true
+    }
+
     func dismissPredictionsList() {
+        let transition = CATransition()
+        transition.startProgress = 0
+        transition.endProgress = 1
+        transition.type = kCATransitionPush
+        transition.subtype = kCATransitionFromTop
+        transition.duration = 0.3
+        
+        // Add the transition animation to both layers
+        predictionsView.layer.add(transition, forKey: "transition")
+        
+        // Finally, change the visibility of the layers.
         predictionsView.isPresented = false
     }
     
@@ -240,8 +307,17 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         }
     }
 
+    func putParkingOnMap(availableParkingLocation: AvailableParkingLocation){
+        let marker: GMSMarker = GMSMarker(position: availableParkingLocation.location)
+        marker.title = "Parking"
+        marker.appearAnimation = .pop
+        marker.snippet = Date(timeIntervalSince1970: availableParkingLocation.timestamp.seconds).shortHourRepresentation()
+        marker.map = mapView
+        marker.userData = availableParkingLocation
+    }
+
     func putPlaceOnMap(place: Place) {
-        let marker: GMSMarker = GMSMarker(position: place.position)//[ markerWithPosition:place.placePosition];
+        let marker: GMSMarker = GMSMarker(position: place.position)
         marker.title = place.placeName
         marker.appearAnimation = .pop
         marker.snippet = place.position.toString(precision: 6)
@@ -300,6 +376,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     
     func mapView(_ mapView: GMSMapView, didChange position: GMSCameraPosition) {
         currentMapViewCenter = position.target
+        onCameraChanged?()
     }
   
     func mapView(_ mapView: GMSMapView, didTapPOIWithPlaceID placeID: String, name: String, location: CLLocationCoordinate2D) {
@@ -316,6 +393,16 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
         searchBar.resignFirstResponder()
+        //ToastMessage.show(messageText: coordinate.toString())
+        let rangeView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: radiusMagnifierImageView.frame.height / 4, height: radiusMagnifierImageView.frame.height / 4))
+        rangeView.center = radiusMagnifierImageView.center
+        let cameraBounds = mapView.cameraBounds(inView: rangeView)
+        let precision = (cameraBounds.bottomRight ~ cameraBounds.topLeft).latitude.getPrecision()
+        let multiplier = Double(10 * precision - 1)
+        let latitude = Double(Int(cameraBounds.bottomRight.latitude * multiplier)) / multiplier
+        let longitude = Double(Int(cameraBounds.bottomRight.longitude * multiplier)) / multiplier
+        let equalLocation = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        putPlaceOnMap(place: Place(longitude: equalLocation.longitude, latitude: equalLocation.latitude, iconUrl: "", placeName: "Perry", placeId: ""))
     }
 
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
@@ -325,7 +412,10 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        fetchPredictions(searchText: searchBar.text)
+        if predictionsView.isHidden {
+            fetchPredictions(searchText: searchBar.text)
+        }
+        
         searchBar.resignFirstResponder()
         
         if let components: [String] = searchBar.text?
@@ -357,7 +447,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
         // Supplies a much better solution than this one: https://github.com/PerrchicK/iOS-JobInterviewProject/blob/076e8bd26929d55f658addc73625eb32744e3930/CandidateProject/Classes/ViewControllers/MapViewController.m#L180
         throttler.throttle(timeout: 0.3) { [weak self] in
-            self?.searchMethod?()
+            self?.onSearchStarted?()
         }
     }
 
@@ -371,12 +461,14 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
         toggleFollowLocation(shouldTurnOn: false)
 
-        if let prediction = predictions?[safe: dataIndex] {
-            LocationHelper.fetchPlace(byPrediction: prediction, resultCallback: { [weak self] (resultTuple) in
+        if let addressPrediction = predictions?[safe: dataIndex] as? AddressPrediction {
+            LocationHelper.fetchPlace(byPrediction: addressPrediction, resultCallback: { [weak self] (resultTuple) in
                 guard let strongSelf = self, let resultTuple = resultTuple, let place = resultTuple.place else { return }
                 📗("resultTuple: \(resultTuple)")
                 strongSelf.moveCameraToLocation(coordinate: CLLocationCoordinate2D(latitude: place.latitude, longitude: place.longitude))
             })
+        } else if let personPrediction = predictions?[safe: dataIndex] as? PersonSharedLocation {
+            moveCameraToLocation(coordinate: CLLocationCoordinate2D(latitude: personPrediction.location.latitude, longitude: personPrediction.location.longitude))
         }
     }
     
@@ -408,21 +500,116 @@ extension CLLocationCoordinate2D {
 }
 
 extension MapViewController {
+    func changeToParkSeekingMode() {
+        onCameraChanged = { [weak self] in
+            if let cameraTargetBounds = self?.mapView.cameraTargetBounds {
+                let delta: CLLocationCoordinate2D = cameraTargetBounds.northEast ~ cameraTargetBounds.southWest
+                📗(delta)
+            }
+        }
+    }
+
+    func changeToLocationSharingMode() {
+        onCameraChanged = { [weak self] in
+            if let cameraTargetBounds = self?.mapView.cameraBounds() {
+                let delta: CLLocationCoordinate2D = cameraTargetBounds.topLeft ~ cameraTargetBounds.bottomRight
+            }
+        }
+    }
+
     func changeSearchToUsersMode() {
-        searchMethod = { [weak self] in
+        onSearchStarted = { [weak self] in
             guard let searchPhrase = self?.searchBar.text else { return }
-            //FirebaseHelper.updateUserFreeParking()
+
+            FirebaseHelper.queryIndexedData(startsWith: searchPhrase, callback: { (people: [PersonSharedLocation]) in
+                📗(people)
+            })
         }
     }
     
     func changeSearchToPlacesMode() {
-        searchMethod = { [weak self] in
+        onSearchStarted = { [weak self] in
             guard let searchPhrase = self?.searchBar.text else { return }
             LocationHelper.fetchAutocompleteSuggestions(forPhrase: searchPhrase) { [weak self] (resultTupple) in
                 guard let strongSelf = self, let resultTupple = resultTupple, resultTupple.keyword == self?.searchBar.text else { self?.dismissPredictionsList(); return }
                 
-                strongSelf.presentAdressesPredictions(predictions: resultTupple.predictions)
+                strongSelf.presentPredictions(predictions: resultTupple.predictions)
             }
         }
+    }
+}
+
+extension GMSMapView {
+    // From: https://stackoverflow.com/questions/31943778/google-maps-sdk-ios-calculate-radius-according-zoom-level
+    // and: http://jslim.net/blog/2013/07/02/ios-get-the-radius-of-mkmapview/
+    func getCenterCoordinate() -> CLLocationCoordinate2D {
+        let centerPoint = self.center
+        let centerCoordinate = self.projection.coordinate(for: centerPoint)
+        return centerCoordinate
+    }
+    
+    func cameraBounds(inView _view: UIView? = nil) -> (topLeft: CLLocationCoordinate2D, bottomRight: CLLocationCoordinate2D) {
+        let view = _view ?? self
+        
+        let topLeftPoint = convert(CGPoint(x: 0, y: 0), from: view)
+        let bottomRightPoint = convert(CGPoint(x: view.frame.size.width, y: view.frame.size.width), from: view)
+        let topLeftCoordinate = projection.coordinate(for: topLeftPoint)
+        let bottomRightCoordinate = projection.coordinate(for: bottomRightPoint)
+        return (topLeftCoordinate, bottomRightCoordinate)
+    }
+
+    func getTopCenterCoordinate() -> CLLocationCoordinate2D {
+        // to get coordinate from CGPoint of your map
+        let topCenterCoor = self.convert(CGPoint(x: self.frame.size.width / 2.0, y: 0), from: self)
+        let point = self.projection.coordinate(for: topCenterCoor)
+        return point
+    }
+
+    func getRadius() -> CLLocationDistance {
+        let centerCoordinate = getCenterCoordinate()
+        // init center location from center coordinate
+        let centerLocation = CLLocation(latitude: centerCoordinate.latitude, longitude: centerCoordinate.longitude)
+        let topCenterCoordinate = getTopCenterCoordinate()
+        let topCenterLocation = CLLocation(latitude: topCenterCoordinate.latitude, longitude: topCenterCoordinate.longitude)
+        
+        let radius = CLLocationDistance(centerLocation.distance(from: topCenterLocation))
+        
+        return round(radius)
+    }
+}
+
+extension Double {
+    func getPrecision() -> Int {
+        // Keep sign
+        let sign: Double = self < 0 ? -1 : 1
+        let unsigned: Double = self * sign
+
+        var precision: Int = 0
+        var precisioned: Double = unsigned
+
+        while precisioned < 1 {
+            precisioned *= 10
+            precision += 1
+        }
+        
+        return precision
+    }
+}
+
+extension CLLocation {
+    var isDriving: Bool {
+        return speed > 5
+    }
+}
+
+extension TimeInterval {
+    var milliseconds: Int64 {
+        return Int64(self * TimeInterval(1000))
+    }
+}
+
+extension Int64 {
+    var seconds: TimeInterval {
+        return TimeInterval(self) / TimeInterval(1000)
     }
 }

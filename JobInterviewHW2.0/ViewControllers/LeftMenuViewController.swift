@@ -21,19 +21,25 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
     }()
 
     @IBOutlet weak var distanceFromTopConstraint: NSLayoutConstraint!
-    let menuItems: [String:[Any]] =
-    [LeftMenuOptions.About.title:
-        [LeftMenuOptions.About.AboutApp,
-         LeftMenuOptions.About.AboutDeveloper,
-         LeftMenuOptions.About.Announcements],
-     LeftMenuOptions.Driving.title:
-        [LeftMenuOptions.Driving.LeaveParking,
-        LeftMenuOptions.Driving.SeekParking],
-     LeftMenuOptions.User.title:
-        [LeftMenuOptions.User.RenameNickname],
-     LeftMenuOptions.Application.title:
-        [LeftMenuOptions.Application.WhereIsHere,
-         LeftMenuOptions.Application.WhereIsMapCenter]]
+    lazy var menuItems: [String:[Any]] = {
+        var aboutOptions = [LeftMenuOptions.About.AboutApp,
+                            LeftMenuOptions.About.AboutDeveloper,
+                            LeftMenuOptions.About.Announcements]
+        if UtilsObjC.isRunningReleaseVersion() {
+            aboutOptions = aboutOptions.filter({ $0 != LeftMenuOptions.About.AboutDeveloper })
+        }
+        return [LeftMenuOptions.About.title:
+                aboutOptions,
+                LeftMenuOptions.Driving.title:
+                    [LeftMenuOptions.Driving.LeaveParking,
+                     LeftMenuOptions.Driving.SeekParking],
+                LeftMenuOptions.User.title:
+                    [LeftMenuOptions.User.RenameNickname],
+                LeftMenuOptions.Location.title:
+                    [LeftMenuOptions.Location.WhereIsHere,
+                     LeftMenuOptions.Location.ShareLocation,
+                     LeftMenuOptions.Location.WhereIsMapCenter]]
+    }()
 
     let leftMenuCellReuseIdentifier = NibView.className(LeftMenuCell.self)
 
