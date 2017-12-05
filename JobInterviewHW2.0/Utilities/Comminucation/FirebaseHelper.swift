@@ -76,6 +76,7 @@ struct FirebaseHelper {
         }
     }
 
+    // Using generic subscripts, inspiration: https://medium.com/developermind/generics-in-swift-4-4f802cd6f53c
     static func observeParkingLocations<T: DataSnapshotConvertalbe>(overlappingCoordinates: CLLocationCoordinate2D, onUpdate: @escaping CompletionClosure<[T]>) -> [DatabaseReference] {
         
         let latitudeString: String = String(overlappingCoordinates.latitude)
@@ -210,7 +211,6 @@ struct FirebaseHelper {
         return concatPath(updatedReference: updatedReference.child(String(chars[position])), chars: chars, position: position + 1);
     }
 
-    // Inspiration: https://medium.com/developermind/generics-in-swift-4-4f802cd6f53c
     static func queryIndexedData<T: DataSnapshotConvertalbe>(startsWith prefix: String, callback:@escaping CompletionClosure<(originalQuery: String, results: [T])>) {
         guard prefix.count > 0 else { callback((originalQuery: prefix, results: [])); return }
 

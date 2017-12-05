@@ -19,22 +19,22 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="401" height="396"/>
+            <rect key="frame" x="0.0" y="0.0" width="401" height="522"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KhA-ZX-qFJ">
-                    <rect key="frame" x="20" y="317" width="361" height="50"/>
+                    <rect key="frame" x="20" y="411.5" width="361" height="50"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="rfe-c8-OM0"/>
                     </constraints>
                     <state key="normal" title="@GrantPermissions"/>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mQ6-dD-cVL">
-                    <rect key="frame" x="20" y="99" width="361" height="198"/>
+                    <rect key="frame" x="20" y="130.5" width="361" height="261"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@LocationPermissionTitle" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ln-fZ-FfL">
-                    <rect key="frame" x="20" y="-21" width="361" height="100"/>
+                    <rect key="frame" x="20" y="10" width="361" height="100.5"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="100" id="hk6-MS-oNF"/>
                     </constraints>
@@ -59,7 +59,7 @@
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="-47.5" y="102"/>
+            <point key="canvasLocation" x="-47.5" y="39"/>
         </view>
     </objects>
 </document>

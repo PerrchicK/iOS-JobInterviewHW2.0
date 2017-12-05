@@ -2,15 +2,17 @@
  Cool features:
  - iLeave - a behaviour that let's you open a navigation app on the hosting device (Waze / Google Maps) + let "everyone" know that a parking lot became available.
  - Use Firebase to sync nicknames + location
- - Implement an inside-data auto complete for nickname suggestions.
- Using of course the must have features to pass this test:
+ - Implemented an in-house auto complete for nickname suggestions.
+ - Throttler to throttle user input and prevent Google API "attacks"
+ - Import an ObjC code to Swift, for recognizing debug / release.
+ - Used the cool Response enum that Ron showed me during the interview
+ - A function pointer for quick behaviour change
+
+ Using of course the mandatory features to pass this challenge:
  - Reverse geocoding (from coordinate to address)
- 
- - Throttler to throttle user input to prevent Google API "attacks"
- - Import an ObjC code to Swift, why? Still don't know why, just for fun.
- - My own component, Synchronizer, to present an end of a process (2 or 3 different concurrent subprocess)
- - Use the cool Response enum that Ron show you once
- - Pointer on function (don't know what for yet...)
+ - Auto complete for adresses search
+ - Usin Google Places web API.
+ - User's current location and address
  */
 
 
@@ -24,8 +26,6 @@
 
 import UIKit
 import GoogleMaps
-
-// Hmm... somehow I needed to use this solution, but I did not uploaded these files to the GitHub repo. https://stackoverflow.com/questions/14744479/google-maps-sdk-for-ios-requires-googlemaps-bundle-to-be-part-of-your-target-und
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

@@ -31,8 +31,6 @@
 		75A45E161FD0B39E00616EC1 /* ClosureTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E111FD0B39E00616EC1 /* ClosureTimer.swift */; };
 		75A45E171FD0B39E00616EC1 /* PerrFuncs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */; };
 		75A45E1D1FD0B3C100616EC1 /* UtilsObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */; };
-		75B7BE951FD5B5F600636300 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 75B7BE931FD5B5F600636300 /* GoogleMaps.bundle */; };
-		75B7BE961FD5B5F600636300 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75B7BE941FD5B5F600636300 /* GoogleMaps.framework */; };
 		75B861111FD4EE21004BB72A /* PersonSharedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */; };
 		75BB45611FD090D300D3ADFC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BB45601FD090D300D3ADFC /* AppDelegate.swift */; };
 		75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45671FD090D300D3ADFC /* Assets.xcassets */; };
@@ -77,8 +75,6 @@
 		75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerrFuncs.swift; sourceTree = "<group>"; };
 		75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UtilsObjC.m; sourceTree = "<group>"; };
 		75A45E1C1FD0B3C100616EC1 /* UtilsObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UtilsObjC.h; sourceTree = "<group>"; };
-		75B7BE931FD5B5F600636300 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GoogleMaps.bundle; sourceTree = "<group>"; };
-		75B7BE941FD5B5F600636300 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMaps.framework; sourceTree = "<group>"; };
 		75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonSharedLocation.swift; sourceTree = "<group>"; };
 		75BB455D1FD090D300D3ADFC /* iHereU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iHereU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75BB45601FD090D300D3ADFC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -99,7 +95,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75B7BE961FD5B5F600636300 /* GoogleMaps.framework in Frameworks */,
 				7AAFD5D94740E38FF5B5C9CA /* Pods_JobInterviewHW2_0.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -169,15 +164,6 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		75B7BE921FD5B5F600636300 /* 3rdParties */ = {
-			isa = PBXGroup;
-			children = (
-				75B7BE931FD5B5F600636300 /* GoogleMaps.bundle */,
-				75B7BE941FD5B5F600636300 /* GoogleMaps.framework */,
-			);
-			path = 3rdParties;
-			sourceTree = "<group>";
-		};
 		75BB45541FD090D300D3ADFC = {
 			isa = PBXGroup;
 			children = (
@@ -199,7 +185,6 @@
 		75BB455F1FD090D300D3ADFC /* JobInterviewHW2.0 */ = {
 			isa = PBXGroup;
 			children = (
-				75B7BE921FD5B5F600636300 /* 3rdParties */,
 				7538B9141FD2189500C9159B /* Data */,
 				75A032F41FD148A900DD52F6 /* Resources */,
 				75FECC541FD0BCDE00F0C7B9 /* UI */,
@@ -308,7 +293,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75B7BE951FD5B5F600636300 /* GoogleMaps.bundle in Resources */,
 				75A033021FD187F900DD52F6 /* GoogleService-Info-dev.plist in Resources */,
 				7538B90E1FD20B9600C9159B /* Localizable.strings in Resources */,
 				759229F91FD5F26A00CD48E6 /* LaunchScreen.storyboard in Resources */,

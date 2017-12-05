@@ -45,10 +45,7 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
     
     func presentPermissionsScreenIfNeeded() {
         if shouldForceLocationPermissions && !LocationHelper.shared.isPermissionGranted {
-            present(UINavigationController(rootViewController: PermissionRequestViewController()), animated: true, completion: nil)
-//            let locationPermissionsView = PermissionsView()
-//            view.addSubview(locationPermissionsView)
-//            locationPermissionsView.stretchToSuperViewEdges()
+            present(PermissionRequestViewController(), animated: true, completion: nil)
         }
     }
 
