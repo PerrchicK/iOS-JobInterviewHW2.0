@@ -46,10 +46,15 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                 searchBar.placeholder = "search people".localized()
                 onSearchCommand = { [weak self] in
                     guard let searchPhrase = self?.searchBar.text else { return }
-                    
-                    FirebaseHelper.queryIndexedData(startsWith: searchPhrase, callback: { [weak self] (people: [PersonSharedLocation]) in
-                        self?.presentPredictions(predictions: people)
-                    })
+
+                    if searchPhrase.count == 0 {
+                        self?.dismissPredictionsList()
+                    } else {
+                        FirebaseHelper.queryIndexedData(startsWith: searchPhrase, callback: { [weak self] (originalQuery: String, results: [PersonSharedLocation]) in
+                            guard originalQuery == self?.searchBar.text else { self?.dismissPredictionsList(); return }
+                            self?.presentPredictions(predictions: results)
+                        })
+                    }
                 }
             }
         }
@@ -58,6 +63,8 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     // Same here, using an explicit unwarp here.
     var mapState: MapState! {
         didSet {
+            cleanupObservers()
+
             switch mapState {
             case .parkingSeeker:
                 onCameraChanged = { [weak self] in
@@ -272,9 +279,21 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
             if let parkingCandidate = parkingCandidate {
                 let timestamp = parkingCandidate.timeInterval.milliseconds
-                FirebaseHelper.indexParking(timestamp, withLocationLatitude: parkingCandidate.coordinate.latitude, withLocationLongitude: parkingCandidate.coordinate.longitude, completionCallback: { (error) in
+                FirebaseHelper.indexParking(timestamp, withLocationLatitude: parkingCandidate.coordinate.latitude, withLocationLongitude: parkingCandidate.coordinate.longitude, completionCallback: { (databasReferences, error) in
                     if let error = error {
                         📕("Failed to update location, error: \(error)")
+                        for databasReference in databasReferences {
+                            databasReference.removeValue()
+                        }
+                    } else {
+                        UIAlertController.makeAlert(title: "Thank you".localized(), message: "We updated this free spot, you can to undo this action, if you like.".localized())
+                        .withAction(UIAlertAction(title: "Keep it, thanks".localized(), style: UIAlertActionStyle.cancel, handler: nil))
+                        .withAction(UIAlertAction(title: "Undo".localized(), style: UIAlertActionStyle.default, handler: { _ in
+                            for databasReference in databasReferences {
+                                databasReference.removeValue()
+                            }
+                        }))
+                        .show()
                     }
                 })
                 putParkingOnMap(availableParkingLocation: AvailableParkingLocation(location: parkingCandidate.coordinate, timestamp: timestamp))
@@ -451,6 +470,20 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         marker.snippet = Date(timeIntervalSince1970: availableParkingLocation.timestamp.seconds).shortHourRepresentation()
         marker.map = mapView
         marker.userData = availableParkingLocation
+
+        let noAnimation = CAKeyframeAnimation()
+        noAnimation.keyPath = "transform.scale"
+        
+        noAnimation.values = [2, 4]
+        let keyTimes: [NSNumber] = [0.6, 1.0, 0.6]
+        noAnimation.keyTimes = keyTimes
+        noAnimation.duration = 0.5
+        noAnimation.repeatCount = Float.infinity
+        
+        noAnimation.isAdditive = true
+        noAnimation.isRemovedOnCompletion = false
+        
+        marker.layer.add(noAnimation, forKey: Configurations.Keys.NoNoAnimation) // shake animation
     }
 
     func putPlaceOnMap(place: Place) {
@@ -513,8 +546,10 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                             PerrFuncs.copyToClipboard(stringToCopy: phoneNumber)
                         }))
                         .withAction(UIAlertAction(title: "Call", style: UIAlertActionStyle.default, handler: { _ in
-                            if let phoneNumberUrl = "tel://\(phoneNumber)".toUrl(), UIApplication.shared.canOpenURL(phoneNumberUrl) {
+                            if let phoneNumberUrl = "tel://\(phoneNumber.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: "-", with: ""))".toUrl(), UIApplication.shared.canOpenURL(phoneNumberUrl) {
                                 UIApplication.shared.openURL(phoneNumberUrl)
+                            } else {
+                                ToastMessage.show(messageText: "Failed to initiate call")
                             }
                         }))
                         .show()
@@ -562,7 +597,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         mapView.selectedMarker = selectedMarker
         LocationHelper.fetchPlace(byPlaceId: placeID) { placeInfoTuple in
             _selectedMarker.userData = placeInfoTuple?.place
-        }// placeID    String    "ChIJj0OPM1uzAhURj3PnG_XlEyY"
+        }
     }
 
     func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {

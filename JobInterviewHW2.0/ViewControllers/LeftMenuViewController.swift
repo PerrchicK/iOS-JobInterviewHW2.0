@@ -22,14 +22,10 @@ class LeftMenuViewController: UIViewController, UITableViewDelegate, UITableView
 
     @IBOutlet weak var distanceFromTopConstraint: NSLayoutConstraint!
     lazy var menuItems: [String:[Any]] = {
-        var aboutOptions = [LeftMenuOptions.About.AboutApp,
-                            LeftMenuOptions.About.AboutDeveloper,
-                            LeftMenuOptions.About.Announcements]
-        if UtilsObjC.isRunningReleaseVersion() {
-            aboutOptions = aboutOptions.filter({ $0 != LeftMenuOptions.About.AboutDeveloper })
-        }
         return [LeftMenuOptions.About.title:
-                aboutOptions,
+            [LeftMenuOptions.About.AboutApp,
+             //LeftMenuOptions.About.AboutDeveloper,
+                LeftMenuOptions.About.Announcements],
                 LeftMenuOptions.Driving.title:
                     [LeftMenuOptions.Driving.LeaveParking,
                      LeftMenuOptions.Driving.SeekParking],

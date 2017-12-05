@@ -228,6 +228,10 @@ func ==(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> Bool {
     return left.latitude == right.latitude && left.longitude == right.longitude
 }
 
+func !=(left: CLLocationCoordinate2D, right: CLLocationCoordinate2D) -> Bool {
+    return !(left == right)
+}
+
 // Allows this: { let temp = -3 ~ -80 ~ 5 ~ 10 }
 precedencegroup Additive {
     associativity: left // Explanation: https://en.wikipedia.org/wiki/Operator_associativity

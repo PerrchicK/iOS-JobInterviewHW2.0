@@ -57,7 +57,7 @@ class DrawerContainerViewController: MMDrawerController {
         //customTitleView.addSubview(customTitleButton)
         //b.stretchToSuperViewEdges()
         navigationItem.titleView = customTitleButton
-        customTitleButton.setTitle("i Here U", for: UIControlState.normal)
+        customTitleButton.setTitle("-= I Here You =-", for: UIControlState.normal)
         customTitleButton.setTitleColor(UIColor.black, for: UIControlState.normal)
         customTitleButton.onClick { _ in
             📗("TODO: Open sub menu")
