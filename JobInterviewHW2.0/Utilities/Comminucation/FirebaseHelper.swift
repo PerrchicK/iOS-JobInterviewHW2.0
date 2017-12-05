@@ -140,8 +140,13 @@ struct FirebaseHelper {
         }
     }
 
-    static func shareLocation(_ nickname: String, withLocation locationCoordinate: CLLocationCoordinate2D, completionCallback: @escaping CompletionClosure<Error?>) {
+    static func shareLocation(nickname rawNickname: String, withLocation locationCoordinate: CLLocationCoordinate2D, completionCallback: @escaping CompletionClosure<Error?>) {
         removeCurrentLocationSharing()
+
+        var nickname: String = rawNickname
+        for s in FORBIDDEN_CHARACTERS {
+            nickname = rawNickname.replacingOccurrences(of: String(s), with: "")
+        }
         currentNicknameOnFirebase = nickname
         currentLocationOnFirebase = locationCoordinate
 

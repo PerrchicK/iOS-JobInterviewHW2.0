@@ -560,6 +560,8 @@ extension UIView {
     func onClick(_ onClickClosure: @escaping OnTapRecognizedClosure) -> OnClickListener {
         self.isUserInteractionEnabled = true
         // Ron, Don't worry abut memory leaks here, I checked it already. This doesn't create retain-cycles, guaranteed :)
+        // This 'onClick' is inspired from the Android development and it's of course a matter of taste, I personally find it convenient.
+        // Of course it's not a problem to align with the corporate coding convention.
         let tapGestureRecognizer = OnClickListener(target: self, action: #selector(onTapRecognized(_:)), closure: onClickClosure)
 
         // Solves bug: https://stackoverflow.com/questions/18159147/iphone-didselectrowatindexpath-only-being-called-after-long-press-on-custom-c

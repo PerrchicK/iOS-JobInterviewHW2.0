@@ -165,7 +165,7 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
                     alertController.withAction(UIAlertAction(title: "Cancel".localized(), style: UIAlertActionStyle.cancel, handler: nil))
                     .withAction(UIAlertAction(title: "Publish".localized(), style: UIAlertActionStyle.default, handler: { alertAction in
                         if let textField = alertController.textFields?.first, let nickname = textField.text {
-                            FirebaseHelper.shareLocation(nickname, withLocation: currentLocation, completionCallback: { (error) in
+                            FirebaseHelper.shareLocation(nickname: nickname, withLocation: currentLocation, completionCallback: { (error) in
                                 if error != nil {
                                     ToastMessage.show(messageText: "Failed!")
                                 }
