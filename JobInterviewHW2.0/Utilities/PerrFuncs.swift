@@ -122,58 +122,6 @@ open class PerrFuncs {
     static func copyToClipboard(stringToCopy string: String) {
         UIPasteboard.general.string = string
     }
-
-    // Perry: delete?
-    @discardableResult
-    static func postRequest(urlString: String, jsonDictionary: [String: Any], httpHeaders: [String:String]? = nil, completion: @escaping ([String: Any]?) -> ()) -> URLSessionDataTask? {
-
-        guard let url = URL(string: urlString) else { completion(nil); return nil }
-
-        do {
-            // here "jsonData" is the dictionary encoded in JSON data
-            let jsonData = try JSONSerialization.data(withJSONObject: jsonDictionary, options: .prettyPrinted)
-            // create post request
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            if let httpHeaders = httpHeaders {
-                for httpHeader in httpHeaders {
-                    request.setValue(httpHeader.value, forHTTPHeaderField: httpHeader.key)
-                }
-            }
-            
-            //request.setValue("application/json", forHTTPHeaderField: "Content-Type") // OR: setValue
-            request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-            // insert json data to the request
-            request.httpBody = jsonData
-            request.timeoutInterval = 30
-
-            let task = URLSession.shared.dataTask(with: request as URLRequest) { data, response, error in
-                if let error = error {
-                    📕(error)
-                    completion(nil)
-                    return
-                }
-                guard let data = data else { completion(nil); return }
-                
-                do {
-                    guard let result = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { completion(nil); return }
-                    completion(result)
-                } catch let deserializationError {
-                    📕("Failed to parse JSON: \(deserializationError), data string: \(String(describing: String(data: data, encoding: String.Encoding.utf8)))")
-                    completion(nil)
-                }
-            }
-            
-            task.resume()
-            return task
-        } catch let serializationError {
-            📕("Failed to serialize JSON: \(serializationError)")
-            completion(nil)
-        }
-        
-        return nil
-    }
 }
 
 extension String {

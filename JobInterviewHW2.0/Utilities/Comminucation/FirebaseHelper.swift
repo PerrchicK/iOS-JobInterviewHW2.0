@@ -294,8 +294,9 @@ extension CLLocationCoordinate2D {
         guard stringComponents.count == 2 else { return nil }
         let lat = stringComponents[0]
         let lng = stringComponents[1]
-        guard let latitude = Double(lat) else { return nil }
-        guard let longitude = Double(lng) else { return nil }
+        guard let latitude = Double(lat),
+            let longitude = Double(lng) else { return nil }
+        // Yes, I used 'guard' in a middle of a function, it's a matter of tase, I could use the 'if let' statement
         
         self.init(latitude: latitude, longitude: longitude)
     }
