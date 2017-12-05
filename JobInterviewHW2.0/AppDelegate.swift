@@ -10,7 +10,7 @@
 
  Using of course the mandatory features to pass this challenge:
  - Reverse geocoding (from coordinate to address)
- - Auto complete for adresses search
+ - Auto complete for addresses search
  - Usin Google Places web API.
  - User's current location and address
  */
