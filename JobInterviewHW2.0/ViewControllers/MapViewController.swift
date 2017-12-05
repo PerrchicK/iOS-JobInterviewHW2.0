@@ -25,7 +25,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
 
     public enum MapState {
         case parkingSeeker
-        case peopleSeeker // This state is yet not implemented, but the behaviour is pretty similar to the parking seeking
+        case peopleSeeker // This behaviour is implemented, but not yet in use.
         case placesSeeker
     }
 
@@ -65,8 +65,11 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                         self?.cleanupObservers()
                         return
                     }
-                    let observationHandlers = FirebaseHelper.observeParkingLocations(overlappingCoordinates: strongSelf.getOverlappingCoordinates(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
-                        📗(parkingLocations)
+                    let overlappingCoordinates = strongSelf.getOverlappingCoordinates()
+                    let observationHandlers = FirebaseHelper.observeParkingLocations(overlappingCoordinates: overlappingCoordinates, onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
+                        for parkingLocation in parkingLocations {
+                            strongSelf.putParkingOnMap(availableParkingLocation: parkingLocation)
+                        }
                     })
                     strongSelf.observationHandlers.append(contentsOf: observationHandlers)
                 }
@@ -75,9 +78,10 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             case .peopleSeeker:
                 onCameraChanged = { [weak self] in
                     guard let strongSelf = self else { return }
-                    let observationHandlers = FirebaseHelper.observePeopleLocations(overlappingCoordinates: strongSelf.getOverlappingCoordinates(), onUpdate: { (parkingLocations: [AvailableParkingLocation]) in
-                        for parkingLocation in parkingLocations {
-                            strongSelf.putParkingOnMap(availableParkingLocation: parkingLocation)
+                    let overlappingCoordinates = strongSelf.getOverlappingCoordinates()
+                    let observationHandlers = FirebaseHelper.observePeopleLocations(overlappingCoordinates: overlappingCoordinates, onUpdate: { (personLocations: [PersonSharedLocation]) in
+                        for personLocation in personLocations {
+                            strongSelf.putPersonOnMap(personSharedLocation: personLocation)
                         }
                     })
                     strongSelf.observationHandlers.append(contentsOf: observationHandlers)
@@ -95,7 +99,8 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         return true
     }
     private lazy var observationHandlers: [DatabaseReference] = []
-    private var panGestureRecognizer: UIGestureRecognizer?
+    private lazy var marked: [CLLocationCoordinate2D] = []
+
     private var currentZoom: Float {
         return mapView.camera.zoom
     }
@@ -160,7 +165,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         searchType = .addresses
         mapState = MapState.peopleSeeker // MapState.placesSeeker
 
-        panGestureRecognizer = magnifierRulerView.onPan { [unowned self] (panGestureRecognizer) in
+        magnifierRulerView.onPan { [unowned self] (panGestureRecognizer) in
             // Ron, following our discussion in the interview,
             // I almost never use 'unowned', but here is a good example for allowing myself to use it.
             // As I learned from our interview it keeps better performance, thanks :)
@@ -260,9 +265,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             moveCameraToLocation(coordinate: updatedLocation.coordinate, andZoom: 17)
         }
 
-        guard movementState == nil else { return }
+        guard movementState != MovementState.driving else { return }
 
-//        if updatedLocation.isDriving {
+        if updatedLocation.isInDrivingVelocity {
             movementState = MovementState.driving
 
             if let parkingCandidate = parkingCandidate {
@@ -276,7 +281,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
             }
 
             presentedNavigationAlertController()
-//        }
+        }
     }
 
     func presentedNavigationAlertController(coordinates: CLLocationCoordinate2D? = nil) {
@@ -424,6 +429,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
 
     func putPersonOnMap(personSharedLocation: PersonSharedLocation) {
+        guard !marked.contains(where: { $0 == personSharedLocation.location }) else { return }
+        marked.append(personSharedLocation.location)
+
         let marker: GMSMarker = GMSMarker(position: personSharedLocation.location)
         marker.title = personSharedLocation.nickname
         marker.icon = GMSMarker.markerImage(with: UIColor.blue)
@@ -433,9 +441,11 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
 
     func putParkingOnMap(availableParkingLocation: AvailableParkingLocation) {
+        guard !marked.contains(where: { $0 == availableParkingLocation.location }) else { return }
+        marked.append(availableParkingLocation.location)
+
         let marker: GMSMarker = GMSMarker(position: availableParkingLocation.location)
         marker.title = "Parking"
-        //marker.iconView = UIImageView(image: #imageLiteral(resourceName: "parking_sign"))
         marker.icon =  #imageLiteral(resourceName: "parking_sign")
         marker.appearAnimation = .pop
         marker.snippet = Date(timeIntervalSince1970: availableParkingLocation.timestamp.seconds).shortHourRepresentation()
@@ -444,6 +454,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
 
     func putPlaceOnMap(place: Place) {
+        guard !marked.contains(where: { $0 == place.position }) else { return }
+        marked.append(place.position)
+
         let marker: GMSMarker = GMSMarker(position: place.position)
         marker.title = place.placeName
         marker.appearAnimation = .pop
@@ -470,9 +483,12 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
     
     func getOverlappingCoordinates() -> CLLocationCoordinate2D {
+//        let v = UIView(frame: CGRect(x: 0, y: 0, width: radiusMagnifierImageView.frame.width / 4, height: radiusMagnifierImageView.frame.height / 4))
+        //        v.center = mapView.center .. replaced by this: actualMagnifierBoundaries
         let cameraBounds = mapView.cameraBounds(inView: actualMagnifierBoundaries)
         let precision = (cameraBounds.bottomRight ~ cameraBounds.topLeft).latitude.exractPrecision()
-        let multiplier = Double(10 * precision - 1)
+        var multiplier = Double(pow(10, Double(precision)))
+        multiplier /= 10
         let latitude = Double(Int(cameraBounds.bottomRight.latitude * multiplier)) / multiplier
         let longitude = Double(Int(cameraBounds.bottomRight.longitude * multiplier)) / multiplier
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -700,7 +716,7 @@ extension Double {
 }
 
 extension CLLocation {
-    var isDriving: Bool {
+    var isInDrivingVelocity: Bool {
         return speed > 5 // 5 = 20kph
     }
 }

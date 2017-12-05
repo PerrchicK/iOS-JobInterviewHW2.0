@@ -13,6 +13,12 @@ class Configurations {
     static let shared = Configurations()
 
     struct Constants {
+        //let mockLocation_Gett = CLLocation(latitude: 32.108311, longitude: 34.838081)
+        //let mockLocation_PastaBar = CLLocation(latitude: 32.109048, longitude: 34.839281)
+        //let mockLocation_Asuta = CLLocation(latitude: 32.108308, longitude: 34.838979)
+        //let mockLocation_Market = CLLocation(latitude: 32.108440, longitude: 34.839045)
+        //let mockLocation_NearOfficeDepot = CLLocation(latitude: 32.109203, longitude: 34.839056)
+
         /// This const helps for radius calculation, reference: http://gis.stackexchange.com/questions/7430/what-ratio-scales-do-google-maps-zoom-levels-correspond-to
         static let ClosestZoomRatioScale: Double = 591657550.50
         static let GitHubLink: String = "https://github.com/PerrchicK/iOS-JobInterviewHW2.0"

@@ -95,8 +95,8 @@ struct FirebaseHelper {
     
     static func observePeopleLocations<T: DataSnapshotConvertalbe>(overlappingCoordinates: CLLocationCoordinate2D, onUpdate: @escaping CompletionClosure<[T]>) -> [DatabaseReference] {
 
-        let latitudeString: String = String(overlappingCoordinates.latitude)
-        let longitudeString: String = String(overlappingCoordinates.longitude)
+        let latitudeString: String = String(Int(overlappingCoordinates.latitude))
+        let longitudeString: String = String(Int(overlappingCoordinates.longitude))
 
         let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(Keys.Latitude), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
         let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(Keys.Longitude), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
@@ -114,7 +114,7 @@ struct FirebaseHelper {
         currentObservedReference?.removeAllObservers()
         currentObservedReference = databaseReference
         currentObservedReference?.observe(.value, with: { (dataSnapshot) in
-            📗(dataSnapshot)
+            onUpdate(parseDataArray(fromDataSnapshot: dataSnapshot))
             if let parsed: T = T.parse(dataSnapshot: dataSnapshot) as? T {
                 onUpdate([parsed])
             } else {
@@ -146,7 +146,7 @@ struct FirebaseHelper {
         currentLocationOnFirebase = locationCoordinate
 
         MAIN_USERS_PATH.child(nickname).setValue(locationCoordinate.toString())
-        MAIN_USERS_PATH.child(nickname).onDisconnectRemoveValue()
+//        MAIN_USERS_PATH.child(nickname).onDisconnectRemoveValue()
         
         indexLocationSharing(nickname, withLocationLatitude: locationCoordinate.latitude, withLocationLongitude: locationCoordinate.longitude, completionCallback: { error in
             if let error = error {
@@ -165,8 +165,8 @@ struct FirebaseHelper {
         let latitudeString: String = String(latitude)
         let longitudeString: String = String(longitude)
 
-        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
-        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
+        let indexLatitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(Keys.Latitude), lowercasedPrefix: latitudeString.replacedDotsWithTilde().lowercased())
+        let indexLongitudePath: DatabaseReference = createIndexedPath(root: INDEXED_LOCATIONS_PATH.child(Keys.Users).child(Keys.Longitude), lowercasedPrefix: longitudeString.replacedDotsWithTilde().lowercased())
         
         let locationString: String = "\(latitude),\(longitude)"
         let nodeValue: [String : Any] = ["location": locationString, "nickname": nickname]
@@ -177,10 +177,10 @@ struct FirebaseHelper {
                 indexLongitudePath.child(nickname).setValue(nodeValue) { (error, databaseReference) in
                     completionCallback(error)
                 }
-                indexLongitudePath.child(nickname).onDisconnectRemoveValue()
+//                indexLongitudePath.child(nickname).onDisconnectRemoveValue()
             }
         }
-        indexLatitudePath.child(nickname).onDisconnectRemoveValue()
+//        indexLatitudePath.child(nickname).onDisconnectRemoveValue()
     }
 
     private static func indexNickname(_ nickname: String, withLocation locationCoordinate: CLLocationCoordinate2D, completionCallback: @escaping CompletionClosure<Error?>) {
@@ -190,10 +190,10 @@ struct FirebaseHelper {
         let nodeValue: [String : Any] = ["location": locationCoordinate.toString(), "nickname": nickname]
         MAIN_USERS_PATH.child(nickname).setValue(nodeValue) { (error, databaseReference) in
             indexUsersPath.setValue(nodeValue)
-            indexUsersPath.onDisconnectRemoveValue()
+//            indexUsersPath.onDisconnectRemoveValue()
             completionCallback(error)
         }
-        MAIN_USERS_PATH.child(nickname).onDisconnectRemoveValue()
+//        MAIN_USERS_PATH.child(nickname).onDisconnectRemoveValue()
     }
     
     private static func createIndexedPath(root: DatabaseReference, lowercasedPrefix chars: String) -> DatabaseReference {
@@ -214,7 +214,7 @@ struct FirebaseHelper {
         }
     }
 
-    private static func parseDataArray<T: DataSnapshotConvertalbe>(fromDataSnapshot dataSnapshot: DataSnapshot) -> [T] {
+    static func parseDataArray<T: DataSnapshotConvertalbe>(fromDataSnapshot dataSnapshot: DataSnapshot) -> [T] {
         guard dataSnapshot.childrenCount > 0 else { return [] }
         return parseAndConcatDataArray(fromDataSnapshot: dataSnapshot)
     }
@@ -257,7 +257,8 @@ extension AvailableParkingLocation: DataSnapshotConvertalbe {
 
         // Logic check:
         let numOfSecondsInMinutes: Int64 = 60
-        let age = ((Date().timestampMillis - timestamp) * numOfSecondsInMinutes)
+        let seconds = (Date().timestampMillis - timestamp) / 1000
+        let age = (seconds / numOfSecondsInMinutes)
         let isExpired: Bool = age > Configurations.shared.maximumParkLifeInMinutes
         if (isExpired) {
             FirebaseHelper.removeNode(databaseReference: dataSnapshot.ref)
