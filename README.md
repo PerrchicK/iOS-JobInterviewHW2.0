@@ -1,2 +1,5 @@
 # iOS-JobInterviewHW2.0
-Yet another HW project I've got as a candidate for a cool company. Only this time, 2 years later, I'm implementing this home assignment as a "new me" / "improved me". Enjoy :)
+2 Years ago I made a [HW for candidates](https://github.com/PerrchicK/iOS-JobInterviewProject) as an interview process.
+This time, I have got the chance to improve the previous implementation.
+
+Enjoy :)
