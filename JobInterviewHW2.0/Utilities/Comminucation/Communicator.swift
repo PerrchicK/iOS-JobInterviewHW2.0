@@ -13,6 +13,7 @@ class Communicator {
     
     struct API {
         struct RequestUrls {
+            // I usually avoid using inferred types in Swift, to help the compiler run faster, it doesn't affect the run time of course, only the compiling time.
             static let GeocodeFormat: String = "https://maps.googleapis.com/maps/api/geocode/json?latlng=%f,%f&key=%@"
             static let PlaceSearchFormat: String = "https://maps.googleapis.com/maps/api/place/details/json?placeid=%@&key=%@"
             static let NearByPlacesFormat: String = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%f,%f&radius=%f&key=%@"

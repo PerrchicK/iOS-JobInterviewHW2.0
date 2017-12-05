@@ -30,7 +30,6 @@
 		75A45E0F1FD0B0E600616EC1 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E0D1FD0B0E600616EC1 /* SplashScreenViewController.swift */; };
 		75A45E161FD0B39E00616EC1 /* ClosureTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E111FD0B39E00616EC1 /* ClosureTimer.swift */; };
 		75A45E171FD0B39E00616EC1 /* PerrFuncs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */; };
-		75A45E181FD0B39E00616EC1 /* Synchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E131FD0B39E00616EC1 /* Synchronizer.swift */; };
 		75A45E1D1FD0B3C100616EC1 /* UtilsObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */; };
 		75B7BE951FD5B5F600636300 /* GoogleMaps.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 75B7BE931FD5B5F600636300 /* GoogleMaps.bundle */; };
 		75B7BE961FD5B5F600636300 /* GoogleMaps.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75B7BE941FD5B5F600636300 /* GoogleMaps.framework */; };
@@ -76,7 +75,6 @@
 		75A45E0D1FD0B0E600616EC1 /* SplashScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashScreenViewController.swift; sourceTree = "<group>"; };
 		75A45E111FD0B39E00616EC1 /* ClosureTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureTimer.swift; sourceTree = "<group>"; };
 		75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerrFuncs.swift; sourceTree = "<group>"; };
-		75A45E131FD0B39E00616EC1 /* Synchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronizer.swift; sourceTree = "<group>"; };
 		75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UtilsObjC.m; sourceTree = "<group>"; };
 		75A45E1C1FD0B3C100616EC1 /* UtilsObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UtilsObjC.h; sourceTree = "<group>"; };
 		75B7BE931FD5B5F600636300 /* GoogleMaps.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = GoogleMaps.bundle; sourceTree = "<group>"; };
@@ -163,7 +161,6 @@
 				75FECC5F1FD0C35B00F0C7B9 /* Configurations.swift */,
 				75A45E111FD0B39E00616EC1 /* ClosureTimer.swift */,
 				75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */,
-				75A45E131FD0B39E00616EC1 /* Synchronizer.swift */,
 				75A032F61FD17B6E00DD52F6 /* LocationHelper.swift */,
 				75A45E1C1FD0B3C100616EC1 /* UtilsObjC.h */,
 				75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */,
@@ -425,7 +422,6 @@
 				75A032EE1FD13E5500DD52F6 /* IHUViewController.swift in Sources */,
 				75FECC5E1FD0C12800F0C7B9 /* LeftMenuViewController.swift in Sources */,
 				75FECC591FD0BCDE00F0C7B9 /* ToastMessage.swift in Sources */,
-				75A45E181FD0B39E00616EC1 /* Synchronizer.swift in Sources */,
 				75A032EC1FD13CDD00DD52F6 /* AboutViewController.swift in Sources */,
 				75FECC5D1FD0C12800F0C7B9 /* MapViewController.swift in Sources */,
 				75FECC601FD0C35B00F0C7B9 /* Configurations.swift in Sources */,
