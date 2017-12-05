@@ -12,5 +12,5 @@
 "search people" = "search people...";
 "dismiss keyboard" = "dismiss";
 "dismiss alert" = "Dismiss";
-"about the app info" = "Many things, around location and people.\n\nSuch as: Finding friends who would like to share their location, even search them with an auto-complete tool. Finding avalable parking spots (valid for 30 minutes), while on the other hand, telling evertyone that your parking spot is now available. Using google places to look for interesting places around a specific location with specific raius.\n\n\nVisit this project's repository at: https://github.com/PerrchicK/iOS-JobInterviewHW2.0";
+"about the app info" = "The app does some various things, all it does is around location and people.\n\nSuch as: Finding friends who would like to share their location, even search them with an auto-complete tool. Finding avalable parking spots (valid for 30 minutes), while on the other hand, telling evertyone that your parking spot is now available. Using google places to look for interesting places around a specific location with specific raius.\n\n\nVisit this project's repository at: https://github.com/PerrchicK/iOS-JobInterviewHW2.0";
 
