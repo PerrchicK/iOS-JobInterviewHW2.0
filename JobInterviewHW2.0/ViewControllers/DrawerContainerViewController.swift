@@ -119,7 +119,7 @@ extension DrawerContainerViewController: LeftMenuViewControllerDelegate {
 
                 let toggleActionTitle = isActivated ? "Deacivate".localized() : "Acivate".localized()
                 let toggleAlertTitle = isActivated ? "iPark is Acivated".localized() : "iPark is Deacivated".localized()
-                UIAlertController.makeAlert(title: toggleAlertTitle, message: "Acivate iPark? You can decide later...")
+                UIAlertController.makeAlert(title: toggleAlertTitle, message: "\(toggleActionTitle) iPark? You can decide later...")
                     .withAction(UIAlertAction(title: "Cancel".localized(), style: UIAlertActionStyle.cancel, handler: nil))
                     .withAction(UIAlertAction(title: toggleActionTitle, style: UIAlertActionStyle.default, handler: { [weak self] _ in
                         guard let strongSelf = self else { return }

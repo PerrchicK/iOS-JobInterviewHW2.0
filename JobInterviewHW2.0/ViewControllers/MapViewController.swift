@@ -133,15 +133,17 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         return uiBlockingLoaderView
     }()
 
-    lazy var customInputAccessoryView: UIView = {
-        let customInputAccessoryButton = UIButton()
-        customInputAccessoryButton.setTitle("dismiss keyboard".localized(), for: UIControlState.normal)
-        customInputAccessoryButton.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 30)
-        customInputAccessoryButton.backgroundColor = UIColor.gray
-        customInputAccessoryButton.onClick({ [weak self] _ in
-            self?.searchBar.resignFirstResponder()
-        })
-        return customInputAccessoryButton
+    lazy var maxMagnifierHeight: CGFloat = {
+        return self.view.frame.height
+    }()
+    
+    var maxPredictionsListViewHeight: CGFloat {
+        let predictionsCount: CGFloat = CGFloat((self.predictions?.count) ?? 0)
+        return min(self.view.frame.height / 2, predictionsCount * PredictionsView.PredictionCellHeight)
+    }
+    
+    lazy var minMagnifierHeight: CGFloat = {
+        return self.fetchPlacesButton.frame.height * 2
     }()
 
     private(set) var currentMapViewCenter: CLLocationCoordinate2D?
@@ -157,8 +159,18 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     @IBOutlet weak var radiusMagnifierHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var radiusMagnifierImageView: UIImageView!
     // A replacement for UISegmentedControl, more info at: https://littlebitesofcocoa.com/226-bettersegmentedcontrol
-    @IBOutlet weak var searchTypeSegmentedControl: BetterSegmentedControl!
-
+    lazy var customInputAccessoryView: BetterSegmentedControl = {
+        let searchTypeSegmentedControl = BetterSegmentedControl()
+        searchTypeSegmentedControl.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 30)
+        searchTypeSegmentedControl.titles = [SearchType.addresses.rawValue.localized(), SearchType.people.rawValue.localized()]
+        try? searchTypeSegmentedControl.setIndex(0)
+        searchTypeSegmentedControl.backgroundColor = UIColor.brown
+        searchTypeSegmentedControl.titleColor = UIColor.black
+        searchTypeSegmentedControl.indicatorViewBackgroundColor = UIColor.red
+        searchTypeSegmentedControl.selectedTitleColor = UIColor.white
+        searchTypeSegmentedControl.addTarget(self, action: #selector(MapViewController.searchTypeControlValueChanged(_:)), for: .valueChanged)
+        return searchTypeSegmentedControl
+    }()
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -200,14 +212,6 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     }
     
     func configureUi() {
-        searchTypeSegmentedControl.titles = [SearchType.addresses.rawValue.localized(), SearchType.people.rawValue.localized()]
-        try? searchTypeSegmentedControl.setIndex(0)
-        searchTypeSegmentedControl.backgroundColor = UIColor.brown
-        searchTypeSegmentedControl.titleColor = UIColor.black
-        searchTypeSegmentedControl.indicatorViewBackgroundColor = UIColor.red
-        searchTypeSegmentedControl.selectedTitleColor = UIColor.white
-        searchTypeSegmentedControl.addTarget(self, action: #selector(MapViewController.searchTypeControlValueChanged(_:)), for: .valueChanged)
-
         radiusMagnifierImageView.isUserInteractionEnabled = false
         predictionsView.isPresented = false
         toggleConsistCurrentLocationButton.transform = CGAffineTransform(rotationAngle: CGFloat(-Double.pi / 4)).concatenating(CGAffineTransform(scaleX: 1.5, y: 1.5))
@@ -216,26 +220,11 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         searchBar.searchBarStyle = .minimal
         searchBar.barStyle = .blackTranslucent
         searchBar.inputAccessoryView = customInputAccessoryView
-        let found: [UIView] = searchBar.findSubviewsInTree(predicateClosure: { $0 is UITextField })
-        
-        let innerTextFiled: UITextField? = found.first as? UITextField
-        innerTextFiled?.textColor = .white
+        let innerTextFiled: UITextField? = searchBar.findSubviewsInTree(predicateClosure: { $0 is UITextField }).first as? UITextField
+        innerTextFiled?.textColor = UIColor.black
         predictionsView.getRoundedCornered()
     }
     
-    lazy var maxMagnifierHeight: CGFloat = {
-        return self.view.frame.height
-    }()
-
-    var maxPredictionsListViewHeight: CGFloat {
-        let predictionsCount: CGFloat = CGFloat((self.predictions?.count) ?? 0)
-        return min(self.view.frame.height / 2, predictionsCount * PredictionsView.PredictionCellHeight)
-    }
-
-    lazy var minMagnifierHeight: CGFloat = {
-        return self.fetchPlacesButton.frame.height * 2
-    }()
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -287,19 +276,20 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                         }
                     } else {
                         UIAlertController.makeAlert(title: "Thank you".localized(), message: "We updated this free spot, you can to undo this action, if you like.".localized())
-                        .withAction(UIAlertAction(title: "Keep it, thanks".localized(), style: UIAlertActionStyle.cancel, handler: nil))
-                        .withAction(UIAlertAction(title: "Undo".localized(), style: UIAlertActionStyle.default, handler: { _ in
+                        .withAction(UIAlertAction(title: "Keep it, thanks".localized(), style: UIAlertActionStyle.cancel, handler: { [weak self] _ in
+                            self?.presentedNavigationAlertController()
+                        }))
+                        .withAction(UIAlertAction(title: "Undo".localized(), style: UIAlertActionStyle.default, handler: {  [weak self] _ in
                             for databasReference in databasReferences {
                                 databasReference.removeValue()
                             }
+                            self?.presentedNavigationAlertController()
                         }))
                         .show()
                     }
                 })
                 putParkingOnMap(availableParkingLocation: AvailableParkingLocation(location: parkingCandidate.coordinate, timestamp: timestamp))
             }
-
-            presentedNavigationAlertController()
         }
     }
 
