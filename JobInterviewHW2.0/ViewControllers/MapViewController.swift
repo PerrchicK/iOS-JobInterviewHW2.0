@@ -164,9 +164,9 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         searchTypeSegmentedControl.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 30)
         searchTypeSegmentedControl.titles = [SearchType.addresses.rawValue.localized(), SearchType.people.rawValue.localized()]
         try? searchTypeSegmentedControl.setIndex(0)
-        searchTypeSegmentedControl.backgroundColor = UIColor.brown
-        searchTypeSegmentedControl.titleColor = UIColor.black
-        searchTypeSegmentedControl.indicatorViewBackgroundColor = UIColor.red
+        searchTypeSegmentedControl.backgroundColor = UIColor(hexaString: "29307F")
+        searchTypeSegmentedControl.titleColor = UIColor.white.withAlphaComponent(0.7)
+        searchTypeSegmentedControl.indicatorViewBackgroundColor = UIColor(hexaString: "9FA7FF")
         searchTypeSegmentedControl.selectedTitleColor = UIColor.white
         searchTypeSegmentedControl.addTarget(self, action: #selector(MapViewController.searchTypeControlValueChanged(_:)), for: .valueChanged)
         return searchTypeSegmentedControl

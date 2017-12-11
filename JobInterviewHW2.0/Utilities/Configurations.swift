@@ -92,7 +92,7 @@ public struct LeftMenuOptions {
         public static let title: String = "Location".localized()
         
         public static let WhereIsHere: MenuOption = (text: "Where am I?".localized(), symbol: "🤔")
-        public static let ShareLocation: MenuOption = (text: "Expose your location?".localized(), symbol: "📍")
+        public static let ShareLocation: MenuOption = (text: "Expose your location".localized(), symbol: "📍")
         public static let WhereIsMapCenter: MenuOption = (text: "Map's current address".localized(), symbol: "✛")
     }
     public struct About {
