@@ -180,20 +180,13 @@
                             <constraint firstItem="0bh-MC-9zM" firstAttribute="top" secondItem="CK4-iI-otw" secondAttribute="bottom" constant="23" id="d2l-x5-wKQ"/>
                             <constraint firstAttribute="trailing" secondItem="0bh-MC-9zM" secondAttribute="trailing" id="f3T-Ff-Xis"/>
                             <constraint firstAttribute="leadingMargin" secondItem="DDQ-qO-Tfi" secondAttribute="leading" id="fEy-uC-QVY"/>
-                            <constraint firstItem="DDQ-qO-Tfi" firstAttribute="top" secondItem="CK4-iI-otw" secondAttribute="bottom" constant="40" id="irg-kp-WzC"/>
                             <constraint firstItem="0bh-MC-9zM" firstAttribute="leading" secondItem="qhK-0n-uHT" secondAttribute="leading" id="svB-th-W0w"/>
                             <constraint firstItem="DDQ-qO-Tfi" firstAttribute="width" secondItem="DDQ-qO-Tfi" secondAttribute="height" multiplier="1:1" id="t6P-Lp-5co"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="JI6-WN-cQD"/>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="irg-kp-WzC"/>
-                            </mask>
-                        </variation>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
-                        <outlet property="distanceFromTopConstraint" destination="bvd-OK-mpe" id="YCo-96-eWh"/>
                         <outlet property="itemsTableView" destination="0bh-MC-9zM" id="a8e-3r-9XR"/>
                     </connections>
                 </viewController>

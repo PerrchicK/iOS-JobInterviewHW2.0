@@ -44,7 +44,7 @@ class DrawerContainerViewController: MMDrawerController {
         let mapViewController: MapViewController = MapViewController.instantiate()
         let leftMenuViewController = LeftMenuViewController.instantiate()
 
-        self.init(center: mapViewController, leftDrawerViewController: leftMenuViewController)!
+        self.init(center: mapViewController, leftDrawerViewController: UINavigationController(rootViewController: leftMenuViewController))!
 
         // Configure:
         leftMenuViewController.delegate = self

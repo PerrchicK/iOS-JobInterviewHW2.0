@@ -32,12 +32,6 @@ class SplashScreenViewController: UIViewController {
         appTitleLabel.onClick({ [weak self] _ in
             self?.appTitleLabel.animateNo(duration: 0.2)
         })
-
-        appLogoImageView.onClick({ [weak self] _ in
-            self?.appLogoImageView.animateFade(fadeIn: false, duration: 0.5, completion: { _ in
-                self?.presentMainView()
-            })
-        })
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -45,14 +39,7 @@ class SplashScreenViewController: UIViewController {
 
         PerrFuncs.runBlockAfterDelay(afterDelay: 1) { [weak self] in
             self?.appTitleLabel.animateBounce({ [weak self] _ in
-                guard let strongSelf = self else { return }
-
-                strongSelf.wallGravityAnimator = UIDynamicAnimator(referenceView: strongSelf.appLogoImageView.superview!) // Must be the top reference view
-                strongSelf.wallGravityBehavior = UIGravityBehavior(items: [strongSelf.appLogoImageView])
-                strongSelf.wallGravityAnimator.addBehavior(strongSelf.wallGravityBehavior)
-                strongSelf.wallCollision = UICollisionBehavior(items: [strongSelf.appLogoImageView, strongSelf.floorView])
-                strongSelf.wallCollision.translatesReferenceBoundsIntoBoundary = true
-                strongSelf.wallGravityAnimator.addBehavior(strongSelf.wallCollision)
+                self?.presentMainView()
             })
         }
         

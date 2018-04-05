@@ -171,6 +171,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
         searchTypeSegmentedControl.addTarget(self, action: #selector(MapViewController.searchTypeControlValueChanged(_:)), for: .valueChanged)
         return searchTypeSegmentedControl
     }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
