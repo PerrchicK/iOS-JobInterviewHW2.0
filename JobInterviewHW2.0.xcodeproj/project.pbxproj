@@ -43,6 +43,7 @@
 		75FECC601FD0C35B00F0C7B9 /* Configurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC5F1FD0C35B00F0C7B9 /* Configurations.swift */; };
 		75FECC631FD0C3A000F0C7B9 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC621FD0C3A000F0C7B9 /* Reachability.swift */; };
 		7AAFD5D94740E38FF5B5C9CA /* Pods_JobInterviewHW2_0.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B02570E6FE127D56B9E645E /* Pods_JobInterviewHW2_0.framework */; };
+		AC9A814A215381F6000982C5 /* NotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9A8149215381F6000982C5 /* NotificationObserver.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +88,7 @@
 		75FECC5C1FD0C12800F0C7B9 /* LeftMenuViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftMenuViewController.swift; sourceTree = "<group>"; };
 		75FECC5F1FD0C35B00F0C7B9 /* Configurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configurations.swift; sourceTree = "<group>"; };
 		75FECC621FD0C3A000F0C7B9 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
+		AC9A8149215381F6000982C5 /* NotificationObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationObserver.swift; sourceTree = "<group>"; };
 		BBA29F40F333FE4A45CC8155 /* Pods-JobInterviewHW2.0.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JobInterviewHW2.0.release.xcconfig"; path = "Pods/Target Support Files/Pods-JobInterviewHW2.0/Pods-JobInterviewHW2.0.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -160,6 +162,7 @@
 				75A45E1C1FD0B3C100616EC1 /* UtilsObjC.h */,
 				75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */,
 				750BA86C1FD19D2B00B2AD50 /* Throttler.swift */,
+				AC9A8149215381F6000982C5 /* NotificationObserver.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -386,6 +389,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC9A814A215381F6000982C5 /* NotificationObserver.swift in Sources */,
 				75A032FB1FD180B600DD52F6 /* PermissionRequestViewController.swift in Sources */,
 				7538B9131FD2104800C9159B /* PredictionsView.swift in Sources */,
 				75BB45611FD090D300D3ADFC /* AppDelegate.swift in Sources */,

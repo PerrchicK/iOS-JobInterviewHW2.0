@@ -10,6 +10,10 @@ import UIKit
 import CoreLocation
 
 class IHUViewController: UIViewController, LocationHelperDelegate {
+
+    var applicationDidBecomeActiveNotificationObserver: NotificationObserver?
+    var reachabilityNotificationObserver: NotificationObserver?
+
     var currentLocation: CLLocation?
 
     var shouldForceLocationPermissions: Bool {
@@ -19,8 +23,13 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityDidChange), name: Notification.Name.ReachabilityDidChange, object: nil)
+        applicationDidBecomeActiveNotificationObserver = NotificationObserver.newObserverForNotificationWithName(name: Notification.Name.UIApplicationDidBecomeActive, object: nil, usingBlock: { [weak self] (notification) in
+            self?.applicationDidBecomeActive(notification: notification)
+        })
+
+        reachabilityNotificationObserver = NotificationObserver.newObserverForNotificationWithName(name: Notification.Name.ReachabilityDidChange, object: nil, usingBlock: { [weak self] (notification) in
+            self?.reachabilityDidChange(notification: notification)
+        })
 
         presentPermissionsScreenIfNeeded()
 
@@ -35,21 +44,22 @@ class IHUViewController: UIViewController, LocationHelperDelegate {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        NotificationCenter.default.removeObserver(self)
+
+        applicationDidBecomeActiveNotificationObserver = nil
+        reachabilityNotificationObserver = nil
     }
 
-    @objc func applicationDidBecomeActive(notification: Notification) {
-        presentPermissionsScreenIfNeeded()
-    }
-    
     func presentPermissionsScreenIfNeeded() {
         if shouldForceLocationPermissions && !LocationHelper.shared.isPermissionGranted {
             present(PermissionRequestViewController(), animated: true, completion: nil)
         }
     }
-
-    @objc func reachabilityDidChange(notification: Notification) {
+    
+    func applicationDidBecomeActive(notification: Notification) {
+        presentPermissionsScreenIfNeeded()
+    }
+    
+    func reachabilityDidChange(notification: Notification) {
         guard let status = Reachability.shared?.currentReachabilityStatus else { return }
         📗("Network reachability status changed: \(status)")
         
