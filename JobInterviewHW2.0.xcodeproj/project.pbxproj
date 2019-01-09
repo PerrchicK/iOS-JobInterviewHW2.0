@@ -22,15 +22,50 @@
 		75A032F31FD1478200DD52F6 /* FirebaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032F21FD1478200DD52F6 /* FirebaseHelper.swift */; };
 		75A032F71FD17B6E00DD52F6 /* LocationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032F61FD17B6E00DD52F6 /* LocationHelper.swift */; };
 		75A032FB1FD180B600DD52F6 /* PermissionRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032FA1FD180B600DD52F6 /* PermissionRequestViewController.swift */; };
-		75A033001FD187F900DD52F6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A032FC1FD187F900DD52F6 /* GoogleService-Info.plist */; };
-		75A033011FD187F900DD52F6 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A032FD1FD187F900DD52F6 /* Info.plist */; };
-		75A033021FD187F900DD52F6 /* GoogleService-Info-dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A032FE1FD187F900DD52F6 /* GoogleService-Info-dev.plist */; };
-		75A033031FD187F900DD52F6 /* SecretConstants.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A032FF1FD187F900DD52F6 /* SecretConstants.plist */; };
 		75A45E0E1FD0B0E600616EC1 /* DrawerContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E0C1FD0B0E600616EC1 /* DrawerContainerViewController.swift */; };
 		75A45E0F1FD0B0E600616EC1 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E0D1FD0B0E600616EC1 /* SplashScreenViewController.swift */; };
 		75A45E161FD0B39E00616EC1 /* ClosureTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E111FD0B39E00616EC1 /* ClosureTimer.swift */; };
 		75A45E171FD0B39E00616EC1 /* PerrFuncs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */; };
 		75A45E1D1FD0B3C100616EC1 /* UtilsObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */; };
+		75A4CA8F21E6202E00384B96 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A4CA8C21E6202D00384B96 /* GoogleService-Info.plist */; };
+		75A4CA9421E6207500384B96 /* NotificationObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC9A8149215381F6000982C5 /* NotificationObserver.swift */; };
+		75A4CA9521E6207500384B96 /* PermissionRequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032FA1FD180B600DD52F6 /* PermissionRequestViewController.swift */; };
+		75A4CA9621E6207500384B96 /* PredictionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9121FD2104700C9159B /* PredictionsView.swift */; };
+		75A4CA9721E6207500384B96 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BB45601FD090D300D3ADFC /* AppDelegate.swift */; };
+		75A4CA9821E6207500384B96 /* Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75D9964E1FD23E9B00353206 /* Place.swift */; };
+		75A4CA9921E6207500384B96 /* DrawerContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E0C1FD0B0E600616EC1 /* DrawerContainerViewController.swift */; };
+		75A4CA9A21E6207500384B96 /* FirebaseHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032F21FD1478200DD52F6 /* FirebaseHelper.swift */; };
+		75A4CA9B21E6207500384B96 /* AvailableParkingLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750CC5AE1FD5121C00428B79 /* AvailableParkingLocation.swift */; };
+		75A4CA9C21E6207500384B96 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E0D1FD0B0E600616EC1 /* SplashScreenViewController.swift */; };
+		75A4CA9D21E6207500384B96 /* ClosureTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E111FD0B39E00616EC1 /* ClosureTimer.swift */; };
+		75A4CA9E21E6207500384B96 /* Prediction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9151FD218A500C9159B /* Prediction.swift */; };
+		75A4CA9F21E6207500384B96 /* PersonSharedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */; };
+		75A4CAA021E6207500384B96 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750BA86C1FD19D2B00B2AD50 /* Throttler.swift */; };
+		75A4CAA121E6207500384B96 /* NibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC551FD0BCDE00F0C7B9 /* NibView.swift */; };
+		75A4CAA221E6207500384B96 /* LocationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032F61FD17B6E00DD52F6 /* LocationHelper.swift */; };
+		75A4CAA321E6207500384B96 /* Communicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032EF1FD142BA00DD52F6 /* Communicator.swift */; };
+		75A4CAA421E6207500384B96 /* UtilsObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */; };
+		75A4CAA521E6207500384B96 /* PerrFuncs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */; };
+		75A4CAA621E6207500384B96 /* IHUViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032ED1FD13E5500DD52F6 /* IHUViewController.swift */; };
+		75A4CAA721E6207500384B96 /* LeftMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC5C1FD0C12800F0C7B9 /* LeftMenuViewController.swift */; };
+		75A4CAA821E6207500384B96 /* ToastMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC561FD0BCDE00F0C7B9 /* ToastMessage.swift */; };
+		75A4CAA921E6207500384B96 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75A032EB1FD13CDD00DD52F6 /* AboutViewController.swift */; };
+		75A4CAAA21E6207500384B96 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC5B1FD0C12800F0C7B9 /* MapViewController.swift */; };
+		75A4CAAB21E6207500384B96 /* Configurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC5F1FD0C35B00F0C7B9 /* Configurations.swift */; };
+		75A4CAAC21E6207500384B96 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7538B9051FD1F25A00C9159B /* PermissionsView.swift */; };
+		75A4CAAD21E6207500384B96 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75FECC621FD0C3A000F0C7B9 /* Reachability.swift */; };
+		75A4CAAF21E6207500384B96 /* Pods_JobInterviewHW2_0.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B02570E6FE127D56B9E645E /* Pods_JobInterviewHW2_0.framework */; };
+		75A4CAB121E6207500384B96 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7538B9101FD20B9600C9159B /* Localizable.strings */; };
+		75A4CAB321E6207500384B96 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 759229F51FD5F26A00CD48E6 /* LaunchScreen.storyboard */; };
+		75A4CAB521E6207500384B96 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 759229F71FD5F26A00CD48E6 /* Main.storyboard */; };
+		75A4CAB621E6207500384B96 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45671FD090D300D3ADFC /* Assets.xcassets */; };
+		75A4CAB721E6207500384B96 /* PermissionsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7538B9071FD1F27C00C9159B /* PermissionsView.xib */; };
+		75A4CAB821E6207500384B96 /* ToastMessage.xib in Resources */ = {isa = PBXBuildFile; fileRef = 75FECC571FD0BCDE00F0C7B9 /* ToastMessage.xib */; };
+		75A4CAC021E6209200384B96 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A4CA8E21E6202D00384B96 /* GoogleService-Info.plist */; };
+		75A4CAC221E6214E00384B96 /* SecretConstants.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A4CAC121E6214E00384B96 /* SecretConstants.plist */; };
+		75A4CAC521E623BA00384B96 /* SecretConstants.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A4CAC321E6215500384B96 /* SecretConstants.plist */; };
+		75A4CAC921E6265100384B96 /* production-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A4CAC821E6265100384B96 /* production-Info.plist */; };
+		75A4CACA21E6265700384B96 /* dev-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 75A4CAC621E6264C00384B96 /* dev-Info.plist */; };
 		75B861111FD4EE21004BB72A /* PersonSharedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */; };
 		75BB45611FD090D300D3ADFC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75BB45601FD090D300D3ADFC /* AppDelegate.swift */; };
 		75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 75BB45671FD090D300D3ADFC /* Assets.xcassets */; };
@@ -66,16 +101,19 @@
 		75A032F51FD148A900DD52F6 /* JobInterviewHW2.0-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JobInterviewHW2.0-Bridging-Header.h"; sourceTree = "<group>"; };
 		75A032F61FD17B6E00DD52F6 /* LocationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHelper.swift; sourceTree = "<group>"; };
 		75A032FA1FD180B600DD52F6 /* PermissionRequestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionRequestViewController.swift; sourceTree = "<group>"; };
-		75A032FC1FD187F900DD52F6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		75A032FD1FD187F900DD52F6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		75A032FE1FD187F900DD52F6 /* GoogleService-Info-dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-dev.plist"; sourceTree = "<group>"; };
-		75A032FF1FD187F900DD52F6 /* SecretConstants.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecretConstants.plist; sourceTree = "<group>"; };
 		75A45E0C1FD0B0E600616EC1 /* DrawerContainerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawerContainerViewController.swift; sourceTree = "<group>"; };
 		75A45E0D1FD0B0E600616EC1 /* SplashScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplashScreenViewController.swift; sourceTree = "<group>"; };
 		75A45E111FD0B39E00616EC1 /* ClosureTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureTimer.swift; sourceTree = "<group>"; };
 		75A45E121FD0B39E00616EC1 /* PerrFuncs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PerrFuncs.swift; sourceTree = "<group>"; };
 		75A45E1B1FD0B3C100616EC1 /* UtilsObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UtilsObjC.m; sourceTree = "<group>"; };
 		75A45E1C1FD0B3C100616EC1 /* UtilsObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UtilsObjC.h; sourceTree = "<group>"; };
+		75A4CA8C21E6202D00384B96 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		75A4CA8E21E6202D00384B96 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		75A4CABE21E6207500384B96 /* JobInterviewHW2.0-dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "JobInterviewHW2.0-dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		75A4CAC121E6214E00384B96 /* SecretConstants.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecretConstants.plist; sourceTree = "<group>"; };
+		75A4CAC321E6215500384B96 /* SecretConstants.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecretConstants.plist; sourceTree = "<group>"; };
+		75A4CAC621E6264C00384B96 /* dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "dev-Info.plist"; sourceTree = "<group>"; };
+		75A4CAC821E6265100384B96 /* production-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "production-Info.plist"; sourceTree = "<group>"; };
 		75B861101FD4EE21004BB72A /* PersonSharedLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonSharedLocation.swift; sourceTree = "<group>"; };
 		75BB455D1FD090D300D3ADFC /* iHereU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iHereU.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75BB45601FD090D300D3ADFC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -93,6 +131,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		75A4CAAE21E6207500384B96 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75A4CAAF21E6207500384B96 /* Pods_JobInterviewHW2_0.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75BB455A1FD090D300D3ADFC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -127,10 +173,8 @@
 		75A032F41FD148A900DD52F6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				75A032FE1FD187F900DD52F6 /* GoogleService-Info-dev.plist */,
-				75A032FC1FD187F900DD52F6 /* GoogleService-Info.plist */,
-				75A032FD1FD187F900DD52F6 /* Info.plist */,
-				75A032FF1FD187F900DD52F6 /* SecretConstants.plist */,
+				75A4CA8D21E6202D00384B96 /* DEV */,
+				75A4CA8B21E6202D00384B96 /* PRODUCTION */,
 				75A032F51FD148A900DD52F6 /* JobInterviewHW2.0-Bridging-Header.h */,
 				7538B9101FD20B9600C9159B /* Localizable.strings */,
 			);
@@ -167,6 +211,26 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		75A4CA8B21E6202D00384B96 /* PRODUCTION */ = {
+			isa = PBXGroup;
+			children = (
+				75A4CAC821E6265100384B96 /* production-Info.plist */,
+				75A4CAC121E6214E00384B96 /* SecretConstants.plist */,
+				75A4CA8C21E6202D00384B96 /* GoogleService-Info.plist */,
+			);
+			path = PRODUCTION;
+			sourceTree = "<group>";
+		};
+		75A4CA8D21E6202D00384B96 /* DEV */ = {
+			isa = PBXGroup;
+			children = (
+				75A4CAC621E6264C00384B96 /* dev-Info.plist */,
+				75A4CAC321E6215500384B96 /* SecretConstants.plist */,
+				75A4CA8E21E6202D00384B96 /* GoogleService-Info.plist */,
+			);
+			path = DEV;
+			sourceTree = "<group>";
+		};
 		75BB45541FD090D300D3ADFC = {
 			isa = PBXGroup;
 			children = (
@@ -181,6 +245,7 @@
 			isa = PBXGroup;
 			children = (
 				75BB455D1FD090D300D3ADFC /* iHereU.app */,
+				75A4CABE21E6207500384B96 /* JobInterviewHW2.0-dev.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -235,6 +300,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		75A4CA9121E6207500384B96 /* JobInterviewHW2.0-dev */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 75A4CABB21E6207500384B96 /* Build configuration list for PBXNativeTarget "JobInterviewHW2.0-dev" */;
+			buildPhases = (
+				75A4CA9221E6207500384B96 /* [CP] Check Pods Manifest.lock */,
+				75A4CA9321E6207500384B96 /* Sources */,
+				75A4CAAE21E6207500384B96 /* Frameworks */,
+				75A4CAB021E6207500384B96 /* Resources */,
+				75A4CAB921E6207500384B96 /* [CP] Embed Pods Frameworks */,
+				75A4CABA21E6207500384B96 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "JobInterviewHW2.0-dev";
+			productName = JobInterviewHW2.0;
+			productReference = 75A4CABE21E6207500384B96 /* JobInterviewHW2.0-dev.app */;
+			productType = "com.apple.product-type.application";
+		};
 		75BB455C1FD090D300D3ADFC /* JobInterviewHW2.0 */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 75BB456F1FD090D300D3ADFC /* Build configuration list for PBXNativeTarget "JobInterviewHW2.0" */;
@@ -265,6 +350,9 @@
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = perrchick;
 				TargetAttributes = {
+					75A4CA9121E6207500384B96 = {
+						ProvisioningStyle = Automatic;
+					};
 					75BB455C1FD090D300D3ADFC = {
 						CreatedOnToolsVersion = 9.0;
 						LastSwiftMigration = 0900;
@@ -287,24 +375,40 @@
 			projectRoot = "";
 			targets = (
 				75BB455C1FD090D300D3ADFC /* JobInterviewHW2.0 */,
+				75A4CA9121E6207500384B96 /* JobInterviewHW2.0-dev */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		75A4CAB021E6207500384B96 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75A4CAB121E6207500384B96 /* Localizable.strings in Resources */,
+				75A4CAC021E6209200384B96 /* GoogleService-Info.plist in Resources */,
+				75A4CACA21E6265700384B96 /* dev-Info.plist in Resources */,
+				75A4CAC521E623BA00384B96 /* SecretConstants.plist in Resources */,
+				75A4CAB321E6207500384B96 /* LaunchScreen.storyboard in Resources */,
+				75A4CAB521E6207500384B96 /* Main.storyboard in Resources */,
+				75A4CAB621E6207500384B96 /* Assets.xcassets in Resources */,
+				75A4CAB721E6207500384B96 /* PermissionsView.xib in Resources */,
+				75A4CAB821E6207500384B96 /* ToastMessage.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75BB455B1FD090D300D3ADFC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75A033021FD187F900DD52F6 /* GoogleService-Info-dev.plist in Resources */,
 				7538B90E1FD20B9600C9159B /* Localizable.strings in Resources */,
+				75A4CA8F21E6202E00384B96 /* GoogleService-Info.plist in Resources */,
+				75A4CAC221E6214E00384B96 /* SecretConstants.plist in Resources */,
 				759229F91FD5F26A00CD48E6 /* LaunchScreen.storyboard in Resources */,
-				75A033031FD187F900DD52F6 /* SecretConstants.plist in Resources */,
 				759229FA1FD5F26A00CD48E6 /* Main.storyboard in Resources */,
 				75BB45681FD090D300D3ADFC /* Assets.xcassets in Resources */,
 				7538B9081FD1F27C00C9159B /* PermissionsView.xib in Resources */,
-				75A033011FD187F900DD52F6 /* Info.plist in Resources */,
-				75A033001FD187F900DD52F6 /* GoogleService-Info.plist in Resources */,
+				75A4CAC921E6265100384B96 /* production-Info.plist in Resources */,
 				75FECC5A1FD0BCDE00F0C7B9 /* ToastMessage.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -346,6 +450,76 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JobInterviewHW2.0/Pods-JobInterviewHW2.0-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		75A4CA9221E6207500384B96 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-JobInterviewHW2.0-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		75A4CAB921E6207500384B96 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-JobInterviewHW2.0/Pods-JobInterviewHW2.0-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/BetterSegmentedControl/BetterSegmentedControl.framework",
+				"${BUILT_PRODUCTS_DIR}/CMPopTipView/CMPopTipView.framework",
+				"${BUILT_PRODUCTS_DIR}/FLEX/FLEX.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/MMDrawerController/MMDrawerController.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BetterSegmentedControl.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CMPopTipView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLEX.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MMDrawerController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JobInterviewHW2.0/Pods-JobInterviewHW2.0-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		75A4CABA21E6207500384B96 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-JobInterviewHW2.0/Pods-JobInterviewHW2.0-resources.sh",
+				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-JobInterviewHW2.0/Pods-JobInterviewHW2.0-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		77BBBC50DFB78012221AD101 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -375,7 +549,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -385,6 +559,39 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		75A4CA9321E6207500384B96 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				75A4CA9421E6207500384B96 /* NotificationObserver.swift in Sources */,
+				75A4CA9521E6207500384B96 /* PermissionRequestViewController.swift in Sources */,
+				75A4CA9621E6207500384B96 /* PredictionsView.swift in Sources */,
+				75A4CA9721E6207500384B96 /* AppDelegate.swift in Sources */,
+				75A4CA9821E6207500384B96 /* Place.swift in Sources */,
+				75A4CA9921E6207500384B96 /* DrawerContainerViewController.swift in Sources */,
+				75A4CA9A21E6207500384B96 /* FirebaseHelper.swift in Sources */,
+				75A4CA9B21E6207500384B96 /* AvailableParkingLocation.swift in Sources */,
+				75A4CA9C21E6207500384B96 /* SplashScreenViewController.swift in Sources */,
+				75A4CA9D21E6207500384B96 /* ClosureTimer.swift in Sources */,
+				75A4CA9E21E6207500384B96 /* Prediction.swift in Sources */,
+				75A4CA9F21E6207500384B96 /* PersonSharedLocation.swift in Sources */,
+				75A4CAA021E6207500384B96 /* Throttler.swift in Sources */,
+				75A4CAA121E6207500384B96 /* NibView.swift in Sources */,
+				75A4CAA221E6207500384B96 /* LocationHelper.swift in Sources */,
+				75A4CAA321E6207500384B96 /* Communicator.swift in Sources */,
+				75A4CAA421E6207500384B96 /* UtilsObjC.m in Sources */,
+				75A4CAA521E6207500384B96 /* PerrFuncs.swift in Sources */,
+				75A4CAA621E6207500384B96 /* IHUViewController.swift in Sources */,
+				75A4CAA721E6207500384B96 /* LeftMenuViewController.swift in Sources */,
+				75A4CAA821E6207500384B96 /* ToastMessage.swift in Sources */,
+				75A4CAA921E6207500384B96 /* AboutViewController.swift in Sources */,
+				75A4CAAA21E6207500384B96 /* MapViewController.swift in Sources */,
+				75A4CAAB21E6207500384B96 /* Configurations.swift in Sources */,
+				75A4CAAC21E6207500384B96 /* PermissionsView.swift in Sources */,
+				75A4CAAD21E6207500384B96 /* Reachability.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		75BB45591FD090D300D3ADFC /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -449,6 +656,55 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		75A4CABC21E6207500384B96 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6A43F92711CFC4F27726C92B /* Pods-JobInterviewHW2.0.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BYQ4J9BT99;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/JobInterviewHW2.0/3rdParties",
+				);
+				INFOPLIST_FILE = "JobInterviewHW2.0/Resources/DEV/dev-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.perrchick.ihereu-dev";
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "JobInterviewHW2.0/Resources/JobInterviewHW2.0-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		75A4CABD21E6207500384B96 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BBA29F40F333FE4A45CC8155 /* Pods-JobInterviewHW2.0.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = BYQ4J9BT99;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/JobInterviewHW2.0/3rdParties",
+				);
+				INFOPLIST_FILE = "JobInterviewHW2.0/Resources/DEV/dev-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.perrchick.ihereu-dev";
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "JobInterviewHW2.0/Resources/JobInterviewHW2.0-Bridging-Header.h";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		75BB456D1FD090D300D3ADFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -570,10 +826,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/JobInterviewHW2.0/3rdParties",
 				);
-				INFOPLIST_FILE = JobInterviewHW2.0/Resources/Info.plist;
+				INFOPLIST_FILE = "JobInterviewHW2.0/Resources/PRODUCTION/production-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.perrchick.ihereu;
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = iHereU;
 				SWIFT_OBJC_BRIDGING_HEADER = "JobInterviewHW2.0/Resources/JobInterviewHW2.0-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -594,10 +851,11 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/JobInterviewHW2.0/3rdParties",
 				);
-				INFOPLIST_FILE = JobInterviewHW2.0/Resources/Info.plist;
+				INFOPLIST_FILE = "JobInterviewHW2.0/Resources/PRODUCTION/production-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.perrchick.ihereu;
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = iHereU;
 				SWIFT_OBJC_BRIDGING_HEADER = "JobInterviewHW2.0/Resources/JobInterviewHW2.0-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
@@ -608,6 +866,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		75A4CABB21E6207500384B96 /* Build configuration list for PBXNativeTarget "JobInterviewHW2.0-dev" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75A4CABC21E6207500384B96 /* Debug */,
+				75A4CABD21E6207500384B96 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		75BB45581FD090D300D3ADFC /* Build configuration list for PBXProject "JobInterviewHW2.0" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

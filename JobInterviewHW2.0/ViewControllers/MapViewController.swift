@@ -63,6 +63,8 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
     // Same here, using an explicit unwarp here.
     var mapState: MapState! {
         didSet {
+            guard let mapState = mapState else { return }
+
             cleanupObservers()
 
             switch mapState {
@@ -94,7 +96,7 @@ class MapViewController: IHUViewController, GMSMapViewDelegate, UISearchBarDeleg
                     strongSelf.observationHandlers.append(contentsOf: observationHandlers)
                 }
             default:
-                📕("unhandled state")
+                📕("unhandled state: \(mapState)")
             }
         }
     }

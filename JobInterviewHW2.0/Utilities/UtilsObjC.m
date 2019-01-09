@@ -118,7 +118,7 @@ __strong static UtilsObjC *_shared;
 
 #ifdef DEBUG
     if (UtilsObjC.currentEnvironment == SCEnvironmentDev) {
-        tempFilePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info-dev" ofType:@"plist"];
+        tempFilePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
     } else {
         tempFilePath = [[NSBundle mainBundle] pathForResource:@"GoogleService-Info" ofType:@"plist"];
     }
